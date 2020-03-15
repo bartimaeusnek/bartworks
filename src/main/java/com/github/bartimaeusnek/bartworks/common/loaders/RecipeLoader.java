@@ -753,37 +753,59 @@ public class RecipeLoader implements Runnable {
                             "BZB",
                             "BRB",
                             "BZB",
-                            'B',new ItemStack(GregTech_API.sBlockCasings3,1,12),
-                            'R',GT_ModHandler.getModItem("IC2","blockGenerator",1,5),
-                            'Z',"circuitUltimate"
+                            'B', new ItemStack(GregTech_API.sBlockCasings3, 1, 12),
+                            'R', GT_ModHandler.getModItem("IC2", "blockGenerator", 1, 5),
+                            'Z', "circuitUltimate"
                     }
             );
 
-            if (!Loader.isModLoaded("tectech"))
-            GT_Values.RA.addAssemblylineRecipe(
-                    ItemList.Machine_Multi_ImplosionCompressor.get(1L),24000,
-                    new ItemStack[]{
-                            ItemList.Machine_Multi_ImplosionCompressor.get(1L),
-                            Materials.Neutronium.getBlocks(5),
-                            GT_OreDictUnificator.get(OrePrefixes.stickLong,Materials.Osmium,64),
-                            GT_OreDictUnificator.get(OrePrefixes.ring,Materials.Osmium,64),
-                            GT_OreDictUnificator.get(OrePrefixes.wireGt01,Materials.Superconductor,64),
-                            ItemList.Electric_Piston_UV.get(64),
-                    },
-                    new FluidStack[]{
-                            Materials.SolderingAlloy.getMolten(1440),
-                            Materials.Osmium.getMolten(1440),
-                            Materials.Neutronium.getMolten(1440)
-                    },
-                    ItemRegistry.eic.copy(),
-                    240000,
-                    BW_Util.getMachineVoltageFromTier(8)
-            );
-            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false,new ItemStack[]{ItemList.Hatch_Input_HV.get(64),Materials.LiquidAir.getCells(1),GT_Utility.getIntegratedCircuit(17)},new ItemStack[]{ItemRegistry.compressedHatch.copy()},null,null,null,null,300, BW_Util.getMachineVoltageFromTier(3),0));
-            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false,new ItemStack[]{ItemList.Hatch_Output_HV.get(64),GT_Utility.getIntegratedCircuit(17)},new ItemStack[]{ItemRegistry.giantOutputHatch.copy()},null,null,null,null,300, BW_Util.getMachineVoltageFromTier(3),0));
+            if (!Loader.isModLoaded("tectech")) {
+                GT_Values.RA.addAssemblylineRecipe(
+                        ItemList.Machine_Multi_ImplosionCompressor.get(1L), 24000,
+                        new ItemStack[]{
+                                ItemList.Machine_Multi_ImplosionCompressor.get(1L),
+                                Materials.Neutronium.getBlocks(5),
+                                GT_OreDictUnificator.get(OrePrefixes.stickLong, Materials.Osmium, 64),
+                                GT_OreDictUnificator.get(OrePrefixes.ring, Materials.Osmium, 64),
+                                GT_OreDictUnificator.get(OrePrefixes.wireGt01, Materials.Superconductor, 64),
+                                ItemList.Electric_Piston_UV.get(64),
+                        },
+                        new FluidStack[]{
+                                Materials.SolderingAlloy.getMolten(1440),
+                                Materials.Osmium.getMolten(1440),
+                                Materials.Neutronium.getMolten(1440)
+                        },
+                        ItemRegistry.eic.copy(),
+                        240000,
+                        BW_Util.getMachineVoltageFromTier(8)
+                );
+
+                if (Loader.isModLoaded("galacticgreg"))
+                    GT_Values.RA.addAssemblylineRecipe(
+                            ItemList.OreDrill4.get(1L), 128000,
+                            new ItemStack[]{
+                                    ItemList.OreDrill4.get(1L),
+                                    GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9),
+                                    Materials.Infinity.getPlates(3),
+                                    ItemList.Electric_Motor_UV.get(9L),
+                                    ItemList.Sensor_UV.get(9L),
+                                    ItemList.Field_Generator_UV.get(9L)
+                            },
+                            new FluidStack[]{
+                                    Materials.SolderingAlloy.getMolten(1440),
+                                    WerkstoffLoader.Neon.getFluidOrGas(20000),
+                                    WerkstoffLoader.Oganesson.getFluidOrGas(10000)
+                            },
+                            ItemRegistry.voidminer.copy(),
+                            480000,
+                            BW_Util.getMachineVoltageFromTier(8)
+                    );
+            }
+            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Input_HV.get(64), Materials.LiquidAir.getCells(1), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.compressedHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));
+            GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Output_HV.get(64), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.giantOutputHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));
 
             GT_Values.RA.addAssemblylineRecipe(
-                    ItemList.Machine_LuV_CircuitAssembler.get(1L),24000,
+                    ItemList.Machine_LuV_CircuitAssembler.get(1L), 24000,
                     new ItemStack[]{
                             ItemList.Machine_LuV_CircuitAssembler.get(1L),
                             ItemList.Robot_Arm_LuV.get(4L),

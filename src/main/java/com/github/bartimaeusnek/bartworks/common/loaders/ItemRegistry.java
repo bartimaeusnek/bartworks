@@ -199,7 +199,7 @@ public class ItemRegistry {
             ItemRegistry.megaMachines[2] = new GT_TileEntity_MegaDistillTower(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 10, "MegaDistillationTower", "Mega Distillation Tower").getStackForm(1L);
 
             if (Loader.isModLoaded("galacticgreg"))
-                voidminer = new GT_TileEntity_VoidMiner(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 11,"VoidMiner","Void Miner").getStackForm(1L);
+                ItemRegistry.voidminer = new GT_TileEntity_VoidMiner(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 11,"VoidMiner","Void Miner").getStackForm(1L);
         }
     }
 }

@@ -34,6 +34,7 @@ import com.github.bartimaeusnek.bartworks.system.oregen.BW_OreLayer;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_WorldGenRoss128b;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_WorldGenRoss128ba;
 import com.github.bartimaeusnek.bartworks.util.Pair;
+import com.google.common.collect.ArrayListMultimap;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.ItemList;
@@ -41,11 +42,13 @@ import gregtech.api.enums.Materials;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.objects.XSTR;
+import gregtech.api.util.GT_LanguageManager;
 import gregtech.common.GT_Worldgen_GT_Ore_Layer;
 import gregtech.common.GT_Worldgen_GT_Ore_SmallPieces;
 import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_DrillerBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,11 +60,24 @@ import java.util.stream.Collectors;
 
 import static bloodasp.galacticgreg.registry.GalacticGregRegistry.getModContainers;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"rawtypes", "unchecked","unused"})
 public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
+
+    private static ArrayListMultimap<Integer,Pair<Pair<Integer,Boolean>, Float>> extraDropsDimMap = ArrayListMultimap.create();
+    private static FluidStack[] NOBLE_GASSES = new FluidStack[]{
+            WerkstoffLoader.Neon.getFluidOrGas(1),
+            WerkstoffLoader.Krypton.getFluidOrGas(1),
+            WerkstoffLoader.Xenon.getFluidOrGas(1),
+            WerkstoffLoader.Oganesson.getFluidOrGas(1)
+    };
 
     private HashMap<Pair<Integer,Boolean>, Float> dropmap = null;
     private float totalWeight;
+    private int multiplier = 1;
+
+    static {
+        getExtraDropsDimMap().put(0,new Pair<>(new Pair<>(WerkstoffLoader.Tellurium.getBridgeMaterial().mMetaItemSubID,false),8.0f));
+    }
 
     public GT_TileEntity_VoidMiner(int aID, String aName, String aNameRegional) {
         super(aID, aName, aNameRegional);
@@ -73,7 +89,7 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
 
     @Override
     protected ItemList getCasingBlockItem() {
-        return ItemList.Casing_Coil_Superconductor;
+        return ItemList.Casing_UV;
     }
 
     @Override
@@ -106,61 +122,101 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
         }
         this.mOutputItems = new ItemStack[0];
         this.mProgresstime = 0;
-        this.mMaxProgresstime = 20;
+        this.mMaxProgresstime = 10;
         this.mEfficiency = this.getCurrentEfficiency(null);
         this.mEfficiencyIncrease = 10000;
     }
 
-    private void getDropMapVanilla() {
-        Predicate<GT_Worldgen_GT_Ore_Layer> world;
-        Predicate<GT_Worldgen_GT_Ore_SmallPieces> world2;
+    @Override
+    protected boolean workingAtBottom(ItemStack aStack, int xDrill, int yDrill, int zDrill, int xPipe, int zPipe, int yHead, int oldYHead) {
+        makeDropMap();
+        handleFluidConsumption();
+        handleOutputs();
+        return true;
+    }
+
+    @Override
+    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
+        return new GT_TileEntity_VoidMiner(this.mName);
+    }
+
+    @Override
+    public String[] getDescription() {
+        String casingName = GT_LanguageManager.getTranslation(GT_LanguageManager.getTranslateableItemStackName(this.getCasingBlockItem().get(1L)));
+        return new String[]{"Controller Block for the Void Miner ",
+                "Size(WxHxD): 3x7x3",
+                "Controller (Front middle at bottom)",
+                "3x1x3 Base of " + casingName,
+                "1x3x1 " + casingName + " pillar (Center of base)",
+                "1x3x1 " + this.getFrameMaterial().mName + " Frame Boxes (Each pillar side and on top)",
+                "1x Output Bus (One of base casings)",
+                "Optional: 0+ Input Hatch (One of base casings)",
+                "1x Maintenance Hatch (One of base casings)",
+                "1x " + GT_Values.VN[this.getMinTier()] + "+ Energy Hatch (Any bottom layer casing)",
+                "Consumes " + GT_Values.V[this.getMinTier()] + "EU/t",
+                "Can be supplied with 100L of Neon(x4), Krypton(x8), Xenon(x16) or Oganesson(x64)",
+                "for higher outputs.",
+                "Will output two Ores per Second depending on the Dimension it is build in"
+        };
+    }
+
+    public static ArrayListMultimap<Integer, Pair<Pair<Integer, Boolean>, Float>> getExtraDropsDimMap() {
+        return extraDropsDimMap;
+    }
+
+    private Predicate<GT_Worldgen_GT_Ore_Layer> makeOreLayerPredicate() {
         switch (this.getBaseMetaTileEntity().getWorld().provider.dimensionId) {
             case -1:
-                world = gt_worldgen -> gt_worldgen.mNether;
-                break;
+                return gt_worldgen -> gt_worldgen.mNether;
             case 0:
-                world = gt_worldgen -> gt_worldgen.mOverworld;
-                break;
+                return gt_worldgen -> gt_worldgen.mOverworld;
             case 1:
-                world = gt_worldgen -> gt_worldgen.mEnd || gt_worldgen.mEndAsteroid;
-                break;
+                return gt_worldgen -> gt_worldgen.mEnd || gt_worldgen.mEndAsteroid;
             default:
                 throw new IllegalStateException();
         }
+    }
+    
+    private Predicate<GT_Worldgen_GT_Ore_SmallPieces> makeSmallOresPredicate() {
         switch (this.getBaseMetaTileEntity().getWorld().provider.dimensionId) {
             case -1:
-                world2 = gt_worldgen -> gt_worldgen.mNether;
-                break;
+                return gt_worldgen -> gt_worldgen.mNether;
             case 0:
-                world2 = gt_worldgen -> gt_worldgen.mOverworld;
-                break;
+                return gt_worldgen -> gt_worldgen.mOverworld;
             case 1:
-                world2 = gt_worldgen -> gt_worldgen.mEnd;
-                break;
+                return gt_worldgen -> gt_worldgen.mEnd;
             default:
                 throw new IllegalStateException();
         }
-        GT_Worldgen_GT_Ore_Layer.sList.stream().filter(gt_worldgen -> gt_worldgen.mEnabled && world.test(gt_worldgen)).forEach(element -> {
+    }
+    
+    private void getDropsVanillaVeins(Predicate<GT_Worldgen_GT_Ore_Layer> oreLayerPredicate) {
+        GT_Worldgen_GT_Ore_Layer.sList.stream().filter(gt_worldgen -> gt_worldgen.mEnabled && oreLayerPredicate.test(gt_worldgen)).forEach(element -> {
                     dropmap.put(new Pair<>((int) element.mPrimaryMeta,false), (float) element.mWeight);
                     dropmap.put(new Pair<>((int) element.mSecondaryMeta,false), (float) element.mWeight);
                     dropmap.put(new Pair<>((int) element.mSporadicMeta,false), (element.mWeight / 8f));
                     dropmap.put(new Pair<>((int) element.mBetweenMeta,false), (element.mWeight / 8f));
                 }
         );
-        GT_Worldgen_GT_Ore_SmallPieces.sList.stream().filter(gt_worldgen -> gt_worldgen.mEnabled && world2.test(gt_worldgen)).forEach(element ->
+    }
+
+    private void getDropsVanillaSmallOres(Predicate<GT_Worldgen_GT_Ore_SmallPieces> smallOresPredicate) {
+        GT_Worldgen_GT_Ore_SmallPieces.sList.stream().filter(gt_worldgen -> gt_worldgen.mEnabled && smallOresPredicate.test(gt_worldgen)).forEach(element ->
                 dropmap.put(new Pair<>((int) element.mMeta,false), (float) element.mAmount)
         );
     }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void getDropMapSpace() {
-        ChunkProviderServer provider = (ChunkProviderServer) this.getBaseMetaTileEntity().getWorld().getChunkProvider();
-
-        final ModDimensionDef finalDef = getModContainers().stream()
-                .flatMap(modContainer -> modContainer.getDimensionList().stream())
-                .filter(modDimensionDef -> modDimensionDef.getChunkProviderName().equals(provider.currentChunkProvider.getClass().getName()))
-                .findFirst().orElse(null);
-
+    
+    private void getDropMapVanilla() {
+        getDropsVanillaVeins(makeOreLayerPredicate());
+        getDropsVanillaSmallOres(makeSmallOresPredicate());
+    }
+    
+    private void getDropMapSpace(ModDimensionDef finalDef) {
+        getDropsOreVeinsSpace(finalDef);
+        getDropsSmallOreSpace(finalDef);
+    }
+    
+    private void getDropsOreVeinsSpace(ModDimensionDef finalDef) {
         Set space = GalacticGreg.oreVeinWorldgenList.stream()
                 .filter(gt_worldgen -> gt_worldgen.mEnabled && gt_worldgen instanceof GT_Worldgen_GT_Ore_Layer_Space && ((GT_Worldgen_GT_Ore_Layer_Space) gt_worldgen).isEnabledForDim(finalDef))
                 .collect(Collectors.toSet());
@@ -173,8 +229,10 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
                     dropmap.put(new Pair<>((int) ((GT_Worldgen_GT_Ore_Layer_Space) element).mBetweenMeta,false), (((GT_Worldgen_GT_Ore_Layer_Space) element).mWeight / 8f));
                 }
         );
+    }
 
-        space = GalacticGreg.smallOreWorldgenList.stream()
+    private void getDropsSmallOreSpace(ModDimensionDef finalDef) {
+        Set space = GalacticGreg.smallOreWorldgenList.stream()
                 .filter(gt_worldgen -> gt_worldgen.mEnabled && gt_worldgen instanceof GT_Worldgen_GT_Ore_SmallPieces_Space && ((GT_Worldgen_GT_Ore_SmallPieces_Space) gt_worldgen).isEnabledForDim(finalDef))
                 .collect(Collectors.toSet());
 
@@ -196,9 +254,50 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private void getDropMapBartworks(int aID) {
-        Consumer<BW_OreLayer> addToList = element -> {
+    private FluidStack getNobleGasInputAndSetMultiplier() {
+        for (FluidStack s : this.getStoredFluids()) {
+            for (int i = 0; i < NOBLE_GASSES.length; i++) {
+                FluidStack ng = NOBLE_GASSES[i];
+                if (ng.isFluidEqual(s)) {
+                    multiplier = (2 << (i == NOBLE_GASSES.length - 1 ? (i+2) : (i+1)));
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean consumeNobleGas(FluidStack gasToConsume) {
+        for (FluidStack s : this.getStoredFluids()) {
+            if (s.isFluidEqual(gasToConsume) && s.amount >= 100) {
+                s.amount -= 100;
+                this.updateSlots();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void handleFluidConsumption() {
+        FluidStack storedNobleGas = getNobleGasInputAndSetMultiplier();
+        if (storedNobleGas == null || !consumeNobleGas(storedNobleGas))
+            multiplier = 1;
+    }
+    
+    private void getDropMapBartworks(ModDimensionDef finalDef,int aID) {
+        Consumer<BW_OreLayer> addToList = makeAddToList();
+        if (aID == ConfigHandler.ross128BID)
+            BW_WorldGenRoss128b.sList.forEach(addToList);
+        else if (aID == ConfigHandler.ross128BAID)
+            BW_WorldGenRoss128ba.sList.forEach(addToList);
+        else {
+            addOresVeinsBartworks(finalDef, addToList);
+            addSmallOresBartworks(finalDef);
+        }
+    }
+
+    private Consumer<BW_OreLayer> makeAddToList() {
+        return element -> {
             List<Pair<Integer,Boolean>> data = element.getStacksRawData();
             for (int i = 0; i < data.size(); i++) {
                 if (i < data.size()-1)
@@ -207,72 +306,79 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
                     dropmap.put(data.get(i), (element.mWeight/8f));
             }
         };
-
-        if (aID == ConfigHandler.ross128BID)
-            BW_WorldGenRoss128b.sList.forEach(addToList);
-        else if (aID == ConfigHandler.ross128BAID)
-            BW_WorldGenRoss128ba.sList.forEach(addToList);
-        else {
-            ChunkProviderServer provider = (ChunkProviderServer) this.getBaseMetaTileEntity().getWorld().getChunkProvider();
-
-            final ModDimensionDef finalDef = getModContainers().stream()
-                    .flatMap(modContainer -> modContainer.getDimensionList().stream())
-                    .filter(modDimensionDef -> modDimensionDef.getChunkProviderName().equals(provider.currentChunkProvider.getClass().getName()))
-                    .findFirst().orElse(null);
-
+    }
+    
+    private ModDimensionDef makeModDimDef() {
+        return getModContainers().stream()
+                .flatMap(modContainer -> modContainer.getDimensionList().stream())
+                .filter(modDimensionDef -> modDimensionDef.getChunkProviderName()
+                        .equals(((ChunkProviderServer) this.getBaseMetaTileEntity().getWorld().getChunkProvider()).currentChunkProvider.getClass().getName()))
+                .findFirst().orElse(null);
+    }
+    
+    private void addOresVeinsBartworks(ModDimensionDef finalDef,Consumer<BW_OreLayer> addToList) {
+        try {
             Set space = GalacticGreg.oreVeinWorldgenList.stream()
                     .filter(gt_worldgen -> gt_worldgen.mEnabled && gt_worldgen instanceof BW_Worldgen_Ore_Layer_Space && ((BW_Worldgen_Ore_Layer_Space) gt_worldgen).isEnabledForDim(finalDef))
                     .collect(Collectors.toSet());
 
             space.forEach(addToList);
-
-            space = GalacticGreg.smallOreWorldgenList.stream()
+        } catch (NullPointerException ignored) {}
+    }
+    
+    private void addSmallOresBartworks(ModDimensionDef finalDef) {
+        try {
+            Set space = GalacticGreg.smallOreWorldgenList.stream()
                     .filter(gt_worldgen -> gt_worldgen.mEnabled && gt_worldgen instanceof BW_Worldgen_Ore_SmallOre_Space && ((BW_Worldgen_Ore_SmallOre_Space) gt_worldgen).isEnabledForDim(finalDef))
                     .collect(Collectors.toSet());
 
             space.forEach(
                     element ->
-                            dropmap.put(new Pair<>(((BW_Worldgen_Ore_SmallOre_Space) element).mPrimaryMeta,((BW_Worldgen_Ore_SmallOre_Space) element).bwOres != 0), (float) ((BW_Worldgen_Ore_SmallOre_Space) element).mDensity)
+                            dropmap.put(new Pair<>(((BW_Worldgen_Ore_SmallOre_Space) element).mPrimaryMeta, ((BW_Worldgen_Ore_SmallOre_Space) element).bwOres != 0), (float) ((BW_Worldgen_Ore_SmallOre_Space) element).mDensity)
             );
+        } catch (NullPointerException ignored) {}
+    }
+    
+    private void handleExtraDrops(int id) {
+        List<Pair<Pair<Integer,Boolean>,Float>> extraDrops = getExtraDropsDimMap().get(id);
+        if (extraDrops != null)
+            extraDrops.forEach(e -> dropmap.put(e.getKey(),e.getValue()));
+
+    }
+
+    private void calculateTotalWeight() {
+        totalWeight = 0.0f;
+        dropmap.values().forEach(f -> totalWeight += f);
+    }
+
+    private void handleDimBasedDrops(ModDimensionDef finalDef, int id) {
+        if (id != ConfigHandler.ross128BID && id != ConfigHandler.ross128BAID) {
+            if (id > 1 || id < -1)
+                getDropMapSpace(finalDef);
+            else
+                getDropMapVanilla();
         }
     }
 
-    private void makeDropMap(){
-        if (dropmap == null) {
-            dropmap = new HashMap<>();
-            int id = this.getBaseMetaTileEntity().getWorld().provider.dimensionId;
-            if (id != ConfigHandler.ross128BID && id != ConfigHandler.ross128BAID) {
-                if (id > 1 || id < -1)
-                    getDropMapSpace();
-                else
-                    getDropMapVanilla();
-            }
+    private void calculateDropMap() {
+        dropmap = new HashMap<>();
+        int id = this.getBaseMetaTileEntity().getWorld().provider.dimensionId;
+        final ModDimensionDef finalDef = makeModDimDef();
+        handleDimBasedDrops(finalDef,id);
+        getDropMapBartworks(finalDef,id);
+        handleExtraDrops(id);
+        calculateTotalWeight();
+    }
 
-            getDropMapBartworks(id);
-            totalWeight = 0.0f;
-
-            for (Float f : dropmap.values()) {
-                totalWeight += f;
-            }
+    private void makeDropMap() {
+        if (dropmap == null || totalWeight == 0) {
+          calculateDropMap();
         }
     }
 
-    @Override
-    protected boolean workingAtBottom(ItemStack aStack, int xDrill, int yDrill, int zDrill, int xPipe, int zPipe, int yHead, int oldYHead) {
-        makeDropMap();
+    private void handleOutputs() {
         Pair<Integer,Boolean> stats = getOreDamage();
-        this.addOutput(new ItemStack(stats.getValue() ? WerkstoffLoader.BWOres : GregTech_API.sBlockOres1, 1, stats.getKey()));
+        this.addOutput(new ItemStack(stats.getValue() ? WerkstoffLoader.BWOres : GregTech_API.sBlockOres1, multiplier, stats.getKey()));
         this.updateSlots();
-        return true;
-    }
-
-    @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new GT_TileEntity_VoidMiner(this.mName);
-    }
-
-    @Override
-    public String[] getDescription() {
-        return new String[0];
     }
 }

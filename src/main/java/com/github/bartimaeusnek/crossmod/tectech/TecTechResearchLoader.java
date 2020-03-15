@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,45 @@
 package com.github.bartimaeusnek.crossmod.tectech;
 
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
+import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.technus.tectech.recipe.TT_recipeAdder;
+import cpw.mods.fml.common.Loader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
 import gregtech.api.util.GT_OreDictUnificator;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TecTechResearchLoader  {
+public class TecTechResearchLoader {
 
     @SuppressWarnings("deprecation")
-    public static void runResearches(){
+    public static void runResearches() {
+
+        if (Loader.isModLoaded("galacticgreg"))
+            TT_recipeAdder.addResearchableAssemblylineRecipe(
+                    ItemList.OreDrill4.get(1L),
+                    128000,
+                    64,
+                    BW_Util.getMachineVoltageFromTier(8),
+                    12,
+                    new Object[]{
+                            ItemList.OreDrill4.get(1L),
+                            GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9),
+                            Materials.Infinity.getPlates(3),
+                            ItemList.Electric_Motor_UV.get(9L),
+                            ItemList.Sensor_UV.get(9L),
+                            ItemList.Field_Generator_UV.get(9L)
+                    },
+                    new FluidStack[]{
+                            Materials.SolderingAlloy.getMolten(1440),
+                            WerkstoffLoader.Neon.getFluidOrGas(20000),
+                            WerkstoffLoader.Oganesson.getFluidOrGas(10000)
+                    },
+                    ItemRegistry.voidminer.copy(),
+                    480000,
+                    BW_Util.getMachineVoltageFromTier(8)
+            );
 
         TT_recipeAdder.addResearchableAssemblylineRecipe(
                 ItemList.Machine_Multi_ImplosionCompressor.get(1L),
@@ -45,9 +72,9 @@ public class TecTechResearchLoader  {
                 new Object[]{
                         ItemList.Machine_Multi_ImplosionCompressor.get(1L),
                         Materials.Neutronium.getBlocks(5),
-                        GT_OreDictUnificator.get(OrePrefixes.stickLong,Materials.Osmium,64),
-                        GT_OreDictUnificator.get(OrePrefixes.ring,Materials.Osmium,64),
-                        GT_OreDictUnificator.get(OrePrefixes.wireGt01,Materials.Superconductor,64),
+                        GT_OreDictUnificator.get(OrePrefixes.stickLong, Materials.Osmium, 64),
+                        GT_OreDictUnificator.get(OrePrefixes.ring, Materials.Osmium, 64),
+                        GT_OreDictUnificator.get(OrePrefixes.wireGt01, Materials.Superconductor, 64),
                         ItemList.Electric_Piston_UV.get(64),
                 },
                 new FluidStack[]{
