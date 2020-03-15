@@ -88,6 +88,7 @@ import static com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_T
 import static com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader.*;
 import static gregtech.api.enums.GT_Values.VN;
 
+@SuppressWarnings("unused")
 @Mod(
         modid = MainMod.MOD_ID, name = MainMod.NAME, version = MainMod.VERSION,
         dependencies = "required-after:IC2; "
@@ -208,6 +209,8 @@ public final class MainMod {
         GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.dehp.desc", "Get ALL the thermal energy!");
         GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.circuitassemblyline", "Cheaper Circuits?");
         GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.circuitassemblyline.desc", "Well, yes, but actually no...");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer", "Ores from deep below!");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer.desc", "Is this some kind of Ex-Nihilo?");
         GT_LanguageManager.addStringLocalization("metaitem.01.tooltip.nqgen", "Can be used as Enriched Naquadah Fuel Substitute");
     }
 
