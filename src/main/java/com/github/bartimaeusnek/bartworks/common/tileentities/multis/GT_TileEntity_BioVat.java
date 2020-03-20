@@ -53,9 +53,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
 
@@ -102,21 +101,11 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
     }
 
     private int getInputCapacity() {
-        int ret = 0;
-
-        for (GT_MetaTileEntity_Hatch_Input fluidH : this.mInputHatches) {
-            ret += fluidH.getCapacity();
-        }
-        return ret;
+        return this.mInputHatches.stream().mapToInt(GT_MetaTileEntity_Hatch_Input::getCapacity).sum();
     }
 
     private int getOutputCapacity() {
-        int ret = 0;
-
-        for (GT_MetaTileEntity_Hatch_Output fluidH : this.mOutputHatches) {
-            ret += fluidH.getCapacity();
-        }
-        return ret;
+        return this.mOutputHatches.stream().mapToInt(GT_MetaTileEntity_Hatch_Output::getCapacity).sum();
     }
 
     @Override
@@ -143,17 +132,15 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
     }
 
     private int calcMod(double x) {
-        int ret = (int) MathUtils.ceil(ConfigHandler.bioVatMaxParallelBonus*(-(((2D*x/(double)this.getOutputCapacity())-1D)*(2D*x/(double)this.getOutputCapacity()-1D))+1D));
-        return ret <= 0 ? 1 : Math.min(ret, 100);//(int) MathUtils.ceil((-0.00000025D * x * (x - this.getOutputCapacity())));
+        double y = (((double) this.getOutputCapacity()) / 2D),
+               z = ConfigHandler.bioVatMaxParallelBonus;
+
+        int ret = (int) MathUtils.ceil(((-1D / y * Math.pow((x - y), 2D) + y) / y * z));
+
+        return ret <= 0 ? 1 : Math.min(ret, ConfigHandler.bioVatMaxParallelBonus);
     }
 
-    @Override
-    public boolean checkRecipe(ItemStack itemStack) {
-        GT_Recipe.GT_Recipe_Map gtRecipeMap = this.getRecipeMap();
-
-        if (gtRecipeMap == null)
-            return false;
-
+    private List<ItemStack> getItemInputs(){
         ArrayList<ItemStack> tInputList = this.getStoredInputs();
         int tInputList_sS = tInputList.size();
         for (int i = 0; i < tInputList_sS - 1; i++) {
@@ -170,8 +157,10 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
                 }
             }
         }
-        ItemStack[] tInputs = tInputList.toArray(new ItemStack[0]);
+        return tInputList;
+    }
 
+    private List<FluidStack> getFluidInputs(){
         ArrayList<FluidStack> tFluidList = this.getStoredFluids();
         int tFluidList_sS = tFluidList.size();
         for (int i = 0; i < tFluidList_sS - 1; i++) {
@@ -188,10 +177,20 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
                 }
             }
         }
+        return tFluidList;
+    }
 
-        FluidStack[] tFluids = tFluidList.toArray(new FluidStack[0]);
+    @Override
+    public boolean checkRecipe(ItemStack itemStack) {
+        GT_Recipe.GT_Recipe_Map gtRecipeMap = this.getRecipeMap();
 
-        if (tFluidList.size() > 0) {
+        if (gtRecipeMap == null)
+            return false;
+
+        ItemStack[] tInputs = getItemInputs().toArray(new ItemStack[0]);
+        FluidStack[] tFluids = getFluidInputs().toArray(new FluidStack[0]);
+
+        if (tFluids.length > 0) {
 
             GT_Recipe gtRecipe = gtRecipeMap.findRecipe(this.getBaseMetaTileEntity(), this.mLastRecipe, false, this.getMaxInputVoltage(), tFluids, itemStack, tInputs);
 
@@ -210,14 +209,15 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
 
             int times = 1;
 
-
             this.mEfficiency = (10000 - (this.getIdealStatus() - this.getRepairStatus()) * 1000);
             this.mEfficiencyIncrease = 10000;
 
+            Set<FluidStack> storedFluidOutputs = this.getStoredFluidOutputs();
+
             if (gtRecipe.isRecipeInputEqual(true, tFluids, tInputs)) {
-                if (this.getStoredFluidOutputs().size() > 0) {
+                if (storedFluidOutputs.size() > 0) {
                     this.mOutputFluids = new FluidStack[gtRecipe.mFluidOutputs.length];
-                    for (FluidStack storedOutputFluid : this.getStoredFluidOutputs()) {
+                    for (FluidStack storedOutputFluid : storedFluidOutputs) {
                         if (storedOutputFluid.isFluidEqual(gtRecipe.getFluidOutput(0)))
                             for (FluidStack inputFluidStack : gtRecipe.mFluidInputs) {
                                 int j = this.calcMod(storedOutputFluid.amount);
@@ -226,7 +226,7 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
                                         times++;
                             }
                     }
-                    for (FluidStack storedfluidStack : this.getStoredFluidOutputs()) {
+                    for (FluidStack storedfluidStack : storedFluidOutputs) {
                         for (int i = 0; i < gtRecipe.mFluidOutputs.length; i++) {
                             if (storedfluidStack.isFluidEqual(gtRecipe.getFluidOutput(i)))
                                 this.mOutputFluids[i] = (new FluidStack(gtRecipe.getFluidOutput(i), times * gtRecipe.getFluidOutput(0).amount));
@@ -254,14 +254,8 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
         return false;
     }
 
-    public ArrayList<FluidStack> getStoredFluidOutputs() {
-        ArrayList<FluidStack> rList = new ArrayList<>();
-
-        for (GT_MetaTileEntity_Hatch_Output tHatch : this.mOutputHatches) {
-            if (tHatch.getFluid() != null)
-                rList.add(tHatch.getFluid());
-        }
-        return rList;
+    public Set<FluidStack> getStoredFluidOutputs() {
+        return this.mOutputHatches.stream().map(GT_MetaTileEntity_Hatch_Output::getFluid).filter(Objects::nonNull).collect(Collectors.toSet());
     }
 
     private boolean addRadiationInputToMachineList(IGregTechTileEntity aTileEntity) {
@@ -433,11 +427,7 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
     }
 
     private int reCalculateFluidAmmount() {
-        int lFluidAmount = 0;
-        for (int i = 0; i < this.getStoredFluids().size(); i++) {
-            lFluidAmount += this.getStoredFluids().get(i).amount;
-        }
-        return lFluidAmount;
+        return this.getStoredFluids().stream().mapToInt(fluidStack -> fluidStack.amount).sum();
     }
 
     private int reCalculateHeight() {

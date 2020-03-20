@@ -33,6 +33,7 @@ import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_OreLayer;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_WorldGenRoss128b;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_WorldGenRoss128ba;
+import com.github.bartimaeusnek.bartworks.util.ChatColorHelper;
 import com.github.bartimaeusnek.bartworks.util.Pair;
 import com.google.common.collect.ArrayListMultimap;
 import gregtech.api.GregTech_API;
@@ -47,6 +48,7 @@ import gregtech.common.GT_Worldgen_GT_Ore_Layer;
 import gregtech.common.GT_Worldgen_GT_Ore_SmallPieces;
 import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_DrillerBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -154,9 +156,10 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
                 "1x Maintenance Hatch (One of base casings)",
                 "1x " + GT_Values.VN[this.getMinTier()] + "+ Energy Hatch (Any bottom layer casing)",
                 "Consumes " + GT_Values.V[this.getMinTier()] + "EU/t",
-                "Can be supplied with 100L of Neon(x4), Krypton(x8), Xenon(x16) or Oganesson(x64)",
+                "Can be supplied with 2L/s of Neon(x4), Krypton(x8), Xenon(x16) or Oganesson(x64)",
                 "for higher outputs.",
-                "Will output two Ores per Second depending on the Dimension it is build in"
+                "Will output two Ores per Second depending on the Dimension it is build in",
+                StatCollector.translateToLocal("tooltip.bw.1.name") + ChatColorHelper.DARKGREEN + " BartWorks"
         };
     }
 
@@ -269,8 +272,8 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
 
     private boolean consumeNobleGas(FluidStack gasToConsume) {
         for (FluidStack s : this.getStoredFluids()) {
-            if (s.isFluidEqual(gasToConsume) && s.amount >= 100) {
-                s.amount -= 100;
+            if (s.isFluidEqual(gasToConsume) && s.amount >= 1) {
+                s.amount -= 1;
                 this.updateSlots();
                 return true;
             }

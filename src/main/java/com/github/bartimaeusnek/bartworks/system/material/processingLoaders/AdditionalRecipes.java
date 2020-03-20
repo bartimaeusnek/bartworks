@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,8 +51,8 @@ public class AdditionalRecipes implements Runnable {
     @Override
     @SuppressWarnings("deprecation")
     public void run() {
-        GT_Values.RA.addImplosionRecipe(WerkstoffLoader.RawAdemicSteel.get(dust),4,WerkstoffLoader.AdemicSteel.get(dust),null);
-       ((BWRecipes.BW_Recipe_Map_LiquidFuel)BWRecipes.instance.getMappingsFor((byte) 2)).addLiquidFuel(WerkstoffLoader.FormicAcid.getBridgeMaterial(),40);
+        GT_Values.RA.addImplosionRecipe(WerkstoffLoader.RawAdemicSteel.get(dust), 4, WerkstoffLoader.AdemicSteel.get(dust), null);
+        ((BWRecipes.BW_Recipe_Map_LiquidFuel) BWRecipes.instance.getMappingsFor((byte) 2)).addLiquidFuel(WerkstoffLoader.FormicAcid.getBridgeMaterial(), 40);
         //Thorium/Yttrium Glas
         GT_Values.RA.addBlastRecipe(WerkstoffLoader.YttriumOxide.get(dustSmall, 2), WerkstoffLoader.Thorianit.get(dustSmall, 2), Materials.Glass.getMolten(144), null, new ItemStack(ItemRegistry.bw_glasses[0], 1, 12), null, 800, BW_Util.getMachineVoltageFromTier(5), 3663);
         //Thorianit recipes
@@ -76,7 +76,7 @@ public class AdditionalRecipes implements Runnable {
         GT_Values.RA.addBlastRecipe(GT_OreDictUnificator.get(dust, Materials.Quartzite, 40L), Materials.Amethyst.getDust(10), GT_Values.NF, GT_Values.NF, WerkstoffLoader.Prasiolite.get(OrePrefixes.gemFlawed, 20), GT_Values.NI, 800, BW_Util.getMachineVoltageFromTier(2), 500);
         GT_Values.RA.addPrimitiveBlastRecipe(GT_OreDictUnificator.get(dust, Materials.Quartzite, 40L), Materials.Amethyst.getDust(10), 6, WerkstoffLoader.Prasiolite.get(OrePrefixes.gemFlawed, 20), GT_Values.NI, 800);
         //Cubic Circonia
-        GT_Values.RA.addChemicalRecipe(Materials.Yttrium.getDust(2), GT_Utility.getIntegratedCircuit(5), Materials.Oxygen.getGas(3000), null, WerkstoffLoader.YttriumOxide.get(dust, 5), 4096, BW_Util.getMachineVoltageFromTier(1));
+        GT_Values.RA.addChemicalRecipe(Materials.Yttrium.getDust(2), GT_Utility.getIntegratedCircuit(5), Materials.Oxygen.getGas(3000), GT_Values.NF, WerkstoffLoader.YttriumOxide.get(dust, 5), 4096, BW_Util.getMachineVoltageFromTier(1));
         GT_Recipe.GT_Recipe_Map.sBlastRecipes.addRecipe(false, new ItemStack[]{WerkstoffLoader.Zirconium.get(dust, 10), WerkstoffLoader.YttriumOxide.get(dust)}, new ItemStack[]{WerkstoffLoader.YttriumOxide.get(dust), WerkstoffLoader.CubicZirconia.get(gemFlawed, 40)}, null, null, new FluidStack[]{Materials.Oxygen.getGas(20000)}, null, 57600, BW_Util.getMachineVoltageFromTier(3), 2953);
         //Tellurium
         GT_Values.RA.addBlastRecipe(GT_OreDictUnificator.get(crushed, Materials.Lead, 10L), GT_Utility.getIntegratedCircuit(17), GT_Values.NF, GT_Values.NF, Materials.Lead.getIngots(10), Materials.Tellurium.getNuggets(20), 800, BW_Util.getMachineVoltageFromTier(2), 722);
@@ -88,7 +88,7 @@ public class AdditionalRecipes implements Runnable {
 
         //Milk
         //GT_Values.RA.addFusionReactorRecipe(WerkstoffLoader.Californium.getMolten(16), Materials.Milk.getFluid(12000), WerkstoffLoader.Oganesson.getFluidOrGas(16), 500, 49152, 600000000);
-        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(1),null,Materials.Milk.getFluid(10000),Materials.Water.getFluid(8832),Materials.Sugar.getDustSmall(21),Materials.Calcium.getDustTiny(1),Materials.Magnesium.getDustTiny(1),Materials.Potassium.getDustTiny(1),Materials.Sodium.getDustTiny(4),Materials.Phosphor.getDustTiny(1),new int[]{10000,10000,1000,10000,1000,1000},50,120);
+        GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(1), GT_Values.NI, Materials.Milk.getFluid(10000), Materials.Water.getFluid(8832), Materials.Sugar.getDustSmall(21), Materials.Calcium.getDustTiny(1), Materials.Magnesium.getDustTiny(1), Materials.Potassium.getDustTiny(1), Materials.Sodium.getDustTiny(4), Materials.Phosphor.getDustTiny(1), new int[]{10000, 10000, 1000, 10000, 1000, 1000}, 50, 120);
 
         for (int i = 0; i <= 6; i++) {
             GT_Recipe.GT_Recipe_Map.sCircuitAssemblerRecipes.add(
@@ -129,31 +129,31 @@ public class AdditionalRecipes implements Runnable {
         GT_Recipe.GT_Recipe_Map.sSmallNaquadahReactorFuels.addRecipe(true, new ItemStack[]{WerkstoffLoader.Tiberium.get(bolt)}, new ItemStack[]{}, null, null, null, 0, 0, 12500);
         GT_Recipe.GT_Recipe_Map.sLargeNaquadahReactorFuels.addRecipe(true, new ItemStack[]{WerkstoffLoader.Tiberium.get(stick)}, new ItemStack[]{}, null, null, null, 0, 0, 62500);
 
-        try{
+        try {
             Class<GT_Recipe.GT_Recipe_Map> map = GT_Recipe.GT_Recipe_Map.class;
-            GT_Recipe.GT_Recipe_Map sHugeNaquadahReactorFuels = (GT_Recipe.GT_Recipe_Map) FieldUtils.getField(map,"sHugeNaquadahReactorFuels").get(null);
-            GT_Recipe.GT_Recipe_Map sExtremeNaquadahReactorFuels = (GT_Recipe.GT_Recipe_Map) FieldUtils.getField(map,"sExtremeNaquadahReactorFuels").get(null);
-            GT_Recipe.GT_Recipe_Map sUltraHugeNaquadahReactorFuels = (GT_Recipe.GT_Recipe_Map) FieldUtils.getField(map,"sUltraHugeNaquadahReactorFuels").get(null);
+            GT_Recipe.GT_Recipe_Map sHugeNaquadahReactorFuels = (GT_Recipe.GT_Recipe_Map) FieldUtils.getField(map, "sHugeNaquadahReactorFuels").get(null);
+            GT_Recipe.GT_Recipe_Map sExtremeNaquadahReactorFuels = (GT_Recipe.GT_Recipe_Map) FieldUtils.getField(map, "sExtremeNaquadahReactorFuels").get(null);
+            GT_Recipe.GT_Recipe_Map sUltraHugeNaquadahReactorFuels = (GT_Recipe.GT_Recipe_Map) FieldUtils.getField(map, "sUltraHugeNaquadahReactorFuels").get(null);
             sHugeNaquadahReactorFuels.addRecipe(true, new ItemStack[]{WerkstoffLoader.Tiberium.get(stickLong)}, new ItemStack[]{}, null, null, null, 0, 0, 125000);
             sExtremeNaquadahReactorFuels.addRecipe(true, new ItemStack[]{WerkstoffLoader.Tiberium.get(stick)}, new ItemStack[]{}, null, null, null, 0, 0, 31250);
             sUltraHugeNaquadahReactorFuels.addRecipe(true, new ItemStack[]{WerkstoffLoader.Tiberium.get(stickLong)}, new ItemStack[]{}, null, null, null, 0, 0, 125000);
-        }catch (NullPointerException | IllegalAccessException ignored){}
+        } catch (NullPointerException | IllegalAccessException ignored) {}
 
         new LoadItemContainers().run();
 
-        GT_Values.RA.addCannerRecipe(ItemList.Large_Fluid_Cell_TungstenSteel.get(1L), WerkstoffLoader.Tiberium.get(dust,3), BW_NonMeta_MaterialItems.TiberiumCell_1.get(1L), null, 30, 16);
+        GT_Values.RA.addCannerRecipe(ItemList.Large_Fluid_Cell_TungstenSteel.get(1L), WerkstoffLoader.Tiberium.get(dust, 3), BW_NonMeta_MaterialItems.TiberiumCell_1.get(1L), null, 30, 16);
         GT_Values.RA.addAssemblerRecipe(BW_NonMeta_MaterialItems.TiberiumCell_1.get(2L), GT_OreDictUnificator.get(stick, Materials.TungstenSteel, 4L), BW_NonMeta_MaterialItems.TiberiumCell_2.get(1L), 100, 400);
         GT_Values.RA.addAssemblerRecipe(BW_NonMeta_MaterialItems.TiberiumCell_1.get(4L), GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel, 6L), BW_NonMeta_MaterialItems.TiberiumCell_4.get(1L), 150, 400);
         GT_Values.RA.addAssemblerRecipe(BW_NonMeta_MaterialItems.TiberiumCell_2.get(2L), GT_OreDictUnificator.get(stick, Materials.TungstenSteel, 4L), BW_NonMeta_MaterialItems.TiberiumCell_4.get(1L), 100, 400);
 
         GT_Values.RA.addAssemblerRecipe(
-                    new ItemStack[]{ItemList.NaquadahCell_1.get(32L),
-                    GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel,64L),
-                    GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel,64L),
-                    GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel,64L),
-                    WerkstoffLoader.Tiberium.get(dust,64),
-                    WerkstoffLoader.Tiberium.get(dust,64)
-                },null, BW_NonMeta_MaterialItems.TheCoreCell.get(1L), 100, BW_Util.getMachineVoltageFromTier(6));
+                new ItemStack[]{ItemList.NaquadahCell_1.get(32L),
+                        GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel, 64L),
+                        GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel, 64L),
+                        GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel, 64L),
+                        WerkstoffLoader.Tiberium.get(dust, 64),
+                        WerkstoffLoader.Tiberium.get(dust, 64)
+                }, null, BW_NonMeta_MaterialItems.TheCoreCell.get(1L), 100, BW_Util.getMachineVoltageFromTier(6));
 
         GregTech_API.sAfterGTPostload.add(new LuVTierEnhancer());
         AdditionalRecipes.oldGThelperMethod();
