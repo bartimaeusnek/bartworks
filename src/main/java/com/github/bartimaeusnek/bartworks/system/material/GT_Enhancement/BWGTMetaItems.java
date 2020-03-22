@@ -22,11 +22,11 @@
 
 package com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement;
 
+import com.github.bartimaeusnek.bartworks.API.SideReference;
 import com.github.bartimaeusnek.bartworks.client.textures.PrefixTextureLinker;
 import com.github.bartimaeusnek.bartworks.system.material.BW_MetaGenerated_Items;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregtech.api.enums.Materials;
@@ -98,7 +98,7 @@ public class BWGTMetaItems extends BW_MetaGenerated_Items {
     }
 
     protected IIconContainer getIconContainerBartWorks(int aMetaData) {
-        if (FMLCommonHandler.instance().getSide().isClient()) {
+        if (SideReference.Side.Client) {
             if (aMetaData > 1000 && hasList)
                 return PrefixTextureLinker.texMap.get(this.orePrefixes).get(NoMetaValue.get(aMetaData-1001).mIconSet);
             return PrefixTextureLinker.texMap.get(this.orePrefixes).get(Materials.values()[(short) aMetaData].mIconSet);

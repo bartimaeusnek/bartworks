@@ -39,7 +39,7 @@ public class DebugLog {
     static FileHandler fh;
     private static Logger utilLog;
 
-    public DebugLog(FMLPreInitializationEvent event) throws IOException {
+    public static void initDebugLog(FMLPreInitializationEvent event) throws IOException {
         if (DebugLog.init)
             return;
         DebugLog.fh = new FileHandler(new File(new File(event.getModConfigurationDirectory().getParentFile(),"logs"),"BWLog.log").toString());

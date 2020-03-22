@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,8 @@
 
 package com.github.bartimaeusnek.bartworks.common.blocks;
 
+import com.github.bartimaeusnek.bartworks.API.SideReference;
 import com.github.bartimaeusnek.bartworks.client.renderer.RendererGlasBlock;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
@@ -182,7 +182,7 @@ public class BW_GlasBlocks extends BW_Blocks {
 
     @Override
     public int getRenderType() {
-        if (!this.fake && FMLCommonHandler.instance().getSide().isClient())
+        if (!this.fake && SideReference.Side.Client)
             return RendererGlasBlock.RID;
         else
             return 0;

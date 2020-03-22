@@ -23,13 +23,13 @@
 package com.github.bartimaeusnek.bartworks.common.loaders;
 
 import com.github.bartimaeusnek.bartworks.API.LoaderReference;
+import com.github.bartimaeusnek.bartworks.API.SideReference;
 import com.github.bartimaeusnek.bartworks.client.renderer.RendererGlasBlock;
 import com.github.bartimaeusnek.bartworks.client.renderer.RendererSwitchingColorFluid;
 import com.github.bartimaeusnek.bartworks.common.blocks.BioFluidBlock;
 import com.github.bartimaeusnek.bartworks.common.tileentities.classic.BWTileEntityDimIDBridge;
 import com.github.bartimaeusnek.bartworks.util.BioCulture;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.Materials;
@@ -94,7 +94,7 @@ public class FluidLoader {
         FluidLoader.bioFluidBlock = new BioFluidBlock();
         GameRegistry.registerBlock(FluidLoader.bioFluidBlock, "coloredFluidBlock");
         GameRegistry.registerTileEntity(BWTileEntityDimIDBridge.class, "bwTEDimIDBridge");
-        if (FMLCommonHandler.instance().getSide().isClient()) {
+        if (SideReference.Side.Client) {
             RenderingRegistry.registerBlockHandler(RendererSwitchingColorFluid.instance);
             RenderingRegistry.registerBlockHandler(RendererGlasBlock.instance);
         }

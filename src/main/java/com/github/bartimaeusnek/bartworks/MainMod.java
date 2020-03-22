@@ -23,16 +23,12 @@
 package com.github.bartimaeusnek.bartworks;
 
 
-import com.github.bartimaeusnek.bartworks.API.API_REFERENCE;
-import com.github.bartimaeusnek.bartworks.API.BioObjectAdder;
-import com.github.bartimaeusnek.bartworks.API.BioVatLogicAdder;
-import com.github.bartimaeusnek.bartworks.API.LoaderReference;
+import com.github.bartimaeusnek.bartworks.API.*;
 import com.github.bartimaeusnek.bartworks.client.ClientEventHandler.TooltipEventHandler;
 import com.github.bartimaeusnek.bartworks.client.creativetabs.BioTab;
 import com.github.bartimaeusnek.bartworks.client.creativetabs.GT2Tab;
 import com.github.bartimaeusnek.bartworks.client.creativetabs.bartworksTab;
 import com.github.bartimaeusnek.bartworks.client.textures.PrefixTextureLinker;
-import com.github.bartimaeusnek.bartworks.common.commands.*;
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.common.loaders.*;
 import com.github.bartimaeusnek.bartworks.common.net.BW_Network;
@@ -111,7 +107,7 @@ public final class MainMod {
 
         if (ConfigHandler.debugLog) {
             try {
-                new DebugLog(preinit);
+                DebugLog.initDebugLog(preinit);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -128,7 +124,7 @@ public final class MainMod {
             INSTANCE.init();
             Werkstoff.init();
             GregTech_API.sAfterGTPostload.add(new CircuitPartLoader());
-            if (FMLCommonHandler.instance().getSide().isClient())
+            if (SideReference.Side.Client)
                 GregTech_API.sBeforeGTLoad.add(new PrefixTextureLinker());
         }
 
@@ -136,10 +132,10 @@ public final class MainMod {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent init) {
-        if (FMLCommonHandler.instance().getSide().isClient() && ConfigHandler.tooltips)
+        if (SideReference.Side.Client && ConfigHandler.tooltips)
             MinecraftForge.EVENT_BUS.register(new TooltipEventHandler());
         ServerEventHandler serverEventHandler = new ServerEventHandler();
-        if (FMLCommonHandler.instance().getSide().isServer()) {
+        if (SideReference.Side.Server) {
             MinecraftForge.EVENT_BUS.register(serverEventHandler);
         }
         FMLCommonHandler.instance().bus().register(serverEventHandler);
@@ -171,12 +167,7 @@ public final class MainMod {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(new SummonRuin());
-        event.registerServerCommand(new ChangeConfig());
-        event.registerServerCommand(new PrintRecipeListToFile());
-        event.registerServerCommand(new ClearCraftingCache());
-        event.registerServerCommand(new GetWorkingDirectory());
-        event.registerServerCommand(new RunGC());
+        RegisterServerCommands.registerAll(event);
     }
 
     @Mod.EventHandler
@@ -206,8 +197,7 @@ public final class MainMod {
 
             if (classicMode)
                 DownTierLoader.run();
-//
-//          removeDuplicateRecipes();
+
             recipesAdded = true;
         }
 
@@ -216,22 +206,5 @@ public final class MainMod {
         //Accept recipe map changes into Buffers
         GT_Recipe.GT_Recipe_Map.sMappings.forEach(GT_Recipe.GT_Recipe_Map::reInit);
     }
-
-//    private static void removeDuplicateRecipes(){
-//        GT_Recipe.GT_Recipe_Map.sMappings.forEach(
-//                gt_recipe_map -> {
-//                    HashSet<Integer> mappings = new HashSet<>();
-//                    HashSet<GT_Recipe> dupes = new HashSet<>();
-//                    gt_recipe_map.mRecipeList.forEach(
-//                            recipe -> {
-//                               if (mappings.contains(BW_Util.getRecipeHash(recipe)))
-//                                   dupes.add(recipe);
-//                               mappings.add(BW_Util.getRecipeHash(recipe));
-//                            }
-//                    );
-//                    gt_recipe_map.mRecipeList.removeAll(dupes);
-//                }
-//        );
-//    }
 
 }
