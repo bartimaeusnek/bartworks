@@ -82,7 +82,7 @@ public class BartWorksCrossmod {
         if (LoaderReference.GalacticraftCore)
             GalacticraftProxy.postInit(init);
         if (LoaderReference.miscutils)
-            new RadioHatchCompat().run();
+            RadioHatchCompat.run();
         if (LoaderReference.tectech)
             TecTechResearchLoader.runResearches();
     }
