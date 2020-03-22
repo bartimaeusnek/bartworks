@@ -24,6 +24,7 @@ package com.github.bartimaeusnek.bartworks.common.tileentities.tiered;
 
 import com.github.bartimaeusnek.bartworks.API.BioVatLogicAdder;
 import com.github.bartimaeusnek.bartworks.API.IRadMaterial;
+import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.client.gui.GT_GUIContainer_RadioHatch;
 import com.github.bartimaeusnek.bartworks.server.container.GT_Container_RadioHatch;
@@ -31,7 +32,6 @@ import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
 import com.github.bartimaeusnek.bartworks.util.ChatColorHelper;
 import com.github.bartimaeusnek.bartworks.util.MathUtils;
 import com.github.bartimaeusnek.crossmod.GTpp.loader.RadioHatchCompat;
-import cpw.mods.fml.common.Loader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -176,7 +176,7 @@ public class GT_MetaTileEntity_RadioHatch extends GT_MetaTileEntity_Hatch {
 
             IRadMaterial radmat = null;
             //gt++ compat
-            if (Loader.isModLoaded("miscutils"))
+            if (LoaderReference.miscutils)
                 radmat = RadioHatchCompat.GTppRadChecker(lStack);
 
             if (lStack.getItem() instanceof IRadMaterial || radmat != null) {

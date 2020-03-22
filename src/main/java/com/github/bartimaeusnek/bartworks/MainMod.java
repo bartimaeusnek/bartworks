@@ -26,6 +26,7 @@ package com.github.bartimaeusnek.bartworks;
 import com.github.bartimaeusnek.bartworks.API.API_REFERENCE;
 import com.github.bartimaeusnek.bartworks.API.BioObjectAdder;
 import com.github.bartimaeusnek.bartworks.API.BioVatLogicAdder;
+import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.client.ClientEventHandler.TooltipEventHandler;
 import com.github.bartimaeusnek.bartworks.client.creativetabs.BioTab;
 import com.github.bartimaeusnek.bartworks.client.creativetabs.GT2Tab;
@@ -41,12 +42,10 @@ import com.github.bartimaeusnek.bartworks.system.log.STFUGTPPLOG;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitImprintLoader;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitPartLoader;
 import com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement.PlatinumSludgeOverHaul;
-import com.github.bartimaeusnek.bartworks.system.material.ThreadedLoader;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.DownTierLoader;
 import com.github.bartimaeusnek.bartworks.system.oredict.OreDictHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -101,11 +100,11 @@ public final class MainMod {
             MainMod.LOGGER.error("Something has loaded an old API. Please contact the Mod authors to update!");
         }
 
-        if (Loader.isModLoaded("miscutils") && ConfigHandler.GTppLogDisabler) {
+        if (LoaderReference.miscutils && ConfigHandler.GTppLogDisabler) {
             STFUGTPPLOG.replaceLogger();
         }
 
-        if (Loader.isModLoaded("dreamcraft"))
+        if (LoaderReference.dreamcraft)
             ConfigHandler.GTNH = true;
 
         ConfigHandler.GTNH = ConfigHandler.ezmode != ConfigHandler.GTNH;
@@ -147,9 +146,6 @@ public final class MainMod {
         if (ConfigHandler.BioLab)
             BioLabLoader.run();
         if (ConfigHandler.newStuff) {
-            if (ConfigHandler.experimentalThreadedLoader)
-                new ThreadedLoader().runInit();
-            else
                 INSTANCE.runInit();
         }
         ItemRegistry.run();
@@ -168,9 +164,6 @@ public final class MainMod {
 
         BioObjectAdder.regenerateBioFluids();
         if (ConfigHandler.newStuff) {
-            if (ConfigHandler.experimentalThreadedLoader)
-                new ThreadedLoader().run();
-            else
                 INSTANCE.run();
             LocalisationLoader.localiseAll();
         }

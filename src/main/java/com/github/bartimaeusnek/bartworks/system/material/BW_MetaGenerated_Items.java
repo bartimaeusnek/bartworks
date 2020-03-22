@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,7 @@ package com.github.bartimaeusnek.bartworks.system.material;
 
 import com.github.bartimaeusnek.bartworks.API.IRadMaterial;
 import com.github.bartimaeusnek.bartworks.client.textures.PrefixTextureLinker;
-import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
-import com.github.bartimaeusnek.bartworks.system.oredict.OreDictAdder;
 import com.github.bartimaeusnek.bartworks.util.ChatColorHelper;
-import com.github.bartimaeusnek.bartworks.util.Pair;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -90,10 +87,7 @@ public class BW_MetaGenerated_Items extends GT_MetaGenerated_Item implements IRa
                 continue;
             GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".name", this.getDefaultLocalization(w));
             GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".tooltip", w.getToolTip());
-            if (ConfigHandler.experimentalThreadedLoader)
-                OreDictAdder.addToMap(new Pair<>(this.orePrefixes.name() + w.getVarName(), tStack));
-            else
-                GT_OreDictUnificator.registerOre(this.orePrefixes.name() + w.getVarName(), tStack);
+            GT_OreDictUnificator.registerOre(this.orePrefixes.name() + w.getVarName(), tStack);
         }
     }
 

@@ -22,6 +22,7 @@
 
 package com.github.bartimaeusnek.bartworks.common.loaders;
 
+import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_LESU;
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_ManualTrafo;
@@ -31,7 +32,6 @@ import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.util.BWRecipes;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
-import cpw.mods.fml.common.Loader;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.*;
 import gregtech.api.interfaces.ISubTagContainer;
@@ -758,7 +758,7 @@ public class RecipeLoader {
                     }
             );
 
-            if (!Loader.isModLoaded("tectech")) {
+            if (!LoaderReference.tectech) {
                 GT_Values.RA.addAssemblylineRecipe(
                         ItemList.Machine_Multi_ImplosionCompressor.get(1L), 24000,
                         new ItemStack[]{
@@ -779,7 +779,7 @@ public class RecipeLoader {
                         BW_Util.getMachineVoltageFromTier(8)
                 );
 
-                if (Loader.isModLoaded("galacticgreg"))
+                if (LoaderReference.galacticgreg)
                     GT_Values.RA.addAssemblylineRecipe(
                             ItemList.OreDrill4.get(1L), 128000,
                             new ItemStack[]{

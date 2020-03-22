@@ -22,11 +22,11 @@
 
 package com.github.bartimaeusnek.crossmod.tectech;
 
+import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.technus.tectech.recipe.TT_recipeAdder;
-import cpw.mods.fml.common.Loader;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OrePrefixes;
@@ -38,7 +38,7 @@ public class TecTechResearchLoader {
     @SuppressWarnings("deprecation")
     public static void runResearches() {
 
-        if (Loader.isModLoaded("galacticgreg"))
+        if (LoaderReference.galacticgreg)
             TT_recipeAdder.addResearchableAssemblylineRecipe(
                     ItemList.OreDrill4.get(1L),
                     128000,

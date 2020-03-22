@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,9 @@
 package com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement;
 
 import com.github.bartimaeusnek.bartworks.client.textures.PrefixTextureLinker;
-import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.system.material.BW_MetaGenerated_Items;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
-import com.github.bartimaeusnek.bartworks.system.oredict.OreDictAdder;
-import com.github.bartimaeusnek.bartworks.util.Pair;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -65,9 +62,6 @@ public class BWGTMetaItems extends BW_MetaGenerated_Items {
                     continue materialloop;
             GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".name", getDefaultLocalization(w));
             GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".tooltip", w.getToolTip());
-            if (ConfigHandler.experimentalThreadedLoader)
-                OreDictAdder.addToMap(new Pair<>(this.orePrefixes.name() + w.mDefaultLocalName.replaceAll(" ",""), tStack));
-            else
                 GT_OreDictUnificator.registerOre(this.orePrefixes.name() + w.mDefaultLocalName.replaceAll(" ",""), tStack);
         }
         if (noSubIDMaterials != null){
@@ -83,9 +77,6 @@ public class BWGTMetaItems extends BW_MetaGenerated_Items {
                         continue materialloop;
                 GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".name", getDefaultLocalization(w));
                 GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".tooltip", w.getToolTip());
-                if (ConfigHandler.experimentalThreadedLoader)
-                    OreDictAdder.addToMap(new Pair<>(this.orePrefixes.name() + w.mDefaultLocalName.replaceAll(" ",""), tStack));
-                else
                     GT_OreDictUnificator.registerOre(this.orePrefixes.name() + w.mDefaultLocalName.replaceAll(" ",""), tStack);
             }
         }

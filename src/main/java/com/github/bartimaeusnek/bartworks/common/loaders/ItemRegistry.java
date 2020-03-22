@@ -22,6 +22,7 @@
 
 package com.github.bartimaeusnek.bartworks.common.loaders;
 
+import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.common.blocks.BW_Blocks;
 import com.github.bartimaeusnek.bartworks.common.blocks.BW_GlasBlocks;
@@ -42,7 +43,6 @@ import com.github.bartimaeusnek.bartworks.common.tileentities.multis.mega.GT_Til
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.*;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.crossmod.galacticgreg.GT_TileEntity_VoidMiner;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.Materials;
@@ -198,7 +198,7 @@ public class ItemRegistry {
             ItemRegistry.giantOutputHatch = new GT_MetaTileEntity_GiantOutputHatch(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 9, "GiantOutputHatch", "Giant Output Hatch").getStackForm(1L);
             ItemRegistry.megaMachines[2] = new GT_TileEntity_MegaDistillTower(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 10, "MegaDistillationTower", "Mega Distillation Tower").getStackForm(1L);
 
-            if (Loader.isModLoaded("galacticgreg"))
+            if (LoaderReference.galacticgreg)
                 ItemRegistry.voidminer = new GT_TileEntity_VoidMiner(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 11,"VoidMiner","Void Miner").getStackForm(1L);
         }
     }

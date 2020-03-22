@@ -22,13 +22,13 @@
 
 package com.github.bartimaeusnek.bartworks.common.loaders;
 
+import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.GT_TileEntity_BioVat;
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.GT_MetaTileEntity_BioLab;
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.GT_MetaTileEntity_RadioHatch;
 import com.github.bartimaeusnek.bartworks.util.BWRecipes;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
-import cpw.mods.fml.common.Loader;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
@@ -132,7 +132,7 @@ public class BioRecipeLoader {
                 }
         );
 
-        if (Loader.isModLoaded("croploadcore") && OreDictionary.getOres("cropVine").size() > 1)
+        if (LoaderReference.croploadcore && OreDictionary.getOres("cropVine").size() > 1)
             for (int i = 0; i < OreDictionary.getOres("cropVine").size(); i++) {
                 GT_Values.RA.addExtractorRecipe(OreDictionary.getOres("cropVine").get(i).splitStack(12), BioItemList.getOther(1), 500, BW_Util.getMachineVoltageFromTier(3));
             }
@@ -141,7 +141,7 @@ public class BioRecipeLoader {
 
         GT_Values.RA.addExtractorRecipe(ItemList.Circuit_Chip_Stemcell.get(1L), BioItemList.getOther(4), 500, BW_Util.getMachineVoltageFromTier(6));
 
-        FluidStack dnaFluid = Loader.isModLoaded("gendustry") ? FluidRegistry.getFluidStack("liquiddna", 1000) : Materials.Biomass.getFluid(1000L);
+        FluidStack dnaFluid = LoaderReference.gendustry ? FluidRegistry.getFluidStack("liquiddna", 1000) : Materials.Biomass.getFluid(1000L);
         GT_Values.RA.addMixerRecipe(GT_Utility.getIntegratedCircuit(17), GT_OreDictUnificator.get(OrePrefixes.cell, Materials.Radon, 1L), null, null, dnaFluid, new FluidStack(FluidLoader.BioLabFluidMaterials[0], 2000), Materials.Empty.getCells(1), 500, BW_Util.getMachineVoltageFromTier(3));
 
         GT_Values.RA.addCentrifugeRecipe(GT_Utility.getIntegratedCircuit(17), null, new FluidStack(BioCultureLoader.eColi.getFluid(), 1000), new FluidStack(FluidLoader.BioLabFluidMaterials[1], 10), BioItemList.getOther(4), null, null, null, null, null, new int[]{1000}, 60 * 20, BW_Util.getMachineVoltageFromTier(3));
@@ -327,7 +327,7 @@ public class BioRecipeLoader {
                     new ItemStack[]{new ItemStack(Items.sugar, 64)},
                     new FluidStack[]{new FluidStack(fluidStack, 100)},
                     BioCultureLoader.CommonYeast,
-                    new FluidStack[]{(Loader.isModLoaded("berriespp") ? FluidRegistry.getFluidStack("potion.ghp", 1) : Materials.Ethanol.getFluid(1L))},
+                    new FluidStack[]{(LoaderReference.berriespp ? FluidRegistry.getFluidStack("potion.ghp", 1) : Materials.Ethanol.getFluid(1L))},
                     350,
                     BW_Util.getMachineVoltageFromTier(4)
             );

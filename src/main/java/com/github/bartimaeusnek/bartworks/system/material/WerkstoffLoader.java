@@ -22,6 +22,7 @@
 
 package com.github.bartimaeusnek.bartworks.system.material;
 
+import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.API.WerkstoffAdderRegistry;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.client.renderer.BW_Renderer_Block_Ores;
@@ -30,7 +31,6 @@ import com.github.bartimaeusnek.bartworks.system.log.DebugLog;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.BW_CircuitsLoader;
 import com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement.GTMetaItemEnhancer;
 import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.AdditionalRecipes;
-import com.github.bartimaeusnek.bartworks.system.oredict.OreDictAdder;
 import com.github.bartimaeusnek.bartworks.system.oredict.OreDictHandler;
 import com.github.bartimaeusnek.bartworks.util.BWRecipes;
 import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
@@ -40,7 +40,6 @@ import com.github.bartimaeusnek.crossmod.thaumcraft.util.ThaumcraftHandler;
 import com.google.common.collect.HashBiMap;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ProgressManager;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.GT_Mod;
@@ -123,7 +122,7 @@ public class WerkstoffLoader implements Runnable {
         //add tiberium
         Element t = BW_Util.createNewElement("Tr",123L, 203L, 0L, -1L, null, "Tiberium", false);
         //add molten & regular capsuls
-        if (Loader.isModLoaded("Forestry")) {
+        if (LoaderReference.Forestry) {
             capsuleMolten = EnumHelper.addEnum(OrePrefixes.class, "capsuleMolten", new Class[]{String.class, String.class, String.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, boolean.class, int.class, long.class, int.class, int.class}, new Object[]{"Capsule of Molten stuff", "Molten ", " Capsule", true, true, true, true, false, false, false, true, false, false, 0b1000000, 3628800L, 64, -1});
             capsule.mMaterialGenerationBits = 0b100000;
             capsule.mDefaultStackSize = 64;
@@ -1446,7 +1445,7 @@ public class WerkstoffLoader implements Runnable {
                 this.addMetalRecipes(werkstoff);
                 DebugLog.log("Loading Tool Recipes"+" " +(System.nanoTime()-timepreone));
                 this.addTools(werkstoff);
-                if (Loader.isModLoaded("Thaumcraft")) {
+                if (LoaderReference.Thaumcraft) {
                     DebugLog.log("Loading Aspects"+" " +(System.nanoTime()-timepreone));
                     ThaumcraftHandler.AspectAdder.addAspectToAll(werkstoff);
                 }
@@ -1582,8 +1581,7 @@ public class WerkstoffLoader implements Runnable {
             WerkstoffLoader.items.put(lens,new BW_MetaGenerated_Items(lens));
         }
         if ((WerkstoffLoader.toGenerateGlobal & 0b1000) != 0) {
-            if (!ConfigHandler.experimentalThreadedLoader)
-                this.gameRegistryHandler();
+            this.gameRegistryHandler();
             WerkstoffLoader.items.put(crushed, new BW_MetaGenerated_Items(crushed));
             WerkstoffLoader.items.put(crushedPurified, new BW_MetaGenerated_Items(crushedPurified));
             WerkstoffLoader.items.put(crushedCentrifuged, new BW_MetaGenerated_Items(crushedCentrifuged));
@@ -1593,7 +1591,7 @@ public class WerkstoffLoader implements Runnable {
         if ((WerkstoffLoader.toGenerateGlobal & 0b10000) != 0) {
             WerkstoffLoader.items.put(cell, new BW_MetaGenerated_Items(cell));
             //WerkstoffLoader.items.put(bottle, new BW_MetaGenerated_Items(bottle));
-            if (Loader.isModLoaded("Forestry"))
+            if (LoaderReference.Forestry)
                 WerkstoffLoader.items.put(capsule, new BW_MetaGenerated_Items(capsule));
         }
         if ((WerkstoffLoader.toGenerateGlobal & 0b100000) != 0) {
@@ -1601,7 +1599,7 @@ public class WerkstoffLoader implements Runnable {
         }
         if ((WerkstoffLoader.toGenerateGlobal & 0b1000000) != 0) {
             WerkstoffLoader.items.put(WerkstoffLoader.cellMolten, new BW_MetaGenerated_Items(WerkstoffLoader.cellMolten));
-            if (Loader.isModLoaded("Forestry"))
+            if (LoaderReference.Forestry)
                 WerkstoffLoader.items.put(capsuleMolten, new BW_MetaGenerated_Items(capsuleMolten));
         }
         if ((WerkstoffLoader.toGenerateGlobal & 0b10000000) != 0) {
@@ -1720,7 +1718,7 @@ public class WerkstoffLoader implements Runnable {
                     } catch (NoSuchFieldException | IllegalAccessException ignored) {
                     }
                     werkstoffBridgeMaterial.mChemicalFormula = werkstoff.getToolTip();
-                    if (Loader.isModLoaded("Thaumcraft"))
+                    if (LoaderReference.Thaumcraft)
                         werkstoffBridgeMaterial.mAspects = werkstoff.getGTWrappedTCAspects();
                     werkstoffBridgeMaterial.mMaterialInto = werkstoffBridgeMaterial;
                     werkstoffBridgeMaterial.mHandleMaterial = werkstoff.contains(SubTag.BURNING) ? Materials.Blaze : werkstoff.contains(SubTag.MAGICAL) ? Materials.Thaumium : werkstoffBridgeMaterial.mDurability > 5120 ? Materials.TungstenSteel : werkstoffBridgeMaterial.mDurability > 1280 ? Materials.Steel : Materials.Wood;
@@ -1870,47 +1868,32 @@ public class WerkstoffLoader implements Runnable {
         }
     }
 
-    private void runAdditionalOreDict(){
-        if (ConfigHandler.experimentalThreadedLoader){
-            for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
-                if (werkstoff.getGenerationFeatures().hasOres())
-                    OreDictAdder.addToMap(new Pair<>(ore + werkstoff.getVarName(), werkstoff.get(ore)));
-                if (werkstoff.getGenerationFeatures().hasGems())
-                    OreDictAdder.addToMap(new Pair<>("craftingLens" + BW_ColorUtil.getDyeFromColor(werkstoff.getRGBA()).mName.replace(" ", ""), werkstoff.get(lens)));
-                if (werkstoff.getADDITIONAL_OREDICT().size() > 0)
-                    werkstoff.getADDITIONAL_OREDICT()
-                        .forEach(s -> ENABLED_ORE_PREFIXES
-                                .stream()
-                                .filter(o -> Objects.nonNull(werkstoff.get(o)))
-                                .forEach( od -> OreDictionary.registerOre(od+s, werkstoff.get(od))));
-            }
-            OreDictAdder.addToMap(new Pair<>("craftingIndustrialDiamond", WerkstoffLoader.CubicZirconia.get(gemExquisite)));
-        } else {
-            for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
-                if (werkstoff.getGenerationFeatures().hasOres()) {
-                    GT_OreDictUnificator.registerOre(ore + werkstoff.getVarName(), werkstoff.get(ore));
-                    GT_OreDictUnificator.registerOre(oreSmall + werkstoff.getVarName(), werkstoff.get(oreSmall));
-                    werkstoff.getADDITIONAL_OREDICT().forEach( e -> OreDictionary.registerOre(ore+e, werkstoff.get(ore)));
-                    werkstoff.getADDITIONAL_OREDICT().forEach( e -> OreDictionary.registerOre(oreSmall+e, werkstoff.get(oreSmall)));
-                }
+    private void runAdditionalOreDict() {
 
-                if (werkstoff.getGenerationFeatures().hasGems())
-                    OreDictionary.registerOre("craftingLens" + BW_ColorUtil.getDyeFromColor(werkstoff.getRGBA()).mName.replace(" ", ""), werkstoff.get(lens));
-
-                if (werkstoff.getGenerationFeatures().hasGems() || (werkstoff.getGenerationFeatures().toGenerate & 0b10) != 0){
-                    GT_OreDictUnificator.registerOre(block + werkstoff.getVarName(), werkstoff.get(block));
-                    werkstoff.getADDITIONAL_OREDICT().forEach( e ->  OreDictionary.registerOre(block+e, werkstoff.get(block)));
-                }
-
-                werkstoff.getADDITIONAL_OREDICT()
-                        .forEach(s -> ENABLED_ORE_PREFIXES
-                                 .stream()
-                                 .filter(o -> Objects.nonNull(werkstoff.get(o)))
-                                 .forEach(od -> OreDictionary.registerOre(od+s, werkstoff.get(od))));
+        for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
+            if (werkstoff.getGenerationFeatures().hasOres()) {
+                GT_OreDictUnificator.registerOre(ore + werkstoff.getVarName(), werkstoff.get(ore));
+                GT_OreDictUnificator.registerOre(oreSmall + werkstoff.getVarName(), werkstoff.get(oreSmall));
+                werkstoff.getADDITIONAL_OREDICT().forEach(e -> OreDictionary.registerOre(ore + e, werkstoff.get(ore)));
+                werkstoff.getADDITIONAL_OREDICT().forEach(e -> OreDictionary.registerOre(oreSmall + e, werkstoff.get(oreSmall)));
             }
 
-            GT_OreDictUnificator.registerOre("craftingIndustrialDiamond", WerkstoffLoader.CubicZirconia.get(gemExquisite));
+            if (werkstoff.getGenerationFeatures().hasGems())
+                OreDictionary.registerOre("craftingLens" + BW_ColorUtil.getDyeFromColor(werkstoff.getRGBA()).mName.replace(" ", ""), werkstoff.get(lens));
+
+            if (werkstoff.getGenerationFeatures().hasGems() || (werkstoff.getGenerationFeatures().toGenerate & 0b10) != 0) {
+                GT_OreDictUnificator.registerOre(block + werkstoff.getVarName(), werkstoff.get(block));
+                werkstoff.getADDITIONAL_OREDICT().forEach(e -> OreDictionary.registerOre(block + e, werkstoff.get(block)));
+            }
+
+            werkstoff.getADDITIONAL_OREDICT()
+                    .forEach(s -> ENABLED_ORE_PREFIXES
+                            .stream()
+                            .filter(o -> Objects.nonNull(werkstoff.get(o)))
+                            .forEach(od -> OreDictionary.registerOre(od + s, werkstoff.get(od))));
         }
+
+        GT_OreDictUnificator.registerOre("craftingIndustrialDiamond", WerkstoffLoader.CubicZirconia.get(gemExquisite));
     }
 
     private void addGemRecipes(Werkstoff werkstoff) {
@@ -2423,7 +2406,7 @@ public class WerkstoffLoader implements Runnable {
         GT_Values.RA.addFluidCannerRecipe(Materials.Empty.getCells(1), werkstoff.get(cell), new FluidStack(Objects.requireNonNull(fluids.get(werkstoff)),1000), GT_Values.NF);
         GT_Values.RA.addFluidCannerRecipe(werkstoff.get(cell), Materials.Empty.getCells(1), GT_Values.NF, new FluidStack(Objects.requireNonNull(fluids.get(werkstoff)),1000));
 
-        if (Loader.isModLoaded("Forestry")) {
+        if (LoaderReference.Forestry) {
             FluidContainerRegistry.FluidContainerData emptyData = new FluidContainerRegistry.FluidContainerData(new FluidStack(Objects.requireNonNull(WerkstoffLoader.fluids.get(werkstoff)), 1000), werkstoff.get(capsule), GT_ModHandler.getModItem("Forestry", "waxCapsule", 1), true);
             GT_Utility.addFluidContainerData(emptyData);
             FluidContainerRegistry.registerFluidContainer(emptyData);
@@ -2477,7 +2460,7 @@ public class WerkstoffLoader implements Runnable {
         GT_Values.RA.addFluidCannerRecipe(Materials.Empty.getCells(1), werkstoff.get(cellMolten), new FluidStack(Objects.requireNonNull(molten.get(werkstoff)),144), GT_Values.NF);
         GT_Values.RA.addFluidCannerRecipe(werkstoff.get(cellMolten), Materials.Empty.getCells(1), GT_Values.NF, new FluidStack(Objects.requireNonNull(molten.get(werkstoff)),144));
 
-        if (Loader.isModLoaded("Forestry")) {
+        if (LoaderReference.Forestry) {
             final FluidContainerRegistry.FluidContainerData emptyData = new FluidContainerRegistry.FluidContainerData(new FluidStack(Objects.requireNonNull(WerkstoffLoader.molten.get(werkstoff)), 144), werkstoff.get(capsuleMolten), GT_ModHandler.getModItem("Forestry", "refractoryEmpty", 1));
             FluidContainerRegistry.registerFluidContainer(werkstoff.getMolten(144), werkstoff.get(capsuleMolten), GT_ModHandler.getModItem("Forestry", "refractoryEmpty", 1));
             GT_Utility.addFluidContainerData(emptyData);

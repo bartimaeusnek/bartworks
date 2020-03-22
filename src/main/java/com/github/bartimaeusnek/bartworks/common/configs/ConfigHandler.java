@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,6 @@ public class ConfigHandler {
     public static boolean DEHPDirectSteam;
     public static boolean teslastaff;
     public static boolean classicMode;
-    public static boolean experimentalThreadedLoader;
     public static boolean GTNH;
     public static boolean ezmode;
 
@@ -95,7 +94,6 @@ public class ConfigHandler {
         }
         ConfigHandler.GTppLogDisabler = ConfigHandler.c.get("System", "Disable GT++ Logging", false, "Enables or Disables GT++ Logging.").getBoolean(false);
         ConfigHandler.debugLog = ConfigHandler.c.get("System", "Enable Debug Log", false, "Enables or Disables the debug log.").getBoolean(false);
-        ConfigHandler.experimentalThreadedLoader = ConfigHandler.c.get("System", "Enable Experimental Threaded Material Loader", false, "Enables or Disables the Experimental Threaded Material Loader.").getBoolean(false);
 
         for (int i = 0; i < BWCoreTransformer.CLASSESBEEINGTRANSFORMED.length; i++) {
             BWCoreTransformer.shouldTransform[i] = ConfigHandler.c.get("ASM fixes", BWCoreTransformer.DESCRIPTIONFORCONFIG[i] + " in class: " + BWCoreTransformer.CLASSESBEEINGTRANSFORMED[i], true).getBoolean(true);
