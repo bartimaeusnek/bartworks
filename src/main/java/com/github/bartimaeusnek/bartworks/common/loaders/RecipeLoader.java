@@ -50,13 +50,12 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import static com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler.newStuff;
 
-public class RecipeLoader implements Runnable {
+public class RecipeLoader {
 
     protected static final long BITSD = GT_ModHandler.RecipeBits.DISMANTLEABLE | GT_ModHandler.RecipeBits.NOT_REMOVABLE | GT_ModHandler.RecipeBits.REVERSIBLE;
 
-    @Override
     @SuppressWarnings("deprecation")
-    public void run() {
+    public static void run() {
 
         if (ConfigHandler.GTNH) {
             /*

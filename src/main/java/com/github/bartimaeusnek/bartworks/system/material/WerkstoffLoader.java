@@ -1391,12 +1391,11 @@ public class WerkstoffLoader implements Runnable {
         return new ItemStack(WerkstoffLoader.items.get(orePrefixes), amount, werkstoff.getmID()).copy();
     }
 
-    public void init() {
+    public static void init() {
         if (WerkstoffLoader.INSTANCE == null) {
             MainMod.LOGGER.error("INSTANCE IS NULL THIS SHOULD NEVER HAPPEN!");
             FMLCommonHandler.instance().exitJava(1,true);
         }
-        GT_LanguageManager.addStringLocalization("metaitem.01.tooltip.purify.2","Throw into Cauldron to get clean crushed Ore");
     }
 
     public void runInit() {

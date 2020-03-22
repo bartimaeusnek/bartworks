@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,7 @@ import net.minecraftforge.fluids.FluidStack;
 import java.awt.*;
 import java.util.Arrays;
 
-public class FluidLoader implements Runnable {
+public class FluidLoader {
 
     public static IIcon autogenIIcon;
     public static Fluid ff;
@@ -59,8 +59,7 @@ public class FluidLoader implements Runnable {
     //OilProcessing chain
     public static Fluid fulvicAcid,heatedfulvicAcid,Kerogen;
 
-    @Override
-    public void run() {
+    public static void run() {
         FluidLoader.renderID = RenderingRegistry.getNextAvailableRenderId();
         short[] rgb = new short[3];
         Arrays.fill(rgb, (short) 255);

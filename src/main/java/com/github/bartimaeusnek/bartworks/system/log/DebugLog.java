@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@ public class DebugLog {
     private static boolean init;
     static FileHandler fh;
     private static Logger utilLog;
+
     public DebugLog(FMLPreInitializationEvent event) throws IOException {
         if (DebugLog.init)
             return;

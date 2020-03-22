@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,11 +45,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class BioRecipeLoader extends RecipeLoader {
+public class BioRecipeLoader {
 
-    @Override
     @SuppressWarnings("deprecation")
-    public void run() {
+    public static void run() {
 
         //DNAExtractionModule
         GT_ModHandler.addCraftingRecipe(
