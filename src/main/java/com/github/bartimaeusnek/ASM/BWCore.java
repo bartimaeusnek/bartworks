@@ -22,7 +22,6 @@
 
 package com.github.bartimaeusnek.ASM;
 
-import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.crossmod.BartWorksCrossmod;
@@ -60,11 +59,11 @@ public class BWCore extends DummyModContainer {
 
     @Subscribe
     public void preInit(FMLPreInitializationEvent event) {
-        shouldTransform[0] = LoaderReference.ExtraUtilities && ConfigHandler.enabledPatches[0];
-        shouldTransform[1] = LoaderReference.ExtraUtilities && ConfigHandler.enabledPatches[1];
-        shouldTransform[3] = LoaderReference.Thaumcraft && ConfigHandler.enabledPatches[3];
+        shouldTransform[0] = ConfigHandler.enabledPatches[0];
+        shouldTransform[1] = ConfigHandler.enabledPatches[1];
+        shouldTransform[3] = ConfigHandler.enabledPatches[3];
         shouldTransform[4] = true;
-        shouldTransform[5] = LoaderReference.RWG && ConfigHandler.enabledPatches[5];
+        shouldTransform[5] = ConfigHandler.enabledPatches[5];
         shouldTransform[6] = ConfigHandler.enabledPatches[6];
         //shouldTransform[6] = true;
         BWCore.BWCORE_LOG.info("Extra Utilities found and ASM Patch enabled? " + shouldTransform[0]);

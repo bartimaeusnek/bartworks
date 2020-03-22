@@ -24,32 +24,63 @@ package com.github.bartimaeusnek.bartworks.API;
 
 import cpw.mods.fml.common.Loader;
 
+/**
+ * DO NOT CALL THIS IN THE CORE MOD! IT WILL __NOT__ WORK AND FUCK EVERYTHING UP!
+ */
 public class LoaderReference {
     private LoaderReference(){}
 
-    public static final boolean Natura = Loader.isModLoaded("Natura");
-    public static final boolean RandomThings = Loader.isModLoaded("RandomThings");
-    public static final boolean TConstruct = Loader.isModLoaded("TConstruct");
-    public static final boolean chisel = Loader.isModLoaded("chisel");
-    public static final boolean Railcraft = Loader.isModLoaded("Railcraft");
-    public static final boolean Ztones = Loader.isModLoaded("Ztones");
-    public static final boolean witchery = Loader.isModLoaded("witchery");
-    public static final boolean GalaxySpace = Loader.isModLoaded("GalaxySpace");
-    public static final boolean GalacticraftCore = Loader.isModLoaded("GalacticraftCore;");
-    public static final boolean GalacticraftMars = Loader.isModLoaded("GalacticraftMars;");
-    public static final boolean Thaumcraft = Loader.isModLoaded("Thaumcraft;");
-    public static final boolean miscutils = Loader.isModLoaded("miscutils;");
-    public static final boolean tectech = Loader.isModLoaded("tectech;");
-    public static final boolean ExtraUtilities = Loader.isModLoaded("ExtraUtilities;");
-    public static final boolean RWG = Loader.isModLoaded("RWG;");
-    public static final boolean galacticgreg = Loader.isModLoaded("galacticgreg;");
-    public static final boolean gendustry = Loader.isModLoaded("gendustry;");
-    public static final boolean croploadcore = Loader.isModLoaded("croploadcore;");
-    public static final boolean Forestry = Loader.isModLoaded("Forestry");
-    public static final boolean berriespp = Loader.isModLoaded("berriespp");
-    public static final boolean dreamcraft = Loader.isModLoaded("dreamcraft");
-    public static final boolean BloodArsenal = Loader.isModLoaded("BloodArsenal");
-    public static final boolean Botany = Loader.isModLoaded("Botany");
-    public static final boolean EnderIO = Loader.isModLoaded("EnderIO");
-    public static final boolean HardcoreEnderExpension = Loader.isModLoaded("HardcoreEnderExpension");
+    public static boolean Natura;
+    public static boolean RandomThings;
+    public static boolean TConstruct;
+    public static boolean chisel;
+    public static boolean Railcraft;
+    public static boolean Ztones;
+    public static boolean witchery;
+    public static boolean GalaxySpace;
+    public static boolean GalacticraftCore;
+    public static boolean GalacticraftMars;
+    public static boolean Thaumcraft;
+    public static boolean miscutils;
+    public static boolean tectech;
+    public static boolean ExtraUtilities;
+    public static boolean RWG;
+    public static boolean galacticgreg;
+    public static boolean gendustry;
+    public static boolean croploadcore;
+    public static boolean Forestry;
+    public static boolean berriespp;
+    public static boolean dreamcraft;
+    public static boolean BloodArsenal;
+    public static boolean Botany;
+    public static boolean EnderIO;
+    public static boolean HardcoreEnderExpension;
+
+    public static void init() {
+        Natura = Loader.isModLoaded("Natura");
+        RandomThings = Loader.isModLoaded("RandomThings");
+        TConstruct = Loader.isModLoaded("TConstruct");
+        chisel = Loader.isModLoaded("chisel");
+        Railcraft = Loader.isModLoaded("Railcraft");
+        Ztones = Loader.isModLoaded("Ztones");
+        witchery = Loader.isModLoaded("witchery");
+        GalaxySpace = Loader.isModLoaded("GalaxySpace");
+        GalacticraftCore = Loader.isModLoaded("GalacticraftCore");
+        GalacticraftMars = Loader.isModLoaded("GalacticraftMars");
+        Thaumcraft = Loader.isModLoaded("Thaumcraft");
+        miscutils = Loader.isModLoaded("miscutils");
+        tectech = Loader.isModLoaded("tectech");
+        ExtraUtilities = Loader.isModLoaded("ExtraUtilities");
+        RWG = Loader.isModLoaded("RWG");
+        galacticgreg = Loader.isModLoaded("galacticgreg");
+        gendustry = Loader.isModLoaded("gendustry");
+        croploadcore = Loader.isModLoaded("croploadcore");
+        Forestry = Loader.isModLoaded("Forestry");
+        berriespp = Loader.isModLoaded("berriespp");
+        dreamcraft = Loader.isModLoaded("dreamcraft");
+        BloodArsenal = Loader.isModLoaded("BloodArsenal");
+        Botany = Loader.isModLoaded("Botany");
+        EnderIO = Loader.isModLoaded("EnderIO");
+        HardcoreEnderExpension = Loader.isModLoaded("HardcoreEnderExpension");
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -442,8 +442,7 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
          */
         public short toGenerate = 0b0001001;
         public static final HashMap<OrePrefixes,Integer> prefixLogic = new HashMap<>();
-
-        static {
+        public static void initPrefixLogic() {
             Arrays.stream(OrePrefixes.values()).forEach( e -> prefixLogic.put(e,0));
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.dust,0b1);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.dustTiny,0b1);

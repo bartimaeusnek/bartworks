@@ -39,6 +39,7 @@ import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.Circ
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitPartLoader;
 import com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement.PlatinumSludgeOverHaul;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
+import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.DownTierLoader;
 import com.github.bartimaeusnek.bartworks.system.oredict.OreDictHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -59,7 +60,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import static com.github.bartimaeusnek.bartworks.common.loaders.BioRecipeLoader.runOnServerStarted;
-import static com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader.INSTANCE;
 import static com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader.removeIC2Recipes;
 import static gregtech.api.enums.GT_Values.VN;
 
@@ -96,6 +96,8 @@ public final class MainMod {
             MainMod.LOGGER.error("Something has loaded an old API. Please contact the Mod authors to update!");
         }
 
+        LoaderReference.init(); //Check for ALL the mods.
+
         if (LoaderReference.miscutils && ConfigHandler.GTppLogDisabler) {
             STFUGTPPLOG.replaceLogger();
         }
@@ -113,6 +115,8 @@ public final class MainMod {
             }
         }
 
+        WerkstoffLoader.setUp();
+
         if (ConfigHandler.GTNH)
             MainMod.LOGGER.info("GTNH-Detected . . . ACTIVATE HARDMODE.");
 
@@ -121,7 +125,6 @@ public final class MainMod {
         }
 
         if (ConfigHandler.newStuff) {
-            INSTANCE.init();
             Werkstoff.init();
             GregTech_API.sAfterGTPostload.add(new CircuitPartLoader());
             if (SideReference.Side.Client)
@@ -142,7 +145,7 @@ public final class MainMod {
         if (ConfigHandler.BioLab)
             BioLabLoader.run();
         if (ConfigHandler.newStuff) {
-                INSTANCE.runInit();
+            WerkstoffLoader.runInit();
         }
         ItemRegistry.run();
         RecipeLoader.run();
@@ -160,7 +163,7 @@ public final class MainMod {
 
         BioObjectAdder.regenerateBioFluids();
         if (ConfigHandler.newStuff) {
-                INSTANCE.run();
+            WerkstoffLoader.run();
             LocalisationLoader.localiseAll();
         }
     }

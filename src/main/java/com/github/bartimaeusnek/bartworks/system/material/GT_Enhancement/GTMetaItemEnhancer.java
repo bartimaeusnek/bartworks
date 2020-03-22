@@ -42,7 +42,10 @@ import java.util.stream.Collectors;
 public class GTMetaItemEnhancer {
    static List<Materials> NoMetaValue;
 
-    static{
+    private GTMetaItemEnhancer() {
+    }
+
+    public static void init(){
         if (LoaderReference.Forestry) {
             NoMetaValue = Materials.getMaterialsMap().values().stream().filter(m -> m.mMetaItemSubID == -1).collect(Collectors.toList());
             Item moltenCapsuls = new BWGTMetaItems(WerkstoffLoader.capsuleMolten, null);
