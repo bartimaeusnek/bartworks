@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@
 package com.github.bartimaeusnek.bartworks.util;
 
 import com.github.bartimaeusnek.bartworks.API.BioVatLogicAdder;
-import com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry;
 import gregtech.api.enums.Element;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OreDictNames;
@@ -561,9 +560,18 @@ public class BW_Util {
         }
     }
 
+    private static Block bw_realglasRef;
+    static {
+        try {
+            bw_realglasRef = (Block) Class.forName("com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry").getField("bw_realglas").get(null);
+        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static byte calculateGlassTier(@Nonnull Block block, @Nonnegative byte meta) {
 
-        if (block.equals(ItemRegistry.bw_glasses[0]))
+        if (block.equals(bw_realglasRef))
             return meta == 12 ? 5 : meta > 1 && meta < 6 ? (byte) (meta + 3) : 4;
 
         if (block.getUnlocalizedName().equals("blockAlloyGlass"))

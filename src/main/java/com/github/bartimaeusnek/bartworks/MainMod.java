@@ -33,8 +33,6 @@ import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.common.loaders.*;
 import com.github.bartimaeusnek.bartworks.common.net.BW_Network;
 import com.github.bartimaeusnek.bartworks.server.EventHandler.ServerEventHandler;
-import com.github.bartimaeusnek.bartworks.system.log.DebugLog;
-import com.github.bartimaeusnek.bartworks.system.log.STFUGTPPLOG;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitImprintLoader;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.CircuitPartLoader;
 import com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement.PlatinumSludgeOverHaul;
@@ -42,6 +40,8 @@ import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.DownTierLoader;
 import com.github.bartimaeusnek.bartworks.system.oredict.OreDictHandler;
+import com.github.bartimaeusnek.bartworks.util.log.DebugLog;
+import com.github.bartimaeusnek.bartworks.util.log.STFUGTPPLOG;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.*;
@@ -107,7 +107,7 @@ public final class MainMod {
 
         ConfigHandler.GTNH = ConfigHandler.ezmode != ConfigHandler.GTNH;
 
-        if (ConfigHandler.debugLog) {
+        if (API_ConfigValues.debugLog) {
             try {
                 DebugLog.initDebugLog(preinit);
             } catch (IOException e) {

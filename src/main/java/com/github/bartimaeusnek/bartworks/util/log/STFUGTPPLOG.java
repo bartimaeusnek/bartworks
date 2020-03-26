@@ -20,8 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.bartimaeusnek.bartworks.system.log;
-
+package com.github.bartimaeusnek.bartworks.util.log;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.Level;

@@ -24,6 +24,7 @@ package com.github.bartimaeusnek.bartworks.common.configs;
 
 
 import com.github.bartimaeusnek.ASM.BWCoreTransformer;
+import com.github.bartimaeusnek.bartworks.API.API_ConfigValues;
 import gregtech.api.enums.GT_Values;
 import net.minecraftforge.common.config.Configuration;
 
@@ -61,8 +62,6 @@ public class ConfigHandler {
     public static boolean GTNH;
     public static boolean ezmode;
 
-    //One-Side-Only
-    public static boolean debugLog;
     public static boolean GTppLogDisabler;
     public static boolean tooltips = true;
     public static boolean[] enabledPatches;
@@ -93,7 +92,7 @@ public class ConfigHandler {
             ConfigHandler.c.get("System", "ID Offset", 12600, "ID Offset for this mod. This Mod uses " + ConfigHandler.IDU + " IDs. DO NOT CHANGE IF YOU DONT KNOW WHAT THIS IS").set(12600);
         }
         ConfigHandler.GTppLogDisabler = ConfigHandler.c.get("System", "Disable GT++ Logging", false, "Enables or Disables GT++ Logging.").getBoolean(false);
-        ConfigHandler.debugLog = ConfigHandler.c.get("System", "Enable Debug Log", false, "Enables or Disables the debug log.").getBoolean(false);
+        API_ConfigValues.debugLog = ConfigHandler.c.get("System", "Enable Debug Log", false, "Enables or Disables the debug log.").getBoolean(false);
 
         for (int i = 0; i < BWCoreTransformer.CLASSESBEEINGTRANSFORMED.length; i++) {
             BWCoreTransformer.shouldTransform[i] = ConfigHandler.c.get("ASM fixes", BWCoreTransformer.DESCRIPTIONFORCONFIG[i] + " in class: " + BWCoreTransformer.CLASSESBEEINGTRANSFORMED[i], true).getBoolean(true);

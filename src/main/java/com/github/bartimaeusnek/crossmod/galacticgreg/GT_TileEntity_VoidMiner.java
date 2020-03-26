@@ -127,6 +127,7 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
         this.mMaxProgresstime = 10;
         this.mEfficiency = this.getCurrentEfficiency(null);
         this.mEfficiencyIncrease = 10000;
+        this.mEUt = this.mEUt > 0 ? -this.mEUt : this.mEUt;
     }
 
     @Override

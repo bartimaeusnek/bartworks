@@ -23,7 +23,7 @@
 package com.github.bartimaeusnek.crossmod.GTpp.loader;
 
 import com.github.bartimaeusnek.bartworks.API.IRadMaterial;
-import com.github.bartimaeusnek.bartworks.system.log.DebugLog;
+import com.github.bartimaeusnek.bartworks.util.log.DebugLog;
 import com.github.bartimaeusnek.crossmod.BartWorksCrossmod;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;

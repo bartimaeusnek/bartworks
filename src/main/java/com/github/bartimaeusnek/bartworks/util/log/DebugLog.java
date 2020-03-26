@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.bartimaeusnek.bartworks.system.log;
+package com.github.bartimaeusnek.bartworks.util.log;
 
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 

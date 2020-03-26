@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,6 @@
 
 package com.github.bartimaeusnek.bartworks.API;
 
-import com.github.bartimaeusnek.bartworks.MainMod;
 import gregtech.api.enums.Materials;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -94,7 +93,7 @@ public final class BioVatLogicAdder {
             if (ret)
                 BioVatGlass.glasses.put(new BlockMetaPair(block, (byte) meta), (byte) tier);
             else
-                MainMod.LOGGER.warn("Block: " + sUnlocBlockName + " of the Mod: " + sModname + " was NOT found!");
+                new IllegalArgumentException("Block: " + sUnlocBlockName + " of the Mod: " + sModname + " was NOT found!").printStackTrace();
             block = null;
             return ret;
         }

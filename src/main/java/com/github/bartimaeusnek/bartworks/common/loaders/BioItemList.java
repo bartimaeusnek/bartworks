@@ -35,7 +35,6 @@ import net.minecraft.item.ItemStack;
 import java.util.Collection;
 import java.util.HashSet;
 
-
 public class BioItemList {
 
     private BioItemList() {

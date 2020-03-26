@@ -28,7 +28,6 @@ import com.github.bartimaeusnek.bartworks.API.WerkstoffAdderRegistry;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.bartworks.client.renderer.BW_Renderer_Block_Ores;
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
-import com.github.bartimaeusnek.bartworks.system.log.DebugLog;
 import com.github.bartimaeusnek.bartworks.system.material.CircuitGeneration.BW_CircuitsLoader;
 import com.github.bartimaeusnek.bartworks.system.material.GT_Enhancement.GTMetaItemEnhancer;
 import com.github.bartimaeusnek.bartworks.system.material.processingLoaders.AdditionalRecipes;
@@ -37,6 +36,7 @@ import com.github.bartimaeusnek.bartworks.util.BWRecipes;
 import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.Pair;
+import com.github.bartimaeusnek.bartworks.util.log.DebugLog;
 import com.github.bartimaeusnek.crossmod.thaumcraft.util.ThaumcraftHandler;
 import com.google.common.collect.HashBiMap;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -1447,7 +1447,7 @@ public class WerkstoffLoader {
                 addTools(werkstoff);
                 if (LoaderReference.Thaumcraft) {
                     DebugLog.log("Loading Aspects" + " " + (System.nanoTime() - timepreone));
-                    ThaumcraftHandler.AspectAdder.addAspectToAll(werkstoff);
+                    addAspectToAll(werkstoff);
                 }
                 DebugLog.log("Loading New Circuits" + " " + (System.nanoTime() - timepreone));
                 new BW_CircuitsLoader();
@@ -2496,6 +2496,22 @@ public class WerkstoffLoader {
             GT_Values.RA.addFluidExtractionRecipe(werkstoff.get(dust), null, werkstoff.getMolten(144), 0, (int) werkstoff.getStats().mass, werkstoff.getStats().getMass() > 128 ? 64 : 30);
             GT_Values.RA.addFluidExtractionRecipe(werkstoff.get(dustSmall), null, werkstoff.getMolten(36), 0, (int) werkstoff.getStats().mass, werkstoff.getStats().getMass() > 128 ? 64 : 30);
             GT_Values.RA.addFluidExtractionRecipe(werkstoff.get(dustTiny), null, werkstoff.getMolten(16), 0, (int) werkstoff.getStats().mass, werkstoff.getStats().getMass() > 128 ? 64 : 30);
+        }
+    }
+
+    public static void addAspectToAll(Werkstoff werkstoff){
+        for (OrePrefixes element : WerkstoffLoader.ENABLED_ORE_PREFIXES) {
+            if ((werkstoff.getGenerationFeatures().toGenerate & Werkstoff.GenerationFeatures.prefixLogic.get(element)) != 0 && (werkstoff.getGenerationFeatures().blacklist & Werkstoff.GenerationFeatures.prefixLogic.get(element)) == 0) {
+                if (element.mMaterialAmount >= 3628800L || element == OrePrefixes.ore) {
+                    DebugLog.log("OrePrefix: " + element.name() + " mMaterialAmount: " + element.mMaterialAmount/3628800L);
+                    if (Objects.nonNull(WerkstoffLoader.items.get(element)))
+                        ThaumcraftHandler.AspectAdder.addAspectViaBW(werkstoff.get(element), werkstoff.getTCAspects(element == OrePrefixes.ore ? 1 : (int) (element.mMaterialAmount / 3628800L)));
+                }
+                else if (element.mMaterialAmount >= 0L) {
+                    if (Objects.nonNull(WerkstoffLoader.items.get(element)))
+                        ThaumcraftHandler.AspectAdder.addAspectViaBW(werkstoff.get(element), new Pair<>(TC_Aspects.PERDITIO.mAspect, 1));
+                }
+            }
         }
     }
 }

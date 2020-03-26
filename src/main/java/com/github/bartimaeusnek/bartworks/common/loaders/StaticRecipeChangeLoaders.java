@@ -23,11 +23,11 @@
 package com.github.bartimaeusnek.bartworks.common.loaders;
 
 import com.github.bartimaeusnek.bartworks.MainMod;
-import com.github.bartimaeusnek.bartworks.system.log.DebugLog;
 import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.util.BWRecipes;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.StreamUtils;
+import com.github.bartimaeusnek.bartworks.util.log.DebugLog;
 import com.github.bartimaeusnek.crossmod.BartWorksCrossmod;
 import com.google.common.collect.ArrayListMultimap;
 import cpw.mods.fml.common.registry.GameRegistry;

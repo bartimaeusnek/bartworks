@@ -19,8 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@API(owner = "bartworks", apiVersion = API_REFERENCE.VERSION, provides = "bartworks API")
 package com.github.bartimaeusnek.bartworks.API;
 
-public final class API_REFERENCE {
-    public static final String VERSION = "@apiversion@";
-}
+import cpw.mods.fml.common.API;
