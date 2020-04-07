@@ -112,7 +112,7 @@ public class BWGTMetaItems extends BW_MetaGenerated_Items {
     public void getSubItems(Item var1, CreativeTabs aCreativeTab, List aList) {
         for (int i = 0; i < Materials.values().length; i++) {
             Materials w = Materials.values()[i];
-            if ((w == null) || (w.mTypes & Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes)) == 0 && Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes) != 0)
+            if ((w == null) || (w.mTypes & Werkstoff.GenerationFeatures.getPrefixDataRaw(this.orePrefixes)) == 0 && Werkstoff.GenerationFeatures.getPrefixDataRaw(this.orePrefixes) != 0)
                 continue;
             else if (((w.getMolten(1) == null && orePrefixes == WerkstoffLoader.capsuleMolten) || ((w.getFluid(1) == null && w.getGas(1) == null) && (orePrefixes == OrePrefixes.capsule || orePrefixes == OrePrefixes.bottle))))
                 continue;
@@ -121,7 +121,7 @@ public class BWGTMetaItems extends BW_MetaGenerated_Items {
         if (hasList)
             for (int i = 0; i < NoMetaValue.size(); i++) {
                 Materials w = NoMetaValue.get(i);
-                if ((w == null) || (w.mTypes & Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes)) == 0 && Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes) != 0)
+                if ((w == null) || (w.mTypes & Werkstoff.GenerationFeatures.getPrefixDataRaw(this.orePrefixes)) == 0 && Werkstoff.GenerationFeatures.getPrefixDataRaw(this.orePrefixes) != 0)
                     continue;
                 else if (((w.getMolten(1) == null && orePrefixes == WerkstoffLoader.capsuleMolten) || ((w.getFluid(1) == null && w.getGas(1) == null) && (orePrefixes == OrePrefixes.capsule || orePrefixes == OrePrefixes.bottle))))
                     continue;

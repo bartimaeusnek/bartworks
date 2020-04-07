@@ -413,7 +413,8 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
     }
 
     public boolean hasItemType(OrePrefixes prefixes) {
-        return (this.getGenerationFeatures().toGenerate & GenerationFeatures.prefixLogic.get(prefixes)) != 0;
+        int unpacked = Werkstoff.GenerationFeatures.getPrefixDataRaw(prefixes);
+        return (this.getGenerationFeatures().toGenerate & unpacked) != 0 && (this.getGenerationFeatures().blacklist & unpacked) == 0;
     }
 
     public enum Types {
@@ -447,7 +448,13 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         multiple ingotWorth stuff 1000000000 (double, triple, quadruple, ingot/plates)
          */
         public short toGenerate = 0b0001001;
-        public static final HashMap<OrePrefixes, Integer> prefixLogic = new HashMap<>();
+        private static final HashMap<OrePrefixes, Integer> prefixLogic = new HashMap<>();
+
+        public static int getPrefixDataRaw(OrePrefixes prefixes){
+            if (prefixes == null)
+                throw new IllegalArgumentException("OrePrefixes is NULL!");
+            return Optional.of(GenerationFeatures.prefixLogic.get(prefixes)).orElse(0);
+        }
 
         public static void initPrefixLogic() {
             Arrays.stream(OrePrefixes.values()).forEach(e -> prefixLogic.put(e, 0));

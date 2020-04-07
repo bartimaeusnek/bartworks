@@ -1673,7 +1673,7 @@ public class WerkstoffLoader {
                                     werkstoffBridgeMaterial.mElement = e;
                                     e.mLinkedMaterials = new ArrayList<>();
                                     e.mLinkedMaterials.add(werkstoffBridgeMaterial);
-                                    if (((werkstoff.getGenerationFeatures().toGenerate & Werkstoff.GenerationFeatures.prefixLogic.get(dust)) != 0 && (werkstoff.getGenerationFeatures().blacklist & Werkstoff.GenerationFeatures.prefixLogic.get(dust)) == 0 && werkstoff.get(dust) != null && werkstoff.get(dust).getItem() != null)) {
+                                    if (werkstoff.hasItemType(dust)) {
                                         GT_OreDictUnificator.addAssociation(dust, werkstoffBridgeMaterial, werkstoff.get(dust), false);
                                         GT_OreDictUnificator.set(dust, werkstoffBridgeMaterial, werkstoff.get(dust), true, true);
                                     }
@@ -1691,7 +1691,7 @@ public class WerkstoffLoader {
 //                            } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
 //                                e.printStackTrace();
 //                            }
-                            if (((werkstoff.getGenerationFeatures().toGenerate & Werkstoff.GenerationFeatures.prefixLogic.get(dust)) != 0 && (werkstoff.getGenerationFeatures().blacklist & Werkstoff.GenerationFeatures.prefixLogic.get(dust)) == 0 && werkstoff.get(dust) != null && werkstoff.get(dust).getItem() != null)) {
+                            if (werkstoff.hasItemType(dust)) {
                                 ItemStack scannerOutput = ItemList.Tool_DataOrb.get(1L);
                                 Behaviour_DataOrb.setDataTitle(scannerOutput, "Elemental-Scan");
                                 Behaviour_DataOrb.setDataName(scannerOutput, werkstoff.getToolTip());
@@ -1739,10 +1739,11 @@ public class WerkstoffLoader {
     public static void addAssociationToItems() {
         Arrays.stream(values()).forEach(prefixes ->
                 Werkstoff.werkstoffHashSet.stream()
-                        .filter(werkstoff -> werkstoff.hasItemType(prefixes) && (werkstoff.getGenerationFeatures().blacklist & Werkstoff.GenerationFeatures.prefixLogic.get(prefixes)) == 0)
+                        .filter(werkstoff -> werkstoff.hasItemType(prefixes))
                         .forEach(werkstoff -> {
                             Materials werkstoffBridgeMaterial = werkstoff.getBridgeMaterial();
                             ItemStack stack = WerkstoffLoader.getCorrespondingItemStackUnsafe(prefixes, werkstoff, 1);
+
                             if (stack != null && stack.getItem() != null) {
                                 GT_OreDictUnificator.addAssociation(prefixes, werkstoffBridgeMaterial, stack, false);
                                 GT_OreDictUnificator.set(prefixes, werkstoffBridgeMaterial, stack, true, true);
@@ -2500,16 +2501,16 @@ public class WerkstoffLoader {
     }
 
     public static void addAspectToAll(Werkstoff werkstoff){
-        for (OrePrefixes element : WerkstoffLoader.ENABLED_ORE_PREFIXES) {
-            if ((werkstoff.getGenerationFeatures().toGenerate & Werkstoff.GenerationFeatures.prefixLogic.get(element)) != 0 && (werkstoff.getGenerationFeatures().blacklist & Werkstoff.GenerationFeatures.prefixLogic.get(element)) == 0) {
-                if (element.mMaterialAmount >= 3628800L || element == OrePrefixes.ore) {
-                    DebugLog.log("OrePrefix: " + element.name() + " mMaterialAmount: " + element.mMaterialAmount/3628800L);
-                    if (Objects.nonNull(WerkstoffLoader.items.get(element)))
-                        ThaumcraftHandler.AspectAdder.addAspectViaBW(werkstoff.get(element), werkstoff.getTCAspects(element == OrePrefixes.ore ? 1 : (int) (element.mMaterialAmount / 3628800L)));
+        for (OrePrefixes enabledOrePrefixes : WerkstoffLoader.ENABLED_ORE_PREFIXES) {
+            if (werkstoff.hasItemType(enabledOrePrefixes)) {
+                if (enabledOrePrefixes.mMaterialAmount >= 3628800L || enabledOrePrefixes == OrePrefixes.ore) {
+                    DebugLog.log("OrePrefix: " + enabledOrePrefixes.name() + " mMaterialAmount: " + enabledOrePrefixes.mMaterialAmount/3628800L);
+                    if (Objects.nonNull(WerkstoffLoader.items.get(enabledOrePrefixes)))
+                        ThaumcraftHandler.AspectAdder.addAspectViaBW(werkstoff.get(enabledOrePrefixes), werkstoff.getTCAspects(enabledOrePrefixes == OrePrefixes.ore ? 1 : (int) (enabledOrePrefixes.mMaterialAmount / 3628800L)));
                 }
-                else if (element.mMaterialAmount >= 0L) {
-                    if (Objects.nonNull(WerkstoffLoader.items.get(element)))
-                        ThaumcraftHandler.AspectAdder.addAspectViaBW(werkstoff.get(element), new Pair<>(TC_Aspects.PERDITIO.mAspect, 1));
+                else if (enabledOrePrefixes.mMaterialAmount >= 0L) {
+                    if (Objects.nonNull(WerkstoffLoader.items.get(enabledOrePrefixes)))
+                        ThaumcraftHandler.AspectAdder.addAspectViaBW(werkstoff.get(enabledOrePrefixes), new Pair<>(TC_Aspects.PERDITIO.mAspect, 1));
                 }
             }
         }

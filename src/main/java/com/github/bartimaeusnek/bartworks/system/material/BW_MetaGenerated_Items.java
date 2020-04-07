@@ -81,9 +81,7 @@ public class BW_MetaGenerated_Items extends GT_MetaGenerated_Item implements IRa
         this.setCreativeTab(BW_MetaGenerated_Items.metaTab);
         for (Werkstoff w : werkstoffHashSet) {
             ItemStack tStack = new ItemStack(this, 1, w.getmID());
-            if (((w.getGenerationFeatures().blacklist & Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes)) != 0) )
-                continue;
-            if ((w.getGenerationFeatures().toGenerate & Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes)) == 0 && Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes) != 0)
+            if (!w.hasItemType(this.orePrefixes))
                 continue;
             GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".name", this.getDefaultLocalization(w));
             GT_LanguageManager.addStringLocalization(this.getUnlocalizedName(tStack) + ".tooltip", w.getToolTip());
@@ -169,7 +167,7 @@ public class BW_MetaGenerated_Items extends GT_MetaGenerated_Item implements IRa
     @SuppressWarnings("unchecked")
     public void getSubItems(Item var1, CreativeTabs aCreativeTab, List aList) {
         for (Werkstoff werkstoff : werkstoffHashSet) {
-            if (werkstoff != null && ((werkstoff.getGenerationFeatures().toGenerate & Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes)) != 0) && ((werkstoff.getGenerationFeatures().blacklist & Werkstoff.GenerationFeatures.prefixLogic.get(this.orePrefixes)) == 0)) {
+            if (werkstoff != null && werkstoff.hasItemType(this.orePrefixes)) {
                 ItemStack tStack = new ItemStack(this, 1, werkstoff.getmID());
                 aList.add(tStack);
             }

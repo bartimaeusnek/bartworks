@@ -41,7 +41,7 @@ public class PrefixTextureLinker implements Runnable {
     public void run() {
         Arrays.stream(OrePrefixes.values())
                 .filter(prefixes -> prefixes != OrePrefixes.rod
-                        && prefixes.mTextureIndex == -1 && Werkstoff.GenerationFeatures.prefixLogic.get(prefixes) != 0)
+                        && prefixes.mTextureIndex == -1 && Werkstoff.GenerationFeatures.getPrefixDataRaw(prefixes) != 0)
                 .forEach(prefixes -> {
                     HashMap<TextureSet, Textures.ItemIcons.CustomIcon> curr = new HashMap<>();
                     Arrays.stream(TextureSet.class.getFields())

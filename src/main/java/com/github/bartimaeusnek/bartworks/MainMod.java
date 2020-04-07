@@ -72,6 +72,7 @@ import static gregtech.api.enums.GT_Values.VN;
                 + "after:GalacticraftMars; "
                 + "after:GalacticraftCore; "
                 + "after:Forestry; "
+                + "after:miscutils; "
     )
 public final class MainMod {
     public static final String NAME = "BartWorks";
