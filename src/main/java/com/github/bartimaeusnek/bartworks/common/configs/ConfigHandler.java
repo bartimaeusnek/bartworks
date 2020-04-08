@@ -41,6 +41,7 @@ public class ConfigHandler {
     public static int ross128BAID = -63;
     public static int ross128btier = 3;
     public static int ross128batier = 3;
+    public static int Ross128MaxTier = 4;
     public static int landerType = 3;
     public static int ross128bRuinChance = 512;
     public static int creativeScannerID;
@@ -108,6 +109,7 @@ public class ConfigHandler {
         ConfigHandler.ross128batier = ConfigHandler.c.get("CrossMod Interactions", "Rocket Tier - Ross128ba", 3, "The Rocket Tier for Ross128a").getInt(3);
         ConfigHandler.ross128bRuinChance = ConfigHandler.c.get("CrossMod Interactions", "Ruin Chance - Ross128b", 512, "Higher Values mean lesser Ruins.").getInt(512);
         ConfigHandler.Ross128Enabled = ConfigHandler.c.get("CrossMod Interactions", "Galacticraft - Activate Ross128 System", true, "If the Ross128 System should be activated, DO NOT CHANGE AFTER WORLD GENERATION").getBoolean(true);
+        ConfigHandler.Ross128MaxTier = ConfigHandler.c.get("CrossMod Interactions", "Galacticraft - Activate Ross128 System", 4, "set the maximum tier of what machines that can spawn").getInt(4);
         ConfigHandler.landerType = ConfigHandler.c.get("CrossMod Interactions", "LanderType", 3, "1 = Moon Lander, 2 = Landing Balloons, 3 = Asteroid Lander").getInt(3);
         ConfigHandler.disableMagicalForest = ConfigHandler.c.get("CrossMod Interactions", "Disable Magical Forest - Ross128b", false, "True disables the magical Forest Biome on Ross for more performance during World generation.").getBoolean(false);
 
