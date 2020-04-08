@@ -41,7 +41,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnegative;
-import java.io.Serializable;
 import java.util.*;
 
 import static com.github.bartimaeusnek.bartworks.util.BW_Util.calculateSv;
@@ -91,12 +90,6 @@ public class BWRecipes {
             6, 6, 1, 1, 1,
             "", 1, "", true, true //special handler
     );
-
-
-    public BWRecipes() {
-
-    }
-
 
     /**
      * @param machine 0 = biolab; 1 = BacterialVat; 2 = sAcidGenFuels; 3 = circuitAssemblyLine
@@ -246,13 +239,16 @@ public class BWRecipes {
         return sBacteriaVat.addRecipe(new BacteriaVatRecipe(true, aInputs, null, BioItemList.getPetriDish(aCulture), new int[]{}, aFluidInputs, aFluidOutputs, aDuration, aEUt, aSievert)) != null;
     }
 
-    public static class DynamicGTRecipe extends GT_Recipe implements Serializable {
+    public static class DynamicGTRecipe extends GT_Recipe {
+
         public DynamicGTRecipe(boolean aOptimize, ItemStack[] aInputs, ItemStack[] aOutputs, Object aSpecialItems, int[] aChances, FluidStack[] aFluidInputs, FluidStack[] aFluidOutputs, int aDuration, int aEUt, int aSpecialValue) {
             super(aOptimize, aInputs, aOutputs, aSpecialItems, aChances, aFluidInputs, aFluidOutputs, aDuration, aEUt, aSpecialValue);
         }
+
     }
 
     public static class BW_Recipe_Map_LiquidFuel extends GT_Recipe.GT_Recipe_Map_Fuel {
+
         public BW_Recipe_Map_LiquidFuel(Collection<GT_Recipe> aRecipeList, String aUnlocalizedName, String aLocalName, String aNEIName, String aNEIGUIPath, int aUsualInputCount, int aUsualOutputCount, int aMinimalInputItems, int aMinimalInputFluids, int aAmperage, String aNEISpecialValuePre, int aNEISpecialValueMultiplier, String aNEISpecialValuePost, boolean aShowVoltageAmperageInNEI, boolean aNEIAllowed) {
             super(aRecipeList, aUnlocalizedName, aLocalName, aNEIName, aNEIGUIPath, aUsualInputCount, aUsualOutputCount, aMinimalInputItems, aMinimalInputFluids, aAmperage, aNEISpecialValuePre, aNEISpecialValueMultiplier, aNEISpecialValuePost, aShowVoltageAmperageInNEI, aNEIAllowed);
         }
@@ -269,13 +265,14 @@ public class BWRecipes {
             return super.addFuel(ItemFluidCell.getUniversalFluidCell(fluidStack), Ic2Items.FluidCell.copy(), burn);
         }
 
-
     }
 
     public static class BacteriaVatRecipe extends GT_Recipe {
+
         public BacteriaVatRecipe(boolean aOptimize, ItemStack[] aInputs, ItemStack[] aOutputs, ItemStack aSpecialItems, int[] aChances, FluidStack[] aFluidInputs, FluidStack[] aFluidOutputs, int aDuration, int aEUt, int aSpecialValue) {
             super(aOptimize, aInputs, aOutputs, aSpecialItems, aChances, aFluidInputs, aFluidOutputs, aDuration, aEUt, aSpecialValue);
         }
+
     }
 
     public static class BacteriaVatRecipeMap extends BWRecipes.SpecialObjectSensitiveMap {
@@ -304,6 +301,7 @@ public class BWRecipes {
         }
 
         public GT_Recipe addRecipe(GT_Recipe aRecipe) {
+
             if (aRecipe.mInputs.length > 0 && GT_Utility.areStacksEqual(aRecipe.mInputs[aRecipe.mInputs.length - 1], GT_Utility.getIntegratedCircuit(32767)))
                 return aRecipe;
             else {

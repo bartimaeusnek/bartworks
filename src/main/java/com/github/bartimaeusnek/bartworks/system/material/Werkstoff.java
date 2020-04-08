@@ -22,10 +22,7 @@
 
 package com.github.bartimaeusnek.bartworks.system.material;
 
-import com.github.bartimaeusnek.bartworks.util.BW_ColorUtil;
-import com.github.bartimaeusnek.bartworks.util.BW_Util;
-import com.github.bartimaeusnek.bartworks.util.MurmurHash3;
-import com.github.bartimaeusnek.bartworks.util.Pair;
+import com.github.bartimaeusnek.bartworks.util.*;
 import com.github.bartimaeusnek.crossmod.thaumcraft.util.ThaumcraftHandler;
 import gregtech.api.enums.*;
 import gregtech.api.interfaces.IColorModulationContainer;
@@ -448,12 +445,12 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         multiple ingotWorth stuff 1000000000 (double, triple, quadruple, ingot/plates)
          */
         public short toGenerate = 0b0001001;
-        private static final HashMap<OrePrefixes, Integer> prefixLogic = new HashMap<>();
+        private static final NonNullWrappedHashMap<OrePrefixes, Integer> prefixLogic = new NonNullWrappedHashMap<>(0);
 
         public static int getPrefixDataRaw(OrePrefixes prefixes){
             if (prefixes == null)
                 throw new IllegalArgumentException("OrePrefixes is NULL!");
-            return Optional.ofNullable(GenerationFeatures.prefixLogic.get(prefixes)).orElse(0);
+            return GenerationFeatures.prefixLogic.get(prefixes);
         }
 
         public static void initPrefixLogic() {

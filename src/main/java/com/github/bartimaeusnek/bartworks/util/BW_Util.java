@@ -97,7 +97,9 @@ public class BW_Util {
             newTime >>= (tier - oldTier);
             newVoltage <<= 2 * (tier - oldTier);
         }
-        return new BWRecipes.DynamicGTRecipe(false, recipe.mInputs, recipe.mOutputs, recipe.mSpecialItems, recipe.mChances, recipe.mFluidInputs, recipe.mFluidOutputs, newTime, newVoltage, recipe.mSpecialValue);
+        recipe.mEUt = newVoltage;
+        recipe.mDuration = newTime;
+        return recipe;
     }
 
     public static String subscriptNumbers(String b){
@@ -188,9 +190,8 @@ public class BW_Util {
             special = 1;
         else if (aSpecialValue == (CLEANROOM))
             special = 2;
-        else if (aSpecialValue == (LOWGRAVITY | CLEANROOM)) {
+        else if (aSpecialValue == (LOWGRAVITY | CLEANROOM))
             special = 3;
-        }
         return special;
     }
 
@@ -247,7 +248,7 @@ public class BW_Util {
     }
 
     public static int getTierVoltage(int tier) {
-        return 8 << (2*tier);
+        return 8 << (2 * tier);
     }
 
     public static boolean areStacksEqualOrNull(ItemStack aStack1, ItemStack aStack2) {
@@ -392,7 +393,6 @@ public class BW_Util {
         }
     }
 
-
     public static long getnominalVoltage(GT_MetaTileEntity_MultiBlockBase base) {
         long rVoltage = 0L;
         long rAmperage = 0L;
@@ -415,6 +415,7 @@ public class BW_Util {
         }
         return tmp.toArray(new FluidStack[0]);
     }
+
     public static ItemStack[] getItemsFromInputBusses(GT_MetaTileEntity_MultiBlockBase aBaseMetaTileEntity){
         ArrayList<ItemStack> tmp = new ArrayList<>();
         for (GT_MetaTileEntity_Hatch_InputBus fip : aBaseMetaTileEntity.mInputBusses){
@@ -422,7 +423,6 @@ public class BW_Util {
         }
         return tmp.toArray(new ItemStack[0]);
     }
-
 
     public static Element createNewElement(String variableName, long aProtons, long aNeutrons, long aAdditionalMass, long aHalfLifeSeconds, String aDecayTo, String aName, boolean aIsIsotope){
         return EnumHelper.addEnum(Element.class,variableName,new Class[]{long.class, long.class, long.class, long.class, String.class, String.class, boolean.class}, new Object[]{aProtons, aNeutrons, aAdditionalMass, aHalfLifeSeconds, aDecayTo, aName, aIsIsotope});
@@ -440,7 +440,6 @@ public class BW_Util {
                 return EnumRarity.common;
         }
     }
-
 
     public static boolean check_layer(IGregTechTileEntity aBaseMetaTileEntity, int radius, int yLevel, int height, Block block, int dmg, int offset, boolean insideCheck, Block inside, int dmginside, int aBaseCasingIndex) {
         return BW_Util.check_layer(aBaseMetaTileEntity, radius, yLevel, height, block, dmg, offset, false, insideCheck, inside, dmginside, aBaseCasingIndex);

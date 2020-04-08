@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 bartimaeusnek
+ * Copyright (c) 2018-2020 bartimaeusnek
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -207,7 +207,7 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
         long tVoltage = this.getMaxInputVoltage();
         byte tTier = (byte) Math.max(1, GT_Utility.getTier(tVoltage));
         GT_Recipe tRecipe;
-        if (circuitMode > 0 && Arrays.stream(tInputs).anyMatch(e -> GT_Utility.areStacksEqual(e,GT_Utility.getIntegratedCircuit(circuitMode),true))){
+        if (circuitMode > 0 && Arrays.stream(tInputs).anyMatch(e -> GT_Utility.areStacksEqual(e, GT_Utility.getIntegratedCircuit(circuitMode),true))){
             List<ItemStack> modInputs = Arrays.stream(tInputs).filter(Objects::nonNull).filter(e -> !e.getItem().equals(GT_Utility.getIntegratedCircuit(circuitMode).getItem())).collect(Collectors.toList());
             modInputs.add(GT_Utility.getIntegratedCircuit(circuitMode));
             tInputs = modInputs.toArray(new ItemStack[0]);
