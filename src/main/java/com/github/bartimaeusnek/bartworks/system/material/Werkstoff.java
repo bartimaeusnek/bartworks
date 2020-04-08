@@ -453,7 +453,7 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         public static int getPrefixDataRaw(OrePrefixes prefixes){
             if (prefixes == null)
                 throw new IllegalArgumentException("OrePrefixes is NULL!");
-            return Optional.of(GenerationFeatures.prefixLogic.get(prefixes)).orElse(0);
+            return Optional.ofNullable(GenerationFeatures.prefixLogic.get(prefixes)).orElse(0);
         }
 
         public static void initPrefixLogic() {
