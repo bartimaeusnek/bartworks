@@ -22,6 +22,7 @@
 
 package com.github.bartimaeusnek.bartworks.system.worldgen;
 
+import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.util.Pair;
 import gregtech.api.GregTech_API;
 import gregtech.api.metatileentity.BaseMetaPipeEntity;
@@ -133,10 +134,10 @@ public abstract class MapGenRuins extends WorldGenerator {
             this.setMiscBlocks(new int[]{1},Blocks.log);
             this.statBlocks = new int[]{rand.nextInt(this.ToBuildWith[0].length)};
             int colored = rand.nextInt(15);
-            int tier = secureRandom.nextInt(6);
+            int tier = secureRandom.nextInt(ConfigHandler.Ross128MaxTier);
             boolean useColor = rand.nextBoolean();
             byte set = 0;
-            byte toSet = (byte) (rand.nextInt(6-tier)+1);
+            byte toSet = (byte) (rand.nextInt(ConfigHandler.Ross128MaxTier-tier)+1);
             short cablemeta = GT_WorldgenUtil.getCable(secureRandom,tier);
             byte treeinaRow = 0;
             boolean lastset = rand.nextBoolean();
