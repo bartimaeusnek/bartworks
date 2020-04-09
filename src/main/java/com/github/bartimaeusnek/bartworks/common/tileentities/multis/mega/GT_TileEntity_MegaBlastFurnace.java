@@ -250,29 +250,22 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
             this.mEfficiency = (10000 - (this.getIdealStatus() - this.getRepairStatus()) * 1000);
             this.mEfficiencyIncrease = 10000;
 
-            byte overclockCount;
-            long actualEUT = (long) (tRecipe.mEUt) * processed;
-//            if (actualEUT > Integer.MAX_VALUE) {
-//                byte divider = 0;
-//                while (actualEUT > Integer.MAX_VALUE) {
-//                    actualEUT = actualEUT / 2;
-//                    divider++;
-//                }
-//                overclockCount = this.calculateOverclockednessEBF((int) (actualEUT / (divider * 2)), tRecipe.mDuration * (divider * 2), nominalV);
-//            } else
-                overclockCount = this.calculateOverclockednessEBF(actualEUT, tRecipe.mDuration, nominalV);
+            long actualEUT = precutRecipeVoltage * processed;
+            byte overclockCount = this.calculateOverclockednessEBF(actualEUT, tRecipe.mDuration, nominalV);
+
             //In case recipe is too OP for that machine
             if (this.mMaxProgresstime == Integer.MAX_VALUE - 1 && this.lEUt == Integer.MAX_VALUE - 1)
                 return false;
-            if (this.lEUt > 0) {
+
+            if (this.lEUt > 0)
                 this.lEUt = (-this.lEUt);
-            }
+
             if (tHeatCapacityDivTiers > 0) {
-                this.lEUt = (int) (this.lEUt * (Math.pow(0.95, tHeatCapacityDivTiers)));
                 this.mMaxProgresstime >>= Math.min(tHeatCapacityDivTiers / 2, overclockCount); //extra free overclocking if possible
                 if (this.mMaxProgresstime < 1)
-                    this.mMaxProgresstime = 1;//no eu efficiency correction
+                    this.mMaxProgresstime = 1; //no eu efficiency correction
             }
+
             this.mMaxProgresstime = Math.max(1, this.mMaxProgresstime);
 
             this.polPtick = super.getPollutionPerTick(null) * processed;

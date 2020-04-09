@@ -29,8 +29,6 @@ import net.minecraftforge.common.config.Configuration;
 
 import java.util.Arrays;
 
-import static gregtech.api.enums.GT_Values.VN;
-
 public class ConfigHandler {
 
     private static final int IDU = 10 * 8 + 5;
@@ -116,8 +114,8 @@ public class ConfigHandler {
         ConfigHandler.teslastaff = ConfigHandler.c.get("System", "Enable Teslastaff", false, "Enables the Teslastaff, an Item used to destroy Electric Armors").getBoolean(false);
         ConfigHandler.newStuff = !ConfigHandler.c.get("System", "Disable non-original-GT-stuff", false, "This switch disables my new content, that is not part of the GT2 compat").getBoolean(false);
         ConfigHandler.BioLab = !ConfigHandler.c.get("System", "Disable BioLab", false, "This switch disables the BioLab, BioVat etc. If you use GT5.08 or equivalent, this needs to be turned off!").getBoolean(false);
-        ConfigHandler.cutoffTier = ConfigHandler.c.get("System", "Tier to nerf circuits", 5, "This switch sets the lowest unnerfed Circuit Recipe Tier. -1 to disable it completely.").getInt(5);
-        ConfigHandler.cutoffTier = (ConfigHandler.cutoffTier == -1 ? VN.length : ConfigHandler.cutoffTier);
+        ConfigHandler.cutoffTier = ConfigHandler.c.get("System", "Tier to nerf circuits", 5, "This switch sets the lowest unnerfed Circuit Recipe Tier. -1 to disable it completely.",-1, VOLTAGE_NAMES.length).getInt(5);
+        ConfigHandler.cutoffTier = (ConfigHandler.cutoffTier == -1 ? VOLTAGE_NAMES.length : ConfigHandler.cutoffTier);
         ConfigHandler.disableExtraGassesForEBF = ConfigHandler.c.get("System", "Disable Extra Gases for EBF", false, "This switch disables extra gas recipes for the EBF, i.e. Xenon instead of Nitrogen").getBoolean(false);
 
         ConfigHandler.mbWaterperSec = ConfigHandler.c.get("Singleblocks", "mL Water per Sec for the StirlingPump", 150).getInt(150);
@@ -149,7 +147,7 @@ public class ConfigHandler {
         ConfigHandler.landerType = ConfigHandler.c.get("CrossMod Interactions", "LanderType", 3, "1 = Moon Lander, 2 = Landing Balloons, 3 = Asteroid Lander").getInt(3);
         ConfigHandler.disableMagicalForest = ConfigHandler.c.get("CrossMod Interactions", "Disable Magical Forest - Ross128b", false, "True disables the magical Forest Biome on Ross for more performance during World generation.").getBoolean(false);
 
-        ConfigHandler.maxTierRoss = (byte) ConfigHandler.c.get("Ross Ruin Metas", "A_Ruin Machine Tiers",6,"", 0, VN.length).getInt(6);
+        ConfigHandler.maxTierRoss = (byte) ConfigHandler.c.get("Ross Ruin Metas", "A_Ruin Machine Tiers",6,"", 0, VOLTAGE_NAMES.length).getInt(6);
         ConfigHandler.metasForTiers = new int[4][maxTierRoss][];
 
         for (int i = 0; i < 4; i++) {
