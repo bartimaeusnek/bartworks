@@ -781,9 +781,9 @@ public class RecipeLoader {
 
                 if (LoaderReference.galacticgreg)
                     GT_Values.RA.addAssemblylineRecipe(
-                            ItemList.OreDrill4.get(1L), 128000,
+                            ItemList.OreDrill6.get(1L), 128000,
                             new ItemStack[]{
-                                    ItemList.OreDrill4.get(1L),
+                                    ItemList.OreDrill6.get(1L),
                                     GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9),
                                     Materials.Infinity.getPlates(3),
                                     ItemList.Electric_Motor_UV.get(9L),
