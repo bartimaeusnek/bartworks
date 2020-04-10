@@ -41,8 +41,12 @@ public class LocalisationLoader {
         GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.dehp.desc", "Get ALL the thermal energy!");
         GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.circuitassemblyline", "Cheaper Circuits?");
         GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.circuitassemblyline.desc", "Well, yes, but actually no...");
-        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer", "Ores from deep below!");
-        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer.desc", "Is this some kind of Ex-Nihilo?");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer1", "Ores from deep below!");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer1.desc", "Is this some kind of Ex-Nihilo?");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer2", "Ores from deep below 2! Electric Boogaloo!");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer2.desc", "Ex-Nihilo, but faster!");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer3", "Ores from deep below 3! Trinity Ex-Nihilo");
+        GT_LanguageManager.addStringLocalization("achievement.gt.blockmachines.voidminer3.desc", "3x the trouble, 3x the fun!");
     }
 
     public static void localiseAll(){
