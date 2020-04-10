@@ -60,7 +60,7 @@ public class TecTechResearchLoader {
                             WerkstoffLoader.Krypton.getFluidOrGas(20000)
                     },
                     ItemRegistry.voidminer[1].copy(),
-                    1280000,
+                    216000,
                     BW_Util.getMachineVoltageFromTier(7)
             );
 
@@ -84,7 +84,7 @@ public class TecTechResearchLoader {
                             WerkstoffLoader.Oganesson.getFluidOrGas(20000)
                     },
                     ItemRegistry.voidminer[2].copy(),
-                    2560000,
+                    432000,
                     BW_Util.getMachineVoltageFromTier(8)
             );
 

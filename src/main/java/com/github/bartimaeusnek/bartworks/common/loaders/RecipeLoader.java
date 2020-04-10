@@ -776,7 +776,7 @@ public class RecipeLoader {
                                 WerkstoffLoader.Neon.getFluidOrGas(20000),
                         },
                         ItemRegistry.voidminer[0].copy(),
-                        480000,
+                        108000,
                         BW_Util.getMachineVoltageFromTier(6)
                 );
             }
@@ -800,7 +800,7 @@ public class RecipeLoader {
                                     WerkstoffLoader.Krypton.getFluidOrGas(20000)
                             },
                             ItemRegistry.voidminer[1].copy(),
-                            1280000,
+                            216000,
                             BW_Util.getMachineVoltageFromTier(7)
                     );
 
@@ -821,7 +821,7 @@ public class RecipeLoader {
                                     WerkstoffLoader.Oganesson.getFluidOrGas(20000)
                             },
                             ItemRegistry.voidminer[2].copy(),
-                            2560000,
+                            432000,
                             BW_Util.getMachineVoltageFromTier(8)
                     );
                 }
