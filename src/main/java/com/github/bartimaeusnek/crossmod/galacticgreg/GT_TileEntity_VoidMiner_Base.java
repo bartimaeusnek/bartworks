@@ -266,7 +266,7 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
             for (int i = 0; i < NOBLE_GASSES.length; i++) {
                 FluidStack ng = NOBLE_GASSES[i];
                 if (ng.isFluidEqual(s)) {
-                    multiplier = TIER_MULTIPLIER + (2 << (i == NOBLE_GASSES.length - 1 ? (i+2) : (i+1)));
+                    multiplier = TIER_MULTIPLIER * (2 << (i == NOBLE_GASSES.length - 1 ? (i+2) : (i+1)));
                     return s;
                 }
             }
