@@ -52,10 +52,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -291,7 +288,7 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
             multiplier = TIER_MULTIPLIER;
     }
     
-    private void getDropMapBartworks(ModDimensionDef finalDef,int aID) {
+    private void getDropMapBartworks(ModDimensionDef finalDef, int aID) {
         Consumer<BW_OreLayer> addToList = makeAddToList();
         if (aID == ConfigHandler.ross128BID)
             BW_WorldGenRoss128b.sList.forEach(addToList);
@@ -323,7 +320,7 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
                 .findFirst().orElse(null);
     }
     
-    private void addOresVeinsBartworks(ModDimensionDef finalDef,Consumer<BW_OreLayer> addToList) {
+    private void addOresVeinsBartworks(ModDimensionDef finalDef, Consumer<BW_OreLayer> addToList) {
         try {
             Set space = GalacticGreg.oreVeinWorldgenList.stream()
                     .filter(gt_worldgen -> gt_worldgen.mEnabled && gt_worldgen instanceof BW_Worldgen_Ore_Layer_Space && ((BW_Worldgen_Ore_Layer_Space) gt_worldgen).isEnabledForDim(finalDef))
@@ -347,10 +344,7 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
     }
     
     private void handleExtraDrops(int id) {
-        List<Pair<Pair<Integer,Boolean>,Float>> extraDrops = getExtraDropsDimMap().get(id);
-        if (extraDrops != null)
-            extraDrops.forEach(e -> dropmap.put(e.getKey(),e.getValue()));
-
+        Optional.ofNullable(getExtraDropsDimMap().get(id)).ifPresent(e -> e.forEach(f -> dropmap.put(f.getKey(), f.getValue())));
     }
 
     private void calculateTotalWeight() {
@@ -367,12 +361,17 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
         }
     }
 
+    private void handleModDimDef(int id) {
+        Optional.ofNullable(makeModDimDef()).ifPresent(def -> {
+            handleDimBasedDrops(def, id);
+            getDropMapBartworks(def, id);
+        });
+    }
+
     private void calculateDropMap() {
         dropmap = new HashMap<>();
         int id = this.getBaseMetaTileEntity().getWorld().provider.dimensionId;
-        final ModDimensionDef finalDef = makeModDimDef();
-        handleDimBasedDrops(finalDef,id);
-        getDropMapBartworks(finalDef,id);
+        handleModDimDef(id);
         handleExtraDrops(id);
         calculateTotalWeight();
     }
