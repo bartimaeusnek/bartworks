@@ -758,7 +758,73 @@ public class RecipeLoader {
                     }
             );
 
+            if (LoaderReference.galacticgreg) {
+                GT_Values.RA.addAssemblylineRecipe(
+                        ItemList.OreDrill4.get(1L),
+                        BW_Util.getMachineVoltageFromTier(6),
+                        new Object[]{
+                                ItemList.OreDrill4.get(1L),
+                                GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Europium, 9L),
+                                Materials.Europium.getPlates(3),
+                                ItemList.Electric_Motor_LuV.get(9L),
+                                ItemList.Sensor_LuV.get(9L),
+                                ItemList.Field_Generator_LuV.get(9L),
+                                GT_OreDictUnificator.get(OrePrefixes.screw, Materials.Europium, 36L)
+                        },
+                        new FluidStack[]{
+                                Materials.SolderingAlloy.getMolten(1440),
+                                WerkstoffLoader.Neon.getFluidOrGas(20000),
+                        },
+                        ItemRegistry.voidminer[0].copy(),
+                        480000,
+                        BW_Util.getMachineVoltageFromTier(6)
+                );
+            }
+
             if (!LoaderReference.tectech) {
+                if (LoaderReference.galacticgreg) {
+                    GT_Values.RA.addAssemblylineRecipe(
+                            ItemRegistry.voidminer[0].copy(),
+                            BW_Util.getMachineVoltageFromTier(7),
+                            new Object[]{
+                                    ItemRegistry.voidminer[0].copy(),
+                                    GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.BlackPlutonium, 9L),
+                                    Materials.BlackPlutonium.getPlates(3),
+                                    ItemList.Electric_Motor_ZPM.get(9L),
+                                    ItemList.Sensor_ZPM.get(9L),
+                                    ItemList.Field_Generator_ZPM.get(9L),
+                                    GT_OreDictUnificator.get(OrePrefixes.screw, Materials.BlackPlutonium, 36L)
+                            },
+                            new FluidStack[]{
+                                    Materials.SolderingAlloy.getMolten(1440),
+                                    WerkstoffLoader.Krypton.getFluidOrGas(20000)
+                            },
+                            ItemRegistry.voidminer[1].copy(),
+                            1280000,
+                            BW_Util.getMachineVoltageFromTier(7)
+                    );
+
+                    GT_Values.RA.addAssemblylineRecipe(
+                            ItemRegistry.voidminer[1].copy(),
+                            BW_Util.getMachineVoltageFromTier(8),
+                            new Object[]{
+                                    ItemRegistry.voidminer[1].copy(),
+                                    GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9L),
+                                    Materials.Neutronium.getPlates(3),
+                                    ItemList.Electric_Motor_UV.get(9L),
+                                    ItemList.Sensor_UV.get(9L),
+                                    ItemList.Field_Generator_UV.get(9L),
+                                    GT_OreDictUnificator.get(OrePrefixes.screw, Materials.Neutronium, 36L)
+                            },
+                            new FluidStack[]{
+                                    Materials.SolderingAlloy.getMolten(1440),
+                                    WerkstoffLoader.Oganesson.getFluidOrGas(20000)
+                            },
+                            ItemRegistry.voidminer[2].copy(),
+                            2560000,
+                            BW_Util.getMachineVoltageFromTier(8)
+                    );
+                }
                 GT_Values.RA.addAssemblylineRecipe(
                         ItemList.Machine_Multi_ImplosionCompressor.get(1L), 24000,
                         new ItemStack[]{
@@ -778,27 +844,6 @@ public class RecipeLoader {
                         240000,
                         BW_Util.getMachineVoltageFromTier(8)
                 );
-
-                if (LoaderReference.galacticgreg)
-                    GT_Values.RA.addAssemblylineRecipe(
-                            ItemList.OreDrill6.get(1L), 128000,
-                            new ItemStack[]{
-                                    ItemList.OreDrill6.get(1L),
-                                    GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9),
-                                    Materials.Infinity.getPlates(3),
-                                    ItemList.Electric_Motor_UV.get(9L),
-                                    ItemList.Sensor_UV.get(9L),
-                                    ItemList.Field_Generator_UV.get(9L)
-                            },
-                            new FluidStack[]{
-                                    Materials.SolderingAlloy.getMolten(1440),
-                                    WerkstoffLoader.Neon.getFluidOrGas(20000),
-                                    WerkstoffLoader.Oganesson.getFluidOrGas(10000)
-                            },
-                            ItemRegistry.voidminer.copy(),
-                            480000,
-                            BW_Util.getMachineVoltageFromTier(8)
-                    );
             }
             GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Input_HV.get(64), Materials.LiquidAir.getCells(1), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.compressedHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));
             GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Output_HV.get(64), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.giantOutputHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));

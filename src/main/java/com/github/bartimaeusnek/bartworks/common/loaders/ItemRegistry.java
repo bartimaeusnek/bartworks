@@ -42,7 +42,7 @@ import com.github.bartimaeusnek.bartworks.common.tileentities.multis.mega.GT_Til
 import com.github.bartimaeusnek.bartworks.common.tileentities.multis.mega.GT_TileEntity_MegaVacuumFreezer;
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.*;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
-import com.github.bartimaeusnek.crossmod.galacticgreg.GT_TileEntity_VoidMiner;
+import com.github.bartimaeusnek.crossmod.galacticgreg.GT_TileEntity_VoidMiners;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.Materials;
@@ -137,7 +137,7 @@ public class ItemRegistry {
     public static ItemStack[] acidGens = new ItemStack[3];
     public static ItemStack[] megaMachines = new ItemStack[3];
     public static ItemStack dehp;
-    public static ItemStack voidminer;
+    public static ItemStack[] voidminer = new ItemStack[3];
     public static ItemStack thtr;
     public static ItemStack eic;
     public static ItemStack cal;
@@ -200,8 +200,11 @@ public class ItemRegistry {
             ItemRegistry.giantOutputHatch = new GT_MetaTileEntity_GiantOutputHatch(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 9, "GiantOutputHatch", "Giant Output Hatch").getStackForm(1L);
             ItemRegistry.megaMachines[2] = new GT_TileEntity_MegaDistillTower(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 10, "MegaDistillationTower", "Mega Distillation Tower").getStackForm(1L);
 
-            if (LoaderReference.galacticgreg)
-                ItemRegistry.voidminer = new GT_TileEntity_VoidMiner(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 11,"VoidMiner","Void Miner").getStackForm(1L);
+            if (LoaderReference.galacticgreg) {
+                ItemRegistry.voidminer[2] = new GT_TileEntity_VoidMiners.VMUV(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 11, "VoidMiner3", "Void Miner III").getStackForm(1L);
+                ItemRegistry.voidminer[1] = new GT_TileEntity_VoidMiners.VMZPM(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 12, "VoidMiner2", "Void Miner II").getStackForm(1L);
+                ItemRegistry.voidminer[0] = new GT_TileEntity_VoidMiners.VMLUV(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 13, "VoidMiner1", "Void Miner I").getStackForm(1L);
+            }
         }
     }
 }

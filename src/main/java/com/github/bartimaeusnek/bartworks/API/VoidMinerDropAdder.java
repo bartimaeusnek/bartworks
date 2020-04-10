@@ -22,10 +22,6 @@
 
 package com.github.bartimaeusnek.bartworks.API;
 
-import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
-import com.github.bartimaeusnek.bartworks.util.Pair;
-import com.google.common.collect.ArrayListMultimap;
-import gregtech.api.enums.Materials;
 import gregtech.api.interfaces.ISubTagContainer;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,28 +29,18 @@ import java.lang.reflect.Method;
 
 public class VoidMinerDropAdder {
 
-   static Method getExtraDropsDimMap;
+   private static Method getExtraDropsDimMap;
 
-   static{
+   static {
        try {
-           getExtraDropsDimMap = Class.forName("com.github.bartimaeusnek.crossmod.galacticgreg.GT_TileEntity_VoidMiner").getMethod("getExtraDropsDimMap");
+           getExtraDropsDimMap = Class.forName("com.github.bartimaeusnek.crossmod.galacticgreg.GT_TileEntity_VoidMiner_Base").getMethod("addMatierialToDimensionList",int.class, ISubTagContainer.class, float.class);
        } catch (NoSuchMethodException | ClassNotFoundException e) {
            e.printStackTrace();
        }
    }
 
     public static void addDropsToDim(int dimID, ISubTagContainer material, float chance) throws InvocationTargetException, IllegalAccessException {
-        Pair<Integer,Boolean> stuffpair;
-        if (material instanceof Werkstoff){
-            stuffpair = new Pair<>((int) ((Werkstoff)material).getmID(),true);
-        }
-        else if (material instanceof Materials){
-            stuffpair = new Pair<>(((Materials)material).mMetaItemSubID,true);
-        }
-        else
-            throw new IllegalArgumentException("material neither an instance of Materials nor Werkstoff!");
-        Pair<Pair<Integer,Boolean>,Float> chancepair = new Pair<>(stuffpair,chance);
-        ((ArrayListMultimap) getExtraDropsDimMap.invoke(null)).put(dimID,chancepair);
+        getExtraDropsDimMap.invoke(null, dimID, material, chance);
     }
 
 }

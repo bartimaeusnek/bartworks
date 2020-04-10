@@ -29,6 +29,7 @@ import bloodasp.galacticgreg.api.ModDimensionDef;
 import bloodasp.galacticgreg.bartworks.BW_Worldgen_Ore_Layer_Space;
 import bloodasp.galacticgreg.bartworks.BW_Worldgen_Ore_SmallOre_Space;
 import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
+import com.github.bartimaeusnek.bartworks.system.material.Werkstoff;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_OreLayer;
 import com.github.bartimaeusnek.bartworks.system.oregen.BW_WorldGenRoss128b;
@@ -38,16 +39,15 @@ import com.github.bartimaeusnek.bartworks.util.Pair;
 import com.google.common.collect.ArrayListMultimap;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.GT_Values;
-import gregtech.api.enums.ItemList;
 import gregtech.api.enums.Materials;
-import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
+import gregtech.api.interfaces.ISubTagContainer;
 import gregtech.api.objects.XSTR;
 import gregtech.api.util.GT_LanguageManager;
 import gregtech.common.GT_Worldgen_GT_Ore_Layer;
 import gregtech.common.GT_Worldgen_GT_Ore_SmallPieces;
 import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_DrillerBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.fluids.FluidStack;
@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
 import static bloodasp.galacticgreg.registry.GalacticGregRegistry.getModContainers;
 
 @SuppressWarnings({"rawtypes", "unchecked","unused"})
-public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
+public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_DrillerBase {
 
     private static ArrayListMultimap<Integer,Pair<Pair<Integer,Boolean>, Float>> extraDropsDimMap = ArrayListMultimap.create();
     private static FluidStack[] NOBLE_GASSES = new FluidStack[]{
@@ -77,36 +77,44 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
     private float totalWeight;
     private int multiplier = 1;
 
+    protected byte TIER_MULTIPLIER;
+
+    public static void addMatierialToDimensionList(int DimensionID, ISubTagContainer Material, float weight) {
+        if (Material instanceof Materials)
+            getExtraDropsDimMap().put(DimensionID, new Pair<>(new Pair<>(((Materials)Material).mMetaItemSubID,false), weight));
+        else if (Material instanceof Werkstoff)
+            getExtraDropsDimMap().put(DimensionID, new Pair<>(new Pair<>((int) ((Werkstoff)Material).getmID(),true), weight));
+    }
+
     static {
-        getExtraDropsDimMap().put(0,new Pair<>(new Pair<>(WerkstoffLoader.Tellurium.getBridgeMaterial().mMetaItemSubID,false),8.0f));
+        addMatierialToDimensionList(0, Materials.Tellurium, 8.0f);
     }
 
-    public GT_TileEntity_VoidMiner(int aID, String aName, String aNameRegional) {
+    public GT_TileEntity_VoidMiner_Base(int aID, String aName, String aNameRegional, int tier) {
         super(aID, aName, aNameRegional);
+        TIER_MULTIPLIER = (byte) Math.max(tier, 1);
     }
 
-    public GT_TileEntity_VoidMiner(String aName) {
+    @Override
+    public void saveNBTData(NBTTagCompound aNBT) {
+        super.saveNBTData(aNBT);
+        aNBT.setByte("TIER_MULTIPLIER",TIER_MULTIPLIER);
+    }
+
+    @Override
+    public void loadNBTData(NBTTagCompound aNBT) {
+        super.loadNBTData(aNBT);
+        TIER_MULTIPLIER = aNBT.getByte("TIER_MULTIPLIER");
+    }
+
+    public GT_TileEntity_VoidMiner_Base(String aName, int tier) {
         super(aName);
-    }
-
-    @Override
-    protected ItemList getCasingBlockItem() {
-        return ItemList.Casing_UV;
-    }
-
-    @Override
-    protected Materials getFrameMaterial() {
-        return Materials.Neutronium;
-    }
-
-    @Override
-    protected int getCasingTextureIndex() {
-        return 8;
+        TIER_MULTIPLIER = (byte) tier;
     }
 
     @Override
     protected int getMinTier() {
-        return 8;
+        return this.TIER_MULTIPLIER + 5; //min tier = LuV
     }
 
     @Override
@@ -139,14 +147,9 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
     }
 
     @Override
-    public IMetaTileEntity newMetaEntity(IGregTechTileEntity aTileEntity) {
-        return new GT_TileEntity_VoidMiner(this.mName);
-    }
-
-    @Override
     public String[] getDescription() {
         String casingName = GT_LanguageManager.getTranslation(GT_LanguageManager.getTranslateableItemStackName(this.getCasingBlockItem().get(1L)));
-        return new String[]{"Controller Block for the Void Miner ",
+        return new String[]{"Controller Block for the Void Miner "+ GT_Values.VN[this.getMinTier()],
                 "Size(WxHxD): 3x7x3",
                 "Controller (Front middle at bottom)",
                 "3x1x3 Base of " + casingName,
@@ -159,7 +162,7 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
                 "Consumes " + GT_Values.V[this.getMinTier()] + "EU/t",
                 "Can be supplied with 2L/s of Neon(x4), Krypton(x8), Xenon(x16) or Oganesson(x64)",
                 "for higher outputs.",
-                "Will output two Ores per Second depending on the Dimension it is build in",
+                "Will output "+(2*TIER_MULTIPLIER)+" Ores per Second depending on the Dimension it is build in",
                 StatCollector.translateToLocal("tooltip.bw.1.name") + ChatColorHelper.DARKGREEN + " BartWorks"
         };
     }
@@ -263,7 +266,7 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
             for (int i = 0; i < NOBLE_GASSES.length; i++) {
                 FluidStack ng = NOBLE_GASSES[i];
                 if (ng.isFluidEqual(s)) {
-                    multiplier = (2 << (i == NOBLE_GASSES.length - 1 ? (i+2) : (i+1)));
+                    multiplier = TIER_MULTIPLIER + (2 << (i == NOBLE_GASSES.length - 1 ? (i+2) : (i+1)));
                     return s;
                 }
             }
@@ -285,7 +288,7 @@ public class GT_TileEntity_VoidMiner extends GT_MetaTileEntity_DrillerBase {
     private void handleFluidConsumption() {
         FluidStack storedNobleGas = getNobleGasInputAndSetMultiplier();
         if (storedNobleGas == null || !consumeNobleGas(storedNobleGas))
-            multiplier = 1;
+            multiplier = TIER_MULTIPLIER;
     }
     
     private void getDropMapBartworks(ModDimensionDef finalDef,int aID) {

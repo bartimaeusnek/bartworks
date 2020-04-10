@@ -38,30 +38,57 @@ public class TecTechResearchLoader {
     @SuppressWarnings("deprecation")
     public static void runResearches() {
 
-        if (LoaderReference.galacticgreg)
+        if (LoaderReference.galacticgreg) {
+
             TT_recipeAdder.addResearchableAssemblylineRecipe(
-                    ItemList.OreDrill4.get(1L),
-                    128000,
-                    64,
-                    BW_Util.getMachineVoltageFromTier(8),
-                    12,
+                    ItemRegistry.voidminer[0].copy(),
+                    1024000,
+                    256,
+                    BW_Util.getMachineVoltageFromTier(7),
+                    24,
                     new Object[]{
-                            ItemList.OreDrill4.get(1L),
-                            GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9),
-                            Materials.Infinity.getPlates(3),
-                            ItemList.Electric_Motor_UV.get(9L),
-                            ItemList.Sensor_UV.get(9L),
-                            ItemList.Field_Generator_UV.get(9L)
+                            ItemRegistry.voidminer[0].copy(),
+                            GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.BlackPlutonium, 9L),
+                            Materials.BlackPlutonium.getPlates(3),
+                            ItemList.Electric_Motor_ZPM.get(9L),
+                            ItemList.Sensor_ZPM.get(9L),
+                            ItemList.Field_Generator_ZPM.get(9L),
+                            GT_OreDictUnificator.get(OrePrefixes.screw, Materials.BlackPlutonium, 36L)
                     },
                     new FluidStack[]{
                             Materials.SolderingAlloy.getMolten(1440),
-                            WerkstoffLoader.Neon.getFluidOrGas(20000),
-                            WerkstoffLoader.Oganesson.getFluidOrGas(10000)
+                            WerkstoffLoader.Krypton.getFluidOrGas(20000)
                     },
-                    ItemRegistry.voidminer.copy(),
-                    480000,
+                    ItemRegistry.voidminer[1].copy(),
+                    1280000,
+                    BW_Util.getMachineVoltageFromTier(7)
+            );
+
+            TT_recipeAdder.addResearchableAssemblylineRecipe(
+                    ItemRegistry.voidminer[1].copy(),
+                    8192000,
+                    512,
+                    BW_Util.getMachineVoltageFromTier(8),
+                    64,
+                    new Object[]{
+                            ItemRegistry.voidminer[1].copy(),
+                            GT_OreDictUnificator.get(OrePrefixes.frameGt, Materials.Neutronium, 9L),
+                            Materials.Neutronium.getPlates(3),
+                            ItemList.Electric_Motor_UV.get(9L),
+                            ItemList.Sensor_UV.get(9L),
+                            ItemList.Field_Generator_UV.get(9L),
+                            GT_OreDictUnificator.get(OrePrefixes.screw, Materials.Neutronium, 36L)
+                    },
+                    new FluidStack[]{
+                            Materials.SolderingAlloy.getMolten(1440),
+                            WerkstoffLoader.Oganesson.getFluidOrGas(20000)
+                    },
+                    ItemRegistry.voidminer[2].copy(),
+                    2560000,
                     BW_Util.getMachineVoltageFromTier(8)
             );
+
+        }
 
         TT_recipeAdder.addResearchableAssemblylineRecipe(
                 ItemList.Machine_Multi_ImplosionCompressor.get(1L),
