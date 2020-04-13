@@ -383,10 +383,17 @@ public class BioRecipeLoader {
     }
 
     public static void runOnServerStarted(){
-        for (GT_Recipe recipe : GT_Recipe.GT_Recipe_Map.sFermentingRecipes.mRecipeList){
-            FluidStack[] flInput = new FluidStack[]{new FluidStack(recipe.mFluidInputs[0], recipe.mFluidInputs[0].amount*100)};
-            FluidStack[] flOutput = new FluidStack[]{new FluidStack(recipe.mFluidOutputs[0], recipe.mFluidOutputs[0].amount)};
-            BWRecipes.instance.addBacterialVatRecipe(new ItemStack[]{null},BioCultureLoader.generalPurposeFermentingBacteria,flInput,flOutput,recipe.mDuration > 10 ? recipe.mDuration/10 : recipe.mDuration,recipe.mEUt,GT_Utility.getTier(recipe.mEUt));
-        }
+        GT_Recipe.GT_Recipe_Map.sFermentingRecipes.mRecipeList.forEach(
+                recipe ->
+                        BWRecipes.instance.addBacterialVatRecipe(
+                                new ItemStack[]{null},
+                                BioCultureLoader.generalPurposeFermentingBacteria,
+                                recipe.mFluidInputs,
+                                recipe.mFluidOutputs,
+                                recipe.mDuration,
+                                recipe.mEUt,
+                                GT_Utility.getTier(recipe.mEUt)
+                        )
+        );
     }
 }
