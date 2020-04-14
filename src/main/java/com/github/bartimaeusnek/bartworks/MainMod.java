@@ -187,6 +187,12 @@ public final class MainMod {
 
         runOnServerStarted();
         StaticRecipeChangeLoaders.unificationRecipeEnforcer();
+        if (LoaderReference.miscutils)
+            if (GT_Recipe.GT_Recipe_Map.sMappings.stream().noneMatch(r -> r.mUnlocalizedName.equals("gt.recipe.simplewasher")))
+                throw new UnsupportedClassVersionError(
+                        "Due to recent changes in GT++, bartworks can no longer continue to start with this version.\n" +
+                        " If you wish to continue using both mods,\n" +
+                        " Please install a version between 1.7.05.45 - 1.7.05.53.");
     }
 
     private static boolean recipesAdded;
