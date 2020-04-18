@@ -560,15 +560,16 @@ public class BW_Util {
     }
 
     private static Block bw_realglasRef;
-    static {
-        try {
-            bw_realglasRef = (Block) Class.forName("com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry").getField("bw_realglas").get(null);
-        } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static byte calculateGlassTier(@Nonnull Block block, @Nonnegative byte meta) {
+
+        if (bw_realglasRef == null){
+            try {
+                bw_realglasRef = (Block) Class.forName("com.github.bartimaeusnek.bartworks.common.loaders.ItemRegistry").getField("bw_realglas").get(null);
+            } catch (IllegalAccessException | NoSuchFieldException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
         if (block.equals(bw_realglasRef))
             return meta == 12 ? 5 : meta > 1 && meta < 6 ? (byte) (meta + 3) : 4;

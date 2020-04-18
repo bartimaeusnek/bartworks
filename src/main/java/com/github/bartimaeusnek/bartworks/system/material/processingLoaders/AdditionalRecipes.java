@@ -304,8 +304,8 @@ public class AdditionalRecipes {
         GT_Recipe.GT_Recipe_Map.sBlastRecipes.addRecipe(false, new ItemStack[]{WerkstoffLoader.Zirconium.get(dust, 10), WerkstoffLoader.YttriumOxide.get(dust)}, new ItemStack[]{WerkstoffLoader.YttriumOxide.get(dust), WerkstoffLoader.CubicZirconia.get(gemFlawed, 40)}, null, null, new FluidStack[]{Materials.Oxygen.getGas(20000)}, null, 57600, BW_Util.getMachineVoltageFromTier(3), 2953);
         //Tellurium
         GT_Values.RA.addBlastRecipe(GT_OreDictUnificator.get(crushed, Materials.Lead, 10L), GT_Utility.getIntegratedCircuit(17), GT_Values.NF, GT_Values.NF, Materials.Lead.getIngots(10), Materials.Tellurium.getNuggets(20), 800, BW_Util.getMachineVoltageFromTier(2), 722);
-        GT_Values.RA.addFusionReactorRecipe(Materials.Plutonium.getMolten(16), Materials.Beryllium.getMolten(16), WerkstoffLoader.Californium.getMolten(16), 250, 49152, 480000000);
-        GT_Values.RA.addFusionReactorRecipe(WerkstoffLoader.Californium.getMolten(16), WerkstoffLoader.Calcium.getMolten(16), WerkstoffLoader.Oganesson.getFluidOrGas(16), 500, 49152, 600000000);
+        GT_Values.RA.addFusionReactorRecipe(Materials.Plutonium.getMolten(48), Materials.Beryllium.getMolten(48), WerkstoffLoader.Californium.getMolten(48), 250, 49152, 480000000);
+        GT_Values.RA.addFusionReactorRecipe(WerkstoffLoader.Californium.getMolten(48), WerkstoffLoader.Calcium.getMolten(48), WerkstoffLoader.Oganesson.getFluidOrGas(48), 500, 49152, 600000000);
         GT_Values.RA.addDistillationTowerRecipe(Materials.LiquidAir.getFluid(100000000), new FluidStack[]{Materials.Nitrogen.getGas(78084000), Materials.Oxygen.getGas(20946000), Materials.Argon.getGas(934000), Materials.CarbonDioxide.getGas(40700), WerkstoffLoader.Neon.getFluidOrGas(1818), Materials.Helium.getGas(524), Materials.Methane.getGas(180), WerkstoffLoader.Krypton.getFluidOrGas(114), Materials.Hydrogen.getGas(55), WerkstoffLoader.Xenon.getFluidOrGas(9)}, null, 7500, BW_Util.getMachineVoltageFromTier(4));
         GT_Values.RA.addAutoclaveRecipe(WerkstoffLoader.MagnetoResonaticDust.get(dust), WerkstoffLoader.Neon.getFluidOrGas(1000), WerkstoffLoader.MagnetoResonaticDust.get(gemChipped, 9), 9000, 4500, BW_Util.getMachineVoltageFromTier(5));
         GT_Values.RA.addAutoclaveRecipe(WerkstoffLoader.MagnetoResonaticDust.get(dust), WerkstoffLoader.Krypton.getFluidOrGas(1000), WerkstoffLoader.MagnetoResonaticDust.get(gem), 10000, 4500, BW_Util.getMachineVoltageFromTier(5));
@@ -363,7 +363,7 @@ public class AdditionalRecipes {
             sUltraHugeNaquadahReactorFuels.addRecipe(true, new ItemStack[]{WerkstoffLoader.Tiberium.get(stickLong)}, new ItemStack[]{}, null, null, null, 0, 0, 125000);
         } catch (NullPointerException | IllegalAccessException ignored) {}
 
-        new LoadItemContainers().run();
+        LoadItemContainers.run();
 
         GT_Values.RA.addCannerRecipe(ItemList.Large_Fluid_Cell_TungstenSteel.get(1L), WerkstoffLoader.Tiberium.get(dust, 3), BW_NonMeta_MaterialItems.TiberiumCell_1.get(1L), null, 30, 16);
         GT_Values.RA.addAssemblerRecipe(BW_NonMeta_MaterialItems.TiberiumCell_1.get(2L), GT_OreDictUnificator.get(stick, Materials.TungstenSteel, 4L), BW_NonMeta_MaterialItems.TiberiumCell_2.get(1L), 100, 400);

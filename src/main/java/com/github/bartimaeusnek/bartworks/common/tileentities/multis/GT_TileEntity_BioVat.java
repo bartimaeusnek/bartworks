@@ -204,7 +204,9 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
 
             this.mNeededSievert = conditions[3];
 
-            if (conditions[2] == 0 ? (this.mSievert < this.mNeededSievert || this.mGlassTier < conditions[0]) : (this.mSievert != conditions[3] || this.mGlassTier < conditions[0]))
+            if (conditions[2] == 0 ?
+                    (this.mSievert < this.mNeededSievert || this.mGlassTier < conditions[0])
+                    : (this.mSievert != conditions[3] || this.mGlassTier < conditions[0]))
                 return false;
 
             int times = 1;
@@ -311,12 +313,12 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
                     }
                 }
 
-        if (blockcounter > 18)
-            if (this.mRadHatches.size() < 2)
-                if (this.mOutputHatches.size() == 1)
-                    if (this.mMaintenanceHatches.size() == 1)
-                        if (this.mInputHatches.size() > 0)
-                            return this.mEnergyHatches.size() > 0;
+        if (blockcounter > 18 &&
+            this.mRadHatches.size() < 2 &&
+            this.mOutputHatches.size() == 1 &&
+            this.mMaintenanceHatches.size() == 1 &&
+            this.mInputHatches.size() > 0)
+                return this.mEnergyHatches.size() > 0;
 
         return false;
     }
