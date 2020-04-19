@@ -71,6 +71,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 import static com.github.bartimaeusnek.bartworks.util.BW_Util.subscriptNumbers;
@@ -96,6 +97,12 @@ public class WerkstoffLoader {
     public static ItemList ringMold;
     public static ItemList boltMold;
     public static boolean gtnhGT = false;
+    //CLS
+    private static Class alexiilMinecraftDisplayer;
+    private static Field isRegisteringBartWorks;
+    private static Class alexiilProgressDisplayer;
+    private static Method displayProgress;
+    //end CLS
 
     public static void setUp() {
         try {
@@ -134,6 +141,23 @@ public class WerkstoffLoader {
         }
         bottle.mDefaultStackSize = 1;
         Werkstoff.GenerationFeatures.initPrefixLogic();
+        
+        //CLS
+        System.out.println("Uing reflection on CLS");
+        try {
+            alexiilMinecraftDisplayer = Class.forName("alexiil.mods.load.MinecraftDisplayer");
+        } catch (Throwable e) {}
+        try {
+            isRegisteringBartWorks = alexiilMinecraftDisplayer.getField("isRegisteringBartWorks");
+        } catch (Throwable e) {}
+        
+        try {
+            alexiilProgressDisplayer = Class.forName("alexiil.mods.load.ProgressDisplayer");
+        } catch (Throwable e) {}
+        try {
+            displayProgress = alexiilProgressDisplayer.getDeclaredMethod("displayProgress", String.class, float.class);
+        } catch (Throwable e) {}
+        //end CLS
     }
 
     //TODO:
@@ -1413,6 +1437,28 @@ public class WerkstoffLoader {
             long timepre = System.nanoTime();
             ProgressManager.ProgressBar progressBar = ProgressManager.push("Register BW Materials", Werkstoff.werkstoffHashSet.size() + 1);
             DebugLog.log("Loading Recipes" + (System.nanoTime() - timepre));
+            //CLS
+            int sizeStep = 0;
+            int sizeStep2 = 0;
+            int size = 0;
+            int originalSizeStep = 0;
+            boolean clsLoaded = false;
+            if (Loader.isModLoaded("betterloadingscreen")) {
+                clsLoaded = true;
+                //alexiil.mods.load.MinecraftDisplayer.isRegisteringBartWorks = true;
+                try {
+                    isRegisteringBartWorks.set(null, true);
+                } catch (Throwable e) {}
+                if (Werkstoff.werkstoffHashSet.size() >= 100) {
+                    sizeStep = Werkstoff.werkstoffHashSet.size()/100-1;
+                    sizeStep2 = 1;
+                } else {
+                    sizeStep = Werkstoff.werkstoffHashSet.size();
+                    sizeStep2 = sizeStep;
+                }
+                originalSizeStep = sizeStep;
+            }
+            //end CLS
             for (Werkstoff werkstoff : Werkstoff.werkstoffHashSet) {
                 long timepreone = System.nanoTime();
                 DebugLog.log("Werkstoff is null or id < 0 ? " + (werkstoff == null || werkstoff.getmID() < 0) + " " + (System.nanoTime() - timepreone));
@@ -1420,6 +1466,22 @@ public class WerkstoffLoader {
                     progressBar.step("");
                     continue;
                 }
+                //CLS
+                if (clsLoaded) {
+                    sizeStep--;
+                    //alexiil.mods.load.ProgressDisplayer.displayProgress(werkstoff.getDefaultName(), ((float)size)/10000);
+                    try {
+                        displayProgress.invoke(null, werkstoff.getDefaultName(), ((float)size)/10000);
+                    } catch (Throwable e) {}
+                    if (sizeStep == 0 && Werkstoff.werkstoffHashSet.size() >= 100) {
+                        sizeStep = originalSizeStep;
+                        //size+=10;
+                        size+=sizeStep2;
+                    } else {
+                        size+=sizeStep2;
+                    }
+                }
+                //end CLS
                 DebugLog.log("Werkstoff: " + werkstoff.getDefaultName() + " " + (System.nanoTime() - timepreone));
                 DebugLog.log("Loading Dusts Recipes" + " " + (System.nanoTime() - timepreone));
                 addDustRecipes(werkstoff);
@@ -1454,6 +1516,14 @@ public class WerkstoffLoader {
                 DebugLog.log("Done" + " " + (System.nanoTime() - timepreone));
                 progressBar.step(werkstoff.getDefaultName());
             }
+            //CLS
+            if (clsLoaded) {
+                //alexiil.mods.load.MinecraftDisplayer.isRegisteringBartWorks = false;
+                try {
+                    isRegisteringBartWorks.set(null, false);
+                } catch (Throwable e) {}
+            }
+            //end CLS
             progressBar.step("Load Additional Recipes");
             AdditionalRecipes.run();
             ProgressManager.pop(progressBar);
