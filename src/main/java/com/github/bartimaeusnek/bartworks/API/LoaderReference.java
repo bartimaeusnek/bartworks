@@ -55,6 +55,7 @@ public class LoaderReference {
     public static boolean Botany;
     public static boolean EnderIO;
     public static boolean HardcoreEnderExpension;
+    public static boolean betterloadingscreen;
 
     public static void init() {
         Natura = Loader.isModLoaded("Natura");
@@ -82,5 +83,6 @@ public class LoaderReference {
         Botany = Loader.isModLoaded("Botany");
         EnderIO = Loader.isModLoaded("EnderIO");
         HardcoreEnderExpension = Loader.isModLoaded("HardcoreEnderExpension");
+        betterloadingscreen = Loader.isModLoaded("betterloadingscreen");
     }
 }
