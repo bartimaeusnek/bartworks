@@ -52,6 +52,9 @@ public class BW_GUIContainer_Windmill extends GT_GUIContainerMetaTile_Machine {
         return GT_LanguageManager.addStringLocalization("Interaction_DESCRIPTION_Index_" + aKey, aEnglish, false);
     }
 
+    private static final int DIVIDER = 125;
+    private byte last = 0;
+
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
         this.mc.getTextureManager().bindTexture(new ResourceLocation(MainMod.MOD_ID, "textures/GUI/GUI_Windmill.png"));
 
@@ -59,13 +62,22 @@ public class BW_GUIContainer_Windmill extends GT_GUIContainerMetaTile_Machine {
         int y = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
         if (this.mContainer.mMaxProgressTime > 0) {
-            this.drawTexturedModalRect(x + 85, y + 27, 176, 0, 31, 31);
+            if (System.currentTimeMillis() / DIVIDER % 40 == 30)
+                this.drawTexturedModalRect(x + 85, y + 27, 176, (last = 96), 32, 32);
+            else if (System.currentTimeMillis() / DIVIDER % 40 == 20)
+                this.drawTexturedModalRect(x + 85, y + 27, 176, (last = 64), 32, 32);
+            else if (System.currentTimeMillis() / DIVIDER % 40 == 10)
+                this.drawTexturedModalRect(x + 85, y + 27, 176, (last = 32), 32, 32);
+            else if (System.currentTimeMillis() / DIVIDER % 40 == 0)
+                this.drawTexturedModalRect(x + 85, y + 27, 176, (last = 0), 32, 32);
+            else
+                this.drawTexturedModalRect(x + 85, y + 27, 176, last, 32, 32);
         }
 
         //Soft Mallet
         if (this.mContainer.mDisplayErrorCode == 0) {
             if (this.mContainer.mActive == 0) {
-                this.drawTexturedModalRect(x + 66, y + 66, 176, 32, 15, 15);
+                this.drawTexturedModalRect(x + 66, y + 66, 176, 128, 15, 15);
             }
         }
     }
