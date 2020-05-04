@@ -25,6 +25,7 @@ package com.github.bartimaeusnek.crossmod;
 import com.github.bartimaeusnek.bartworks.API.LoaderReference;
 import com.github.bartimaeusnek.bartworks.MainMod;
 import com.github.bartimaeusnek.crossmod.GTpp.loader.RadioHatchCompat;
+import com.github.bartimaeusnek.crossmod.galacticgreg.VoidMinerLoader;
 import com.github.bartimaeusnek.crossmod.galacticraft.GalacticraftProxy;
 import com.github.bartimaeusnek.crossmod.tectech.TecTechResearchLoader;
 import com.github.bartimaeusnek.crossmod.thaumcraft.CustomAspects;
@@ -85,6 +86,8 @@ public class BartWorksCrossmod {
             RadioHatchCompat.run();
         if (LoaderReference.tectech)
             TecTechResearchLoader.runResearches();
+        if(LoaderReference.dreamcraft)//todo fix it yourself
+            VoidMinerLoader.initDeepDark();
     }
 
 //    @Mod.EventHandler
