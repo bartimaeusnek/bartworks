@@ -93,12 +93,16 @@ public class BW_GlasBlocks extends BW_Blocks {
         this.connectedTexture = new IIcon[16];
         for (int i = 0; i < this.textureNames.length; i++) {
             this.texture[i] = par1IconRegister.registerIcon(this.textureNames[i]);
+            String[] splitname = this.textureNames[0].split(":");
             for (int j = 0; j < 16; j++) {
-                this.connectedTexture[j] = par1IconRegister.registerIcon(this.textureNames[0] + "_" + j);
+                this.connectedTexture[j] = par1IconRegister.registerIcon(
+                        splitname[0]
+                                + ":connectedTex/"
+                                + splitname[1] + '/'
+                                + splitname[1] + '_' + j);
             }
         }
     }
-
 
     @Override
     @SideOnly(Side.CLIENT)

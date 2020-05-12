@@ -41,6 +41,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -52,8 +53,10 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static gregtech.api.enums.GT_Values.*;
 
@@ -222,26 +225,74 @@ public class BW_Util {
         return itemStack != null && GT_OreDictUnificator.getAssociation(itemStack) != null && GT_OreDictUnificator.getAssociation(itemStack).mPrefix != null && GT_OreDictUnificator.getAssociation(itemStack).mMaterial != null && GT_OreDictUnificator.getAssociation(itemStack).mMaterial.mMaterial != null;
     }
 
-//    public static int getRecipeHash(GT_Recipe recipe) {
-//        int mInputItemsRawHash = Arrays.stream(recipe.mInputs).filter(Objects::nonNull).mapToInt(e ->
-//                Objects.hash(Item.getIdFromItem(e.getItem()),e.getItemDamage(), e.getTagCompound())
-//        ).hashCode();
-//        int mInputFluidRawHash = Arrays.stream(recipe.mFluidInputs).filter(Objects::nonNull).mapToInt(e ->
-//                Objects.hash(e.getFluidID(),e.amount,e.tag)
-//        ).hashCode();
-//        int mOutputItemRawHash = Arrays.stream(recipe.mOutputs).filter(Objects::nonNull).mapToInt(e ->
-//                Objects.hash(Item.getIdFromItem(e.getItem()),e.getItemDamage(), e.getTagCompound())
-//        ).hashCode();
-//        int mOutputFluidRawHash = Arrays.stream(recipe.mFluidOutputs).filter(Objects::nonNull).mapToInt(e ->
-//                Objects.hash(e.getFluidID(),e.amount,e.tag)
-//        ).hashCode();
-//        int mChancesRawHash = Arrays.hashCode(recipe.mChances);
-//        int others = Objects.hash(recipe.mEUt,recipe.mSpecialValue,recipe.mDuration);
-//        int specialItem = Objects.hash(recipe.mSpecialItems instanceof ItemStack ?
-//                ((ItemStack) (recipe.mSpecialItems)).getItem() : recipe.mSpecialItems instanceof Item ? recipe.mSpecialItems : 0 ,
-//                recipe.mSpecialItems instanceof ItemStack ? ((ItemStack) (recipe.mSpecialItems)).getItemDamage() : 0);
-//        return Objects.hash(mInputItemsRawHash,mInputFluidRawHash,mOutputItemRawHash,mOutputFluidRawHash,mChancesRawHash,others,specialItem);
-//    }
+    public static Map<ItemStack, ItemStack[]> getInputsFromOutput(Collection<GT_Recipe> gt_recipes, ItemStack... inputs) {
+        return gt_recipes.stream()
+                .filter(ar ->
+                        Arrays.stream(inputs)
+                                .anyMatch(st -> GT_Utility.areStacksEqual(st, ar.mOutputs[0])))
+                .collect(Collectors.toMap(k -> k.mOutputs[0], k -> k.mInputs));
+    }
+
+    public static Map<ItemStack, ItemStack[]> getAsslineInputsFromOutputs(ItemStack... inputs) {
+        return GT_Recipe.GT_Recipe_AssemblyLine.sAssemblylineRecipes.stream()
+                .filter(ar ->
+                        Arrays.stream(inputs)
+                                .anyMatch(st -> GT_Utility.areStacksEqual(st, ar.mOutput)))
+                .collect(Collectors.toMap(k -> k.mOutput, k -> k.mInputs));
+    }
+
+    public static int abstractHashGTRecipe(GT_Recipe recipe) {
+        int hash = 31;
+        hash += recipe.mDuration / 20 * 31;
+        hash += GT_Utility.getTier(recipe.mEUt) * 31;
+        hash += BW_Util.specialToByte(recipe.mSpecialValue) * 31;
+        hash += recipe.mInputs.length * 31;
+        for (ItemStack mInput : recipe.mInputs) {
+            if (mInput != null) {
+                hash += mInput.stackSize * 31;
+                hash += Item.getIdFromItem(mInput.getItem()) * 31;
+            }
+        }
+        hash += recipe.mOutputs.length * 31;
+        for (ItemStack mOutput : recipe.mOutputs) {
+            if (mOutput != null) {
+                hash += mOutput.stackSize * 31;
+                hash += Item.getIdFromItem(mOutput.getItem()) * 31;
+            }
+        }
+        hash += recipe.mFluidInputs.length * 31;
+        for (FluidStack mInput : recipe.mFluidInputs) {
+            if (mInput != null) {
+                hash += mInput.amount * 31;
+                hash += mInput.getFluidID() * 31;
+            }
+        }
+        hash += recipe.mFluidOutputs.length * 31;
+        for (FluidStack mOutput : recipe.mFluidOutputs) {
+            if (mOutput != null) {
+                hash += mOutput.amount * 31;
+                hash += mOutput.getFluidID() * 31;
+            }
+        }
+        return hash;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public static <T> T[] copyAndRemoveNulls(T[] input, Class<T> clazz) {
+        List<T> ret = Arrays.stream(input)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (ret.size() <= 0)
+            return (T[]) Array.newInstance(clazz, 0);
+
+        T[] retArr = (T[]) Array.newInstance(clazz, ret.size());
+
+        for (int i = 0; i < ret.size(); i++)
+            retArr[i] = ret.get(i);
+
+        return retArr;
+    }
 
     public static int getMachineVoltageFromTier(int tier) {
         return (int) (30 * Math.pow(4, (tier - 1)));
@@ -399,8 +450,7 @@ public class BW_Util {
 
         for (GT_MetaTileEntity_Hatch_Energy tHatch : base.mEnergyHatches) {
             if (GT_MetaTileEntity_MultiBlockBase.isValidMetaTileEntity(tHatch)) {
-                if (rVoltage == 0 || rVoltage > tHatch.getBaseMetaTileEntity().getInputVoltage())
-                    rVoltage = tHatch.getBaseMetaTileEntity().getInputVoltage();
+                rVoltage = Math.max(tHatch.getBaseMetaTileEntity().getInputVoltage(), rVoltage);
                 rAmperage += tHatch.getBaseMetaTileEntity().getInputAmperage();
             }
         }
@@ -746,9 +796,11 @@ public class BW_Util {
                             break;
                     }
                     ItemStack tStack = GT_OreDictUnificator.getFirstOre(in, 1);
-                    if (tStack == null) tRemoveRecipe = false;
-                    else tItemStackMap.put(chr, tStack);
-                    in = aRecipe[idx + 1] = in.toString();
+                    if (tStack == null)
+                        tRemoveRecipe = false;
+                    else
+                        tItemStackMap.put(chr, tStack);
+                    aRecipe[idx + 1] = in.toString();
                 } else if (in instanceof String) {
                     if (in.equals(OreDictNames.craftingChest.toString()))
                         tItemDataMap.put(chr, new ItemData(Materials.Wood, M * 8));
