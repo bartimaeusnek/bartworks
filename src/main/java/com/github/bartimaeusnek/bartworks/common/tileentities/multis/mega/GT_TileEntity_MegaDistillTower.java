@@ -26,6 +26,7 @@ import com.github.bartimaeusnek.bartworks.common.configs.ConfigHandler;
 import com.github.bartimaeusnek.bartworks.util.BW_Util;
 import com.github.bartimaeusnek.bartworks.util.ChatColorHelper;
 import com.github.bartimaeusnek.bartworks.util.MathUtils;
+import com.github.bartimaeusnek.bartworks.util.MegaUtils;
 import com.google.common.collect.ArrayListMultimap;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.GT_Values;
@@ -249,5 +250,10 @@ public class GT_TileEntity_MegaDistillTower extends GT_MetaTileEntity_Distillati
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean drainEnergyInput(long aEU) {
+        return MegaUtils.drainEnergyMegaVanilla(this, aEU);
     }
 }

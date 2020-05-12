@@ -40,6 +40,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public class BW_TileEntity_HeatedWaterPump extends TileEntity implements ITileDropsContent, IFluidHandler, IFluidTank, ITileWithGUI, ITileAddsInformation, ITileHasDifferentTextureSides {
@@ -113,6 +114,7 @@ public class BW_TileEntity_HeatedWaterPump extends TileEntity implements ITileDr
 
     @Override
     public void updateEntity() {
+        pushWaterToAdjacentTiles();
         if (checkPreUpdate())
             return;
 
@@ -120,6 +122,37 @@ public class BW_TileEntity_HeatedWaterPump extends TileEntity implements ITileDr
         handleRefuel();
         handleWaterGeneration();
         causePollution();
+    }
+
+    private void pushWaterToAdjacentTiles() {
+        Arrays.stream(ForgeDirection.values(), 0, 6) //All but Unknown
+                .forEach(
+                        direction -> Optional.ofNullable(
+                                this.worldObj.getTileEntity(
+                                        this.xCoord + direction.offsetX,
+                                        this.yCoord + direction.offsetY,
+                                        this.zCoord + direction.offsetZ)
+                        ).ifPresent(
+                                te -> {
+                                    if (te instanceof IFluidHandler) {
+                                        IFluidHandler tank = (IFluidHandler) te;
+                                        if (tank.canFill(direction.getOpposite(), this.outputstack.getFluid())) {
+                                            int drainage;
+                                            if ((drainage = tank.fill(direction.getOpposite(), this.outputstack, false)) > 0) {
+                                                tank.fill(direction.getOpposite(), this.outputstack, true);
+                                                this.drain(drainage, true);
+                                            }
+                                        }
+                                    } else if (te instanceof IFluidTank) {
+                                        IFluidTank tank = (IFluidTank) te;
+                                        int drainage;
+                                        if ((drainage = tank.fill(this.outputstack, false)) > 0) {
+                                            tank.fill(this.outputstack, true);
+                                            this.drain(drainage, true);
+                                        }
+                                    }
+                                }
+                        ));
     }
 
     private void causePollution() {
