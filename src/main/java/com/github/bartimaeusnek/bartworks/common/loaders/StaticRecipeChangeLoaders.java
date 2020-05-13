@@ -427,8 +427,12 @@ public class StaticRecipeChangeLoaders {
 
         for (ItemStack stack : recipe.mInputs) {
             if (stack != null) {
-                ret += stack.stackSize;
+                ret += Math.max(stack.stackSize, 1);
             }
+        }
+
+        while (ret > 14) {
+            ret /= 10;
         }
 
         if (recipe.mFluidInputs.length != 0)
@@ -508,8 +512,12 @@ public class StaticRecipeChangeLoaders {
         ItemStack[] old = BW_Util.copyAndRemoveNulls(recipe.mInputs, ItemStack.class);
         ItemStack[] nu = Arrays.copyOf(old, old.length + 1);
 
-        nu[old.length] = GT_Utility.getIntegratedCircuit(
-                getLogicFuntion(gt_recipe_map, recipe, counts)
+        nu[old.length] = GT_Utility.getIntegratedCircuit( //Max 24, Min 1
+                Math.min(
+                        Math.max(
+                                getLogicFuntion(gt_recipe_map, recipe, counts),
+                                1),
+                        24)
         );
         recipe.mInputs = nu;
 

@@ -43,6 +43,10 @@ import com.github.bartimaeusnek.bartworks.common.tileentities.multis.mega.GT_Til
 import com.github.bartimaeusnek.bartworks.common.tileentities.tiered.*;
 import com.github.bartimaeusnek.bartworks.system.material.WerkstoffLoader;
 import com.github.bartimaeusnek.crossmod.galacticgreg.GT_TileEntity_VoidMiners;
+import com.github.bartimaeusnek.crossmod.tectech.tileentites.tiered.TT_MetaTileEntity_LowPowerLaserBox;
+import com.github.bartimaeusnek.crossmod.tectech.tileentites.tiered.TT_MetaTileEntity_LowPowerLaserDynamo;
+import com.github.bartimaeusnek.crossmod.tectech.tileentites.tiered.TT_MetaTileEntity_LowPowerLaserHatch;
+import com.github.bartimaeusnek.crossmod.tectech.tileentites.tiered.TT_MetaTileEntity_Pipe_Energy_LowPower;
 import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.api.enums.GT_Values;
 import gregtech.api.enums.Materials;
@@ -144,6 +148,9 @@ public class ItemRegistry {
     public static ItemStack compressedHatch;
     public static ItemStack giantOutputHatch;
 
+    public static ItemStack[][][] TecTechLaserAdditions = new ItemStack[3][4][4];
+    public static ItemStack TecTechPipeEnergyLowPower;
+
     public static void run() {
         if (newStuff) {
             GameRegistry.registerBlock(ItemRegistry.bw_fake_glasses, "BW_FakeGlasBlock");
@@ -204,6 +211,25 @@ public class ItemRegistry {
                 ItemRegistry.voidminer[2] = new GT_TileEntity_VoidMiners.VMUV(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 11, "VoidMiner3", "Void Miner III").getStackForm(1L);
                 ItemRegistry.voidminer[1] = new GT_TileEntity_VoidMiners.VMZPM(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 12, "VoidMiner2", "Void Miner II").getStackForm(1L);
                 ItemRegistry.voidminer[0] = new GT_TileEntity_VoidMiners.VMLUV(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 13, "VoidMiner1", "Void Miner I").getStackForm(1L);
+            }
+            if (LoaderReference.tectech) {
+                TecTechPipeEnergyLowPower = new TT_MetaTileEntity_Pipe_Energy_LowPower(ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 14, "pipe.lowpowerlaser", "Low Power Laser Pipe").getStackForm(1L);
+                int startID = ConfigHandler.IDOffset + GT_Values.VN.length * 8 + 15;
+                for (int amps = 32; amps <= 128; amps += 32) {
+                    for (int tier = 4; tier < 8; tier++) {
+                        TecTechLaserAdditions[0][amps / 32 - 1][tier - 4] = new TT_MetaTileEntity_LowPowerLaserBox(startID++, GT_Values.VN[tier] + "_LPLaser_Converter_" + amps, GT_Values.VN[tier] + " " + amps + "A/t" + " Low Power Laser Converter", tier, amps).getStackForm(1L);
+                    }
+                }
+                for (int amps = 32; amps <= 128; amps += 32) {
+                    for (int tier = 4; tier < 8; tier++) {
+                        TecTechLaserAdditions[1][amps / 32 - 1][tier - 4] = new TT_MetaTileEntity_LowPowerLaserHatch(startID++, GT_Values.VN[tier] + "_LPLaser_Hatch_" + amps, GT_Values.VN[tier] + " " + amps + "A/t" + " Low Power Laser Target Hatch", tier, amps).getStackForm(1L);
+                    }
+                }
+                for (int amps = 32; amps <= 128; amps += 32) {
+                    for (int tier = 4; tier < 8; tier++) {
+                        TecTechLaserAdditions[2][amps / 32 - 1][tier - 4] = new TT_MetaTileEntity_LowPowerLaserDynamo(startID++, GT_Values.VN[tier] + "_LPLaser_Dynamo_" + amps, GT_Values.VN[tier] + " " + amps + "A/t" + " Low Power Laser Source Hatch", tier, amps).getStackForm(1L);
+                    }
+                }
             }
         }
     }
