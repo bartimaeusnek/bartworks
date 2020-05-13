@@ -844,7 +844,91 @@ public class RecipeLoader {
                         240000,
                         BW_Util.getMachineVoltageFromTier(8)
                 );
+            } else {
+                ItemStack[][] converters = ItemRegistry.TecTechLaserAdditions[0];
+                ItemStack[][] input = ItemRegistry.TecTechLaserAdditions[1];
+                ItemStack[][] dynamo = ItemRegistry.TecTechLaserAdditions[2];
+
+                ItemList[] emitters = {
+                        ItemList.Emitter_EV,
+                        ItemList.Emitter_IV,
+                        ItemList.Emitter_LuV,
+                        ItemList.Emitter_ZPM
+                };
+
+                ItemList[] sensors = {
+                        ItemList.Sensor_EV,
+                        ItemList.Sensor_IV,
+                        ItemList.Sensor_LuV,
+                        ItemList.Sensor_ZPM
+                };
+
+                OrePrefixes[] prefixes = {
+                        OrePrefixes.cableGt04,
+                        OrePrefixes.cableGt08,
+                        OrePrefixes.cableGt12,
+                        OrePrefixes.cableGt16
+                };
+
+                GT_Values.RA.addAssemblerRecipe(
+                        new ItemStack[]{
+                                ItemList.Circuit_Parts_GlassFiber.get(32),
+                                GT_OreDictUnificator.get(OrePrefixes.foil, Materials.Silver, 8),
+                                WerkstoffLoader.CubicZirconia.get(OrePrefixes.gemExquisite, 2)
+                        },
+                        Materials.Polytetrafluoroethylene.getMolten(72),
+                        new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), 1, ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
+                        200,
+                        BW_Util.getMachineVoltageFromTier(4)
+                );
+
+                for (int j = 0; j < 4; j++) {
+                    for (int i = 0; i < 4; i++) {
+                        ItemStack converter = converters[j][i];
+                        ItemStack eInput = input[j][i];
+                        ItemStack eDynamo = dynamo[j][i];
+
+                        GT_Values.RA.addAssemblerRecipe(
+                                new ItemStack[]{
+                                        new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), ((j + 1) * 16), ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
+                                        WerkstoffLoader.CubicZirconia.get(OrePrefixes.lens),
+                                        GT_OreDictUnificator.get(prefixes[j], cables[i + 4], 8),
+                                        emitters[i].get(2 * (j + 1)),
+                                        sensors[i].get(2 * (j + 1)),
+                                        ItemList.TRANSFORMERS[4 + i].get(2 * (j + 1)),
+                                },
+                                Materials.SolderingAlloy.getMolten(144 * i * (j + 1)),
+                                converter,
+                                200 * (j + 1),
+                                BW_Util.getMachineVoltageFromTier(4 + i));
+                        GT_Values.RA.addAssemblerRecipe(
+                                new ItemStack[]{
+                                        new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), ((j + 1) * 16), ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
+                                        WerkstoffLoader.CubicZirconia.get(OrePrefixes.lens),
+                                        GT_OreDictUnificator.get(prefixes[j], cables[i + 4], 8),
+                                        sensors[i].get(2 * (j + 1)),
+                                        ItemList.HATCHES_ENERGY[4 + i].get(2 * (j + 1)),
+                                },
+                                Materials.SolderingAlloy.getMolten(144 * i * (j + 1)),
+                                eInput,
+                                200 * (j + 1),
+                                BW_Util.getMachineVoltageFromTier(4 + i));
+                        GT_Values.RA.addAssemblerRecipe(
+                                new ItemStack[]{
+                                        new ItemStack(ItemRegistry.TecTechPipeEnergyLowPower.getItem(), ((j + 1) * 16), ItemRegistry.TecTechPipeEnergyLowPower.getItemDamage()),
+                                        WerkstoffLoader.CubicZirconia.get(OrePrefixes.lens),
+                                        GT_OreDictUnificator.get(prefixes[j], cables[i + 4], 8),
+                                        emitters[i].get(2 * (j + 1)),
+                                        ItemList.HATCHES_DYNAMO[4 + i].get(2 * (j + 1)),
+                                },
+                                Materials.SolderingAlloy.getMolten(144 * i * (j + 1)),
+                                eDynamo,
+                                200 * (j + 1),
+                                BW_Util.getMachineVoltageFromTier(4 + i));
+                    }
+                }
             }
+
             GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Input_HV.get(64), Materials.LiquidAir.getCells(1), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.compressedHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));
             GT_Recipe.GT_Recipe_Map.sAssemblerRecipes.add(new BWRecipes.DynamicGTRecipe(false, new ItemStack[]{ItemList.Hatch_Output_HV.get(64), GT_Utility.getIntegratedCircuit(17)}, new ItemStack[]{ItemRegistry.giantOutputHatch.copy()}, null, null, null, null, 300, BW_Util.getMachineVoltageFromTier(3), 0));
 
