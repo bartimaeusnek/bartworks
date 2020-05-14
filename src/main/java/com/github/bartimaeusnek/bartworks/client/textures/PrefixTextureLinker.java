@@ -31,14 +31,19 @@ import gregtech.api.enums.Textures;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class PrefixTextureLinker implements Runnable {
 
-    public static HashMap<OrePrefixes, HashMap<TextureSet, Textures.ItemIcons.CustomIcon>> texMap = new HashMap<>();
+    public static Map<OrePrefixes, HashMap<TextureSet, Textures.ItemIcons.CustomIcon>> texMap = new HashMap<>();
+    public static Map<TextureSet, Short> blockTexMap = new HashMap<>();
 
-    @Override
-    public void run() {
+    private static void fillBlockTexMap() {
+        blockTexMap.put(TextureSet.SET_QUARTZ, TextureSet.INDEX_block4);
+    }
+
+    private static void fillItemTexMap() {
         Arrays.stream(OrePrefixes.values())
                 .filter(prefixes -> prefixes != OrePrefixes.rod
                         && prefixes.mTextureIndex == -1 && Werkstoff.GenerationFeatures.getPrefixDataRaw(prefixes) != 0)
@@ -58,5 +63,11 @@ public class PrefixTextureLinker implements Runnable {
                             });
                     texMap.put(prefixes, curr);
                 });
+    }
+
+    @Override
+    public void run() {
+        fillItemTexMap();
+        fillBlockTexMap();
     }
 }

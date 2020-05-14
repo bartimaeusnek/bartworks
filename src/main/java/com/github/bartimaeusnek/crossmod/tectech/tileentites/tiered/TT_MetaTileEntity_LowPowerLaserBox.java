@@ -115,15 +115,15 @@ public class TT_MetaTileEntity_LowPowerLaserBox extends TT_Abstract_LowPowerLase
         ITexture[][][] rTextures = new ITexture[12][17][];
 
         for (byte i = -1; i < 16; ++i) {
-            rTextures[0][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI[this.mTier]};
-            rTextures[1][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI[this.mTier]};
-            rTextures[2][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI[this.mTier]};
+            rTextures[0][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI[this.mTier]};
+            rTextures[1][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI[this.mTier]};
+            rTextures[2][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI[this.mTier]};
             rTextures[3][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], com.github.technus.tectech.thing.metaTileEntity.Textures.OVERLAYS_ENERGY_IN_LASER_TT[this.mTier]};
             rTextures[4][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], com.github.technus.tectech.thing.metaTileEntity.Textures.OVERLAYS_ENERGY_IN_LASER_TT[this.mTier]};
             rTextures[5][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], com.github.technus.tectech.thing.metaTileEntity.Textures.OVERLAYS_ENERGY_IN_LASER_TT[this.mTier]};
-            rTextures[6][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI[this.mTier]};
-            rTextures[7][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI[this.mTier]};
-            rTextures[8][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_IN_MULTI[this.mTier]};
+            rTextures[6][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI[this.mTier]};
+            rTextures[7][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI[this.mTier]};
+            rTextures[8][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], Textures.BlockIcons.OVERLAYS_ENERGY_OUT_MULTI[this.mTier]};
             rTextures[9][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], com.github.technus.tectech.thing.metaTileEntity.Textures.OVERLAYS_ENERGY_OUT_LASER_TT[this.mTier]};
             rTextures[10][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], com.github.technus.tectech.thing.metaTileEntity.Textures.OVERLAYS_ENERGY_OUT_LASER_TT[this.mTier]};
             rTextures[11][i + 1] = new ITexture[]{Textures.BlockIcons.MACHINE_CASINGS[this.mTier][i + 1], com.github.technus.tectech.thing.metaTileEntity.Textures.OVERLAYS_ENERGY_OUT_LASER_TT[this.mTier]};

@@ -200,6 +200,13 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
                 break;
         }
 
+        Optional<Pair<ISubTagContainer, Integer>> firstContent;
+        if (this.CONTENTS.size() == 1 && (firstContent = this.CONTENTS.stream().findFirst()).isPresent()) {
+            ISubTagContainer firstContentSubTagContainer = firstContent.get().getKey();
+            if (firstContent.get().getValue() == 1 && firstContentSubTagContainer instanceof Materials)
+                this.getGenerationFeatures().setExtension();
+        }
+
         Werkstoff.werkstoffHashSet.add(this);
         Werkstoff.werkstoffHashMap.put(this.mID, this);
         Werkstoff.werkstoffNameHashMap.put(this.defaultName, this);
@@ -431,6 +438,7 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
     }
 
     public static class GenerationFeatures {
+        long toGenerate = 0b0001001;
         //logic gate shit
         /*
         dust 1
@@ -444,13 +452,10 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         meta crafting metal 100000000 (gears, screws, bolts, springs)
         multiple ingotWorth stuff 1000000000 (double, triple, quadruple, ingot/plates)
          */
-        public short toGenerate = 0b0001001;
+        private boolean isExtension;
         private static final NonNullWrappedHashMap<OrePrefixes, Integer> prefixLogic = new NonNullWrappedHashMap<>(0);
 
-        public static int getPrefixDataRaw(OrePrefixes prefixes){
-            if (prefixes == null)
-                throw new IllegalArgumentException("OrePrefixes is NULL!");
-            return GenerationFeatures.prefixLogic.get(prefixes);
+        public GenerationFeatures() {
         }
 
         public static void initPrefixLogic() {
@@ -493,10 +498,10 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.toolHeadWrench, 0b10000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.toolHeadSaw, 0b10000000);
 
+            Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.screw, 0b100000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.gearGt, 0b100000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.gearGtSmall, 0b100000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.bolt, 0b100000000);
-            Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.screw, 0b100000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.ring, 0b100000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.spring, 0b100000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.springSmall, 0b100000000);
@@ -514,6 +519,20 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.ingotQuintuple, 0b1000000000);
         }
 
+        public void setExtension() {
+            isExtension = !isExtension;
+        }
+
+        public static int getPrefixDataRaw(OrePrefixes prefixes) {
+            if (prefixes == null)
+                throw new IllegalArgumentException("OrePrefixes is NULL!");
+            return GenerationFeatures.prefixLogic.get(prefixes);
+        }
+
+        public boolean isExtension() {
+            return isExtension;
+        }
+
         //public byte toGenerateSecondary = 0b0000000;
         public byte blacklist;
 
@@ -529,21 +548,21 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         public byte extraRecipes;
 
         public Werkstoff.GenerationFeatures setBlacklist(OrePrefixes p) {
-            if (p == OrePrefixes.dustTiny || p == OrePrefixes.dust || p == OrePrefixes.dustSmall || p == OrePrefixes.crateGtDust) {
-                this.blacklist |= 1;
-            } else
-                this.blacklist |= p.mMaterialGenerationBits;
+            this.blacklist |= getPrefixDataRaw(p);
             return this;
         }
 
+        @Deprecated
         public boolean hasDusts() {
             return (this.toGenerate & 0b1) != 0;
         }
 
+        @Deprecated
         public boolean hasGems() {
             return (this.toGenerate & 0b100) != 0;
         }
 
+        @Deprecated
         public boolean hasOres() {
             return (this.toGenerate & 0b1000) != 0;
         }
@@ -553,21 +572,24 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
             return this;
         }
 
+        @Deprecated
         public Werkstoff.GenerationFeatures removeGems() {
             if (this.hasGems())
-                this.toGenerate = (byte) (this.toGenerate ^ 0b100);
+                this.toGenerate = (long) (this.toGenerate ^ 0b100);
             return this;
         }
 
+        @Deprecated
         public Werkstoff.GenerationFeatures removeDusts() {
             if (this.hasDusts())
-                this.toGenerate = (byte) (this.toGenerate ^ 0b1);
+                this.toGenerate = (long) (this.toGenerate ^ 0b1);
             return this;
         }
 
+        @Deprecated
         public Werkstoff.GenerationFeatures removeOres() {
             if (this.hasOres())
-                this.toGenerate = (byte) (this.toGenerate ^ 0b1000);
+                this.toGenerate = (long) (this.toGenerate ^ 0b1000);
             return this;
         }
 
@@ -600,59 +622,78 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
         }
 
         public Werkstoff.GenerationFeatures onlyDust() {
-            this.toGenerate = (byte) (0b1);
+            this.toGenerate = (long) (0b1);
             return this;
         }
 
+        /**
+         * Automatically adds Simple Metal Working Items
+         */
         public Werkstoff.GenerationFeatures addMetalItems() {
-            this.toGenerate = (byte) (this.toGenerate | 0b10);
+            this.toGenerate = (long) (this.addSimpleMetalWorkingItems().toGenerate | 0b10);
             return this;
         }
 
         public Werkstoff.GenerationFeatures disable() {
-            this.toGenerate = (byte) (0);
+            this.toGenerate = (long) (0);
             return this;
         }
 
         public Werkstoff.GenerationFeatures addCells() {
-            this.toGenerate = (byte) (this.toGenerate | 0b10000);
+            this.toGenerate = (long) (this.toGenerate | 0b10000);
             return this;
         }
 
+        @Deprecated
         public boolean hasCells() {
             return (this.toGenerate & 0b10000) != 0;
         }
 
+        @Deprecated
         public boolean hasMolten() {
             return (this.toGenerate & 0b1000000) != 0;
         }
 
         public Werkstoff.GenerationFeatures addMolten() {
-            this.toGenerate = (byte) (this.toGenerate | 0b1000000);
+            this.toGenerate = (long) (this.toGenerate | 0b1000000);
             return this;
         }
 
+        /**
+         * Automatically adds Simple Metal Working Items
+         */
         public Werkstoff.GenerationFeatures addGems() {
-            this.toGenerate = (byte) (this.toGenerate | 0x4);
+            this.toGenerate = (long) (this.addSimpleMetalWorkingItems().toGenerate | 0x4);
             return this;
         }
 
         public Werkstoff.GenerationFeatures addSimpleMetalWorkingItems() {
-            this.toGenerate = (byte) (this.toGenerate | 0b10000000);
+            this.toGenerate = (long) (this.toGenerate | 0b10000000);
             return this;
         }
 
+        @Deprecated
         public boolean hasSimpleMetalWorkingItems() {
             return (this.toGenerate & 0b10000000) != 0;
         }
 
         public Werkstoff.GenerationFeatures addCraftingMetalWorkingItems() {
-            this.toGenerate = (byte) (this.toGenerate | 0b100000000);
+            this.toGenerate = (long) (this.toGenerate | 0b100000000);
             return this;
         }
 
         public Werkstoff.GenerationFeatures addMultipleIngotMetalWorkingItems() {
-            this.toGenerate = (byte) (this.toGenerate | 0b1000000000);
+            this.toGenerate = (long) (this.toGenerate | 0b1000000000);
+            return this;
+        }
+
+        public Werkstoff.GenerationFeatures addPrefix(OrePrefixes prefixes) {
+            this.toGenerate = (long) (this.toGenerate | this.getPrefixDataRaw(prefixes));
+            return this;
+        }
+
+        public Werkstoff.GenerationFeatures removePrefix(OrePrefixes prefixes) {
+            this.toGenerate = (long) (this.toGenerate ^ this.getPrefixDataRaw(prefixes));
             return this;
         }
     }

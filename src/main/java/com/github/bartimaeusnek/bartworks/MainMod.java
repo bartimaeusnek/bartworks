@@ -116,7 +116,9 @@ public final class MainMod {
             }
         }
 
-        WerkstoffLoader.setUp();
+        if (ConfigHandler.newStuff) {
+            WerkstoffLoader.setUp();
+        }
 
         if (ConfigHandler.GTNH)
             MainMod.LOGGER.info("GTNH-Detected . . . ACTIVATE HARDMODE.");

@@ -23,7 +23,6 @@
 package com.github.bartimaeusnek.bartworks.util;
 
 import com.github.bartimaeusnek.bartworks.API.BioVatLogicAdder;
-import gregtech.api.enums.Element;
 import gregtech.api.enums.Materials;
 import gregtech.api.enums.OreDictNames;
 import gregtech.api.enums.ToolDictNames;
@@ -45,7 +44,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -472,10 +470,6 @@ public class BW_Util {
             tmp.addAll(Arrays.asList(fip.mInventory));
         }
         return tmp.toArray(new ItemStack[0]);
-    }
-
-    public static Element createNewElement(String variableName, long aProtons, long aNeutrons, long aAdditionalMass, long aHalfLifeSeconds, String aDecayTo, String aName, boolean aIsIsotope){
-        return EnumHelper.addEnum(Element.class,variableName,new Class[]{long.class, long.class, long.class, long.class, String.class, String.class, boolean.class}, new Object[]{aProtons, aNeutrons, aAdditionalMass, aHalfLifeSeconds, aDecayTo, aName, aIsIsotope});
     }
 
     public static EnumRarity getRarityFromByte(byte b) {
