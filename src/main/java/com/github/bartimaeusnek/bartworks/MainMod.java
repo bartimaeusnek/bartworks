@@ -196,7 +196,7 @@ public final class MainMod {
     public static void runOnPlayerJoined(boolean classicMode, boolean disableExtraGasRecipes) {
         OreDictHandler.adaptCacheForWorld();
         CircuitImprintLoader.run();
-
+        BioVatLogicAdder.RadioHatch.runBasicItemIntegration();
         if (!recipesAdded) {
             if (!disableExtraGasRecipes)
                 StaticRecipeChangeLoaders.addEBFGasRecipes();

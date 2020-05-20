@@ -173,7 +173,6 @@ public class GT_MetaTileEntity_RadioHatch extends GT_MetaTileEntity_Hatch {
             if (lStack == null)
                 return;
 
-
             IRadMaterial radmat = null;
             //gt++ compat
             if (LoaderReference.miscutils)
@@ -198,46 +197,16 @@ public class GT_MetaTileEntity_RadioHatch extends GT_MetaTileEntity_Hatch {
                 }
             }
 
-            if (GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_1.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_4.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_1.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_4.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Uraniumcell_1.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Uraniumcell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Uraniumcell_4.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_1.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_4.get(1))) {
-                Materials materials = Materials.Uranium;
-                byte kg = 3;
-
-                if (GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_1.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_4.get(1)))
-                    materials = Materials.Plutonium;
-                else if (GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_1.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_4.get(1)))
-                    materials = Materials.Thorium;
-                else if (GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_1.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_4.get(1)))
-                    materials = Materials.Naquadah;
-                else
-                    kg = 6;
-
-                if (GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Uraniumcell_2.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_2.get(1)))
-                    kg = (byte) (2 * kg);
-                else if (GT_Utility.areStacksEqual(lStack, ItemList.Moxcell_4.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.Uraniumcell_4.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.ThoriumCell_4.get(1)) || GT_Utility.areStacksEqual(lStack, ItemList.NaquadahCell_4.get(1)))
-                    kg = (byte) (4 * kg);
-
-
-                if (this.mass == 0 || this.sievert == calculateSv(materials)) {
-                    if (this.mass + kg <= this.cap) {
-                        this.sievert = calculateSv(materials);
-                        this.mass += kg;
-                        this.mInventory[0].stackSize--;
-                        this.updateSlots();
-                        this.colorForGUI = materials.mColor.mRGBa;
-                        this.material = materials.mName;
-                    }
-                }
-            }
-
             for (ItemStack varStack : BioVatLogicAdder.RadioHatch.getIsSv().keySet()) {
-                if (GT_Utility.areStacksEqual(varStack, lStack)) {
+                if (GT_Utility.areStacksEqual(varStack, lStack, true)) {
                     if (this.mass == 0 || this.sievert == BioVatLogicAdder.RadioHatch.getIsSv().get(varStack)) {
-                        if (this.mass < this.cap) {
-                            this.mass++;
+                        int massToAdd = BioVatLogicAdder.RadioHatch.getIsKg().getOrDefault(varStack,1);
+                        if (this.mass + massToAdd <= this.cap) {
+                            this.mass += massToAdd;
                             this.sievert = BioVatLogicAdder.RadioHatch.getIsSv().get(varStack);
                             this.mInventory[0].stackSize--;
                             this.updateSlots();
-                            this.colorForGUI = null;
+                            this.colorForGUI = BioVatLogicAdder.RadioHatch.getIsColor().get(varStack);
                             this.material = StatCollector.translateToLocal(varStack.getUnlocalizedName());
                             return;
                         }
