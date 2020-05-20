@@ -81,7 +81,7 @@ public interface LowPowerLaser extends IMetaTileEntity, IConnectsToEnergyTunnel 
                 }
 
                 if (aMetaTileEntity instanceof LowPowerLaser && ((LowPowerLaser) aMetaTileEntity).isReceiver() && opposite == tGTTileEntity.getFrontFacing()) {
-                    if (this.maxEUOutput() > ((LowPowerLaser) aMetaTileEntity).maxEUInput()) {
+                    if (this.maxEUOutput() > ((LowPowerLaser) aMetaTileEntity).maxEUInput() || this.getAMPERES() > ((LowPowerLaser) aMetaTileEntity).getAMPERES()) {
                         aMetaTileEntity.doExplosion(this.maxEUOutput());
                         this.setEUVar(aBaseMetaTileEntity.getStoredEU() - this.maxEUOutput());
                         return;

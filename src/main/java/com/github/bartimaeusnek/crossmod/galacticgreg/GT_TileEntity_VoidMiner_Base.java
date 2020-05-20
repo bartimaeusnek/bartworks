@@ -59,7 +59,7 @@ import java.util.stream.Collectors;
 
 import static bloodasp.galacticgreg.registry.GalacticGregRegistry.getModContainers;
 
-@SuppressWarnings({"rawtypes", "unchecked","unused"})
+@SuppressWarnings("ALL")
 public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_DrillerBase {
 
     private static ArrayListMultimap<Integer,Pair<Pair<Integer,Boolean>, Float>> extraDropsDimMap = ArrayListMultimap.create();
@@ -353,15 +353,13 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
     }
 
     private void handleDimBasedDrops(ModDimensionDef finalDef, int id) {
-        if (id != ConfigHandler.ross128BID && id != ConfigHandler.ross128BAID) {
-            if (id > 1 || id < -1)
-                getDropMapSpace(finalDef);
-            else
-                getDropMapVanilla();
-        }
+        if (id != ConfigHandler.ross128BID && id != ConfigHandler.ross128BAID)
+            getDropMapSpace(finalDef);
     }
 
     private void handleModDimDef(int id) {
+        if (id <= 1 && id >= -1)
+            getDropMapVanilla();
         Optional.ofNullable(makeModDimDef()).ifPresent(def -> {
             handleDimBasedDrops(def, id);
             getDropMapBartworks(def, id);
@@ -377,9 +375,8 @@ public abstract class GT_TileEntity_VoidMiner_Base extends GT_MetaTileEntity_Dri
     }
 
     private void makeDropMap() {
-        if (dropmap == null || totalWeight == 0) {
+        if (dropmap == null || totalWeight == 0)
           calculateDropMap();
-        }
     }
 
     private void handleOutputs() {

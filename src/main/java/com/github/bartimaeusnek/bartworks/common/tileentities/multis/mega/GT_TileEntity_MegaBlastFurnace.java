@@ -31,6 +31,7 @@ import com.github.bartimaeusnek.bartworks.util.ChatColorHelper;
 import com.github.bartimaeusnek.bartworks.util.MegaUtils;
 import com.github.bartimaeusnek.crossmod.tectech.TecTechEnabledMulti;
 import com.github.bartimaeusnek.crossmod.tectech.TecTechUtils;
+import com.github.bartimaeusnek.crossmod.tectech.tileentites.tiered.LowPowerLaser;
 import cpw.mods.fml.common.Optional;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.GT_Values;
@@ -39,6 +40,7 @@ import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Energy;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Muffler;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_MultiBlockBase;
+import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_TieredMachineBlock;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
 import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_ElectricBlastFurnace;
@@ -52,10 +54,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static gregtech.api.enums.GT_Values.V;
@@ -204,7 +203,7 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
                 xEUt = this.mMaxProgresstime <= 0 ? xEUt >> 1 : xEUt << 2;//U know, if the time is less than 1 tick make the machine use less power
                 timesOverclocked++;
             }
-            if (xEUt > maxInputVoltage){
+            if (xEUt > maxInputVoltage) {
                 //downclock one notch, we have overshot.
                 xEUt >>=2;
                 this.mMaxProgresstime <<= 1;
@@ -227,11 +226,9 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
     public String[] getInfoData() {
         int mPollutionReduction = 0;
 
-        for (GT_MetaTileEntity_Hatch_Muffler e : this.mMufflerHatches) {
-            if (GT_MetaTileEntity_MultiBlockBase.isValidMetaTileEntity(e)) {
+        for (GT_MetaTileEntity_Hatch_Muffler e : this.mMufflerHatches)
+            if (GT_MetaTileEntity_MultiBlockBase.isValidMetaTileEntity(e))
                 mPollutionReduction = Math.max(e.calculatePollutionReduction(this.mPollution), mPollutionReduction);
-            }
-        }
 
         long storedEnergy = 0L;
         long maxEnergy = 0L;
@@ -327,8 +324,6 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
     public IMetaTileEntity newMetaEntity(IGregTechTileEntity iGregTechTileEntity) {
         return new GT_TileEntity_MegaBlastFurnace(this.mName);
     }
-
-    // -------------- TEC TECH COMPAT ----------------
 
     @Override
     public boolean checkRecipe(ItemStack itemStack) {
@@ -429,6 +424,7 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
         ret = BW_Util.check_layer(iGregTechTileEntity, 7, -2, -1, GregTech_API.sBlockCasings1, 11, 7, false, false, true, GregTech_API.sBlockCasings1, 11, true, 11);
         ret &= BW_Util.check_layer(iGregTechTileEntity, 7, 17, 18, GregTech_API.sBlockCasings1, 11, 7, false, null, -1, 11);
         ret &= BW_Util.check_layer(iGregTechTileEntity, 6, -1, 17, GregTech_API.sBlockCasings5, -1, 7, false, false, true, Blocks.air, -1, false, 11);
+
         for (int y = -1; y < 17; y++) {
             ret &= BW_Util.check_layer(iGregTechTileEntity, 7, y, y + 1, ItemRegistry.bw_glasses[0], -1, 7, y == 0, false, false, null, -1, false, 11);
             if (!this.getCoilHeat(iGregTechTileEntity, y))
@@ -442,27 +438,46 @@ public class GT_TileEntity_MegaBlastFurnace extends GT_MetaTileEntity_ElectricBl
                     this.glasTier = inttier;
             }
         }
+
         int xDir = ForgeDirection.getOrientation(iGregTechTileEntity.getBackFacing()).offsetX * 7;
         int zDir = ForgeDirection.getOrientation(iGregTechTileEntity.getBackFacing()).offsetZ * 7;
-        for (int z = -6; z <= 6; z++)
-            for (int x = -6; x <= 6; x++) {
-                if (!this.addMufflerToMachineList(iGregTechTileEntity.getIGregTechTileEntityOffset(xDir + x, 17, zDir + z), 11)) {
-                    return false;
-                }
-            }
 
-        if (LoaderReference.tectech && this.glasTier != 8) {
-            if (this.getTecTechEnergyMultis().size() > 0 || this.getTecTechEnergyTunnels().size() > 0)
+        for (int z = -6; z <= 6; z++)
+            for (int x = -6; x <= 6; x++)
+                if (!this.addMufflerToMachineList(iGregTechTileEntity.getIGregTechTileEntityOffset(xDir + x, 17, zDir + z), 11))
+                    return false;
+
+        if (LoaderReference.tectech && this.glasTier != 8)
+            if (!areLazorsLowPowa() || !areThingsProperlyTiered(this.getTecTechEnergyTunnels()) || !areThingsProperlyTiered(this.getTecTechEnergyMultis()))
                 return false;
-        }
 
         if (this.glasTier != 8 && !this.mEnergyHatches.isEmpty())
-            for (GT_MetaTileEntity_Hatch_Energy hatchEnergy : this.mEnergyHatches) {
+            for (GT_MetaTileEntity_Hatch_Energy hatchEnergy : this.mEnergyHatches)
                 if (this.glasTier < hatchEnergy.mTier)
                     return false;
-            }
 
         return ret && !this.mMaintenanceHatches.isEmpty() && !this.mOutputBusses.isEmpty() && !this.mInputBusses.isEmpty();
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Optional.Method(modid = "tectech")
+    private boolean areThingsProperlyTiered(Collection collection) {
+        if (!collection.isEmpty())
+            for (Object tecTechEnergyMulti : collection)
+                if (((GT_MetaTileEntity_TieredMachineBlock) tecTechEnergyMulti).mTier > this.glasTier)
+                    return false;
+        return true;
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Optional.Method(modid = "tectech")
+    private boolean areLazorsLowPowa() {
+        Collection collection = this.getTecTechEnergyTunnels();
+        if (!collection.isEmpty())
+            for (Object tecTechEnergyMulti : collection)
+                if (!(tecTechEnergyMulti instanceof LowPowerLaser))
+                    return false;
+        return true;
     }
 
     @Override
