@@ -248,7 +248,7 @@ public class LuVTierEnhancer implements Runnable {
                         else {
                             int amount = ((ItemStack) ((ArrayList)stacks[i]).get(0)).stackSize;
                             stacks[i] = new ArrayList<>();
-                            ((ArrayList)stacks[i]).add(replacement[0].splitStack(amount));
+                            ((ArrayList)stacks[i]).add(BW_Util.setStackSize(replacement[0], amount));
                             replaced = true;
                         }
 
@@ -259,7 +259,7 @@ public class LuVTierEnhancer implements Runnable {
                     return true;
                 else {
                     int amount = ((ItemStack) stacks[i]).stackSize;
-                    stacks[i] = replacement[0].splitStack(amount);
+                    stacks[i] = BW_Util.setStackSize(replacement[0], amount);
                     replaced = true;
                 }
         }

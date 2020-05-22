@@ -219,6 +219,12 @@ public class BW_Util {
         return (int) (materials.getProtons() == 43L ? (materials.equals(Materials.NaquadahEnriched) ? 140 : materials.equals(Materials.Naquadria) ? 150 : materials.equals(Materials.Naquadah) ? 130 : 43) : materials.getProtons());
     }
 
+    public static ItemStack setStackSize(ItemStack stack, int size) {
+        if (stack != null)
+            stack.stackSize = size;
+        return stack;
+    }
+
     public static boolean checkStackAndPrefix(ItemStack itemStack) {
         return itemStack != null && GT_OreDictUnificator.getAssociation(itemStack) != null && GT_OreDictUnificator.getAssociation(itemStack).mPrefix != null && GT_OreDictUnificator.getAssociation(itemStack).mMaterial != null && GT_OreDictUnificator.getAssociation(itemStack).mMaterial.mMaterial != null;
     }

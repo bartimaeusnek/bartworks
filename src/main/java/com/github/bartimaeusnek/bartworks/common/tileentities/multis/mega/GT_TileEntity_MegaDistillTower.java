@@ -237,9 +237,9 @@ public class GT_TileEntity_MegaDistillTower extends GT_MetaTileEntity_Distillati
                     if (stacks > 0) {
                         for (int i = 0; i < stacks; i++)
                             if (i != stacks - 1)
-                                outputs[i] = tRecipe.getOutput(0).splitStack(64);
+                                outputs[i] = BW_Util.setStackSize(tRecipe.getOutput(0),64);
                             else
-                                outputs[i] = tRecipe.getOutput(0).splitStack(processed - (64 * i));
+                                outputs[i] = BW_Util.setStackSize(tRecipe.getOutput(0),processed - (64 * i));
                         this.mOutputItems = outputs;
                     } else
                         this.mOutputItems = null;

@@ -132,51 +132,51 @@ public class StaticRecipeChangeLoaders {
                 StaticRecipeChangeLoaders.runUnficationDeleter(werkstoff);
                 for (String s : oreDictNames)
                     for (OrePrefixes prefixes : OrePrefixes.values()) {
-                        if (OreDictionary.getOres(prefixes + s).size() > 1) {
-                            for (int j = 0; j < OreDictionary.getOres(prefixes + s).size(); j++) {
-                                ItemStack toReplace = OreDictionary.getOres(prefixes + s).get(j);
-                                ItemStack replacement = werkstoff.get(prefixes);
-                                if (GT_Utility.areStacksEqual(toReplace, replacement) || replacement == null || replacement.getItem() == null)
-                                    continue;
-                                if (toReplace != null) {
-                                    for (GT_Recipe.GT_Recipe_Map map : GT_Recipe.GT_Recipe_Map.sMappings) {
-                                        HashSet<GT_Recipe> toRem = new HashSet<>();
-                                        for (GT_Recipe recipe : map.mRecipeList) {
-                                            boolean removal = map.equals(GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes) || map.equals(GT_Recipe.GT_Recipe_Map.sFluidSolidficationRecipes);
-                                            for (int i = 0; i < recipe.mInputs.length; i++) {
-                                                if (GT_Utility.areStacksEqual(recipe.mInputs[i], toReplace)) {
-                                                    if (removal)
-                                                        toRem.add(recipe);
-                                                    else {
-                                                        int amount = recipe.mInputs[i].stackSize;
-                                                        recipe.mInputs[i] = replacement.splitStack(amount);
-                                                    }
-                                                }
-                                            }
-                                            for (int i = 0; i < recipe.mOutputs.length; i++) {
-                                                if (GT_Utility.areStacksEqual(recipe.mOutputs[i], toReplace)) {
-                                                    if (removal)
-                                                        toRem.add(recipe);
-                                                    else {
-                                                        int amount = recipe.mOutputs[i].stackSize;
-                                                        recipe.mOutputs[i] = replacement.splitStack(amount);
-                                                    }
-                                                }
-                                            }
-                                            if (recipe.mSpecialItems instanceof ItemStack) {
-                                                if (GT_Utility.areStacksEqual((ItemStack) recipe.mSpecialItems, toReplace)) {
-                                                    if (removal)
-                                                        toRem.add(recipe);
-                                                    else {
-                                                        int amount = ((ItemStack) recipe.mSpecialItems).stackSize;
-                                                        recipe.mSpecialItems = replacement.splitStack(amount);
-                                                    }
-                                                }
-                                            }
+                        if (!werkstoff.hasItemType(prefixes))
+                            continue;
+                        if (OreDictionary.getOres(prefixes + s).size() <= 1)
+                            continue;
+                        for (int j = 0; j < OreDictionary.getOres(prefixes + s).size(); j++) {
+                            ItemStack toReplace = OreDictionary.getOres(prefixes + s).get(j);
+                            ItemStack replacement = werkstoff.get(prefixes);
+                            if (toReplace == null || GT_Utility.areStacksEqual(toReplace, replacement) || replacement == null || replacement.getItem() == null)
+                                continue;
+                            for (GT_Recipe.GT_Recipe_Map map : GT_Recipe.GT_Recipe_Map.sMappings) {
+                                HashSet<GT_Recipe> toRem = new HashSet<>();
+                                for (GT_Recipe recipe : map.mRecipeList) {
+                                    boolean removal = map.equals(GT_Recipe.GT_Recipe_Map.sFluidExtractionRecipes) || map.equals(GT_Recipe.GT_Recipe_Map.sFluidSolidficationRecipes);
+                                    for (int i = 0; i < recipe.mInputs.length; i++) {
+                                        if (!GT_Utility.areStacksEqual(recipe.mInputs[i], toReplace))
+                                            continue;
+                                        if (removal)
+                                            toRem.add(recipe);
+                                        else {
+                                            int amount = recipe.mInputs[i].stackSize;
+                                            recipe.mInputs[i] = BW_Util.setStackSize(replacement, amount);
                                         }
-                                        map.mRecipeList.removeAll(toRem);
+                                    }
+                                    for (int i = 0; i < recipe.mOutputs.length; i++) {
+                                        if (!GT_Utility.areStacksEqual(recipe.mOutputs[i], toReplace))
+                                            continue;
+                                        if (removal)
+                                            toRem.add(recipe);
+                                        else {
+                                            int amount = recipe.mOutputs[i].stackSize;
+                                            recipe.mOutputs[i] = BW_Util.setStackSize(replacement, amount);
+                                        }
+                                    }
+                                    if (recipe.mSpecialItems instanceof ItemStack) {
+                                        if (!GT_Utility.areStacksEqual((ItemStack) recipe.mSpecialItems, toReplace))
+                                            continue;
+                                        if (removal)
+                                            toRem.add(recipe);
+                                        else {
+                                            int amount = ((ItemStack) recipe.mSpecialItems).stackSize;
+                                            recipe.mSpecialItems = BW_Util.setStackSize(replacement, amount);
+                                        }
                                     }
                                 }
+                                map.mRecipeList.removeAll(toRem);
                             }
                         }
                     }
@@ -500,7 +500,7 @@ public class StaticRecipeChangeLoaders {
                 .collect(Collectors
                         .toMap(k -> k, k ->
                                 getArrayListMultiMapFromRecipeList(
-                                        removeOldCircuits(
+                                        gatherNoCircuitRecipes(
                                                 new HashSet<>(k.mRecipeList)
                                         )
                                 )
@@ -524,13 +524,24 @@ public class StaticRecipeChangeLoaders {
         return recipe;
     }
 
-    private static Collection<GT_Recipe> removeOldCircuits(Collection<GT_Recipe> mRecipeList) {
-        for (GT_Recipe r : mRecipeList)
-            for (int i = 0; i < r.mInputs.length; i++)
-                if (GT_Utility.areStacksEqual(GT_Utility.getIntegratedCircuit(Short.MAX_VALUE), r.mInputs[i]))
-                    r.mInputs[i] = null;
+    @SuppressWarnings("unchecked")
+    private static Collection<GT_Recipe> gatherNoCircuitRecipes(Collection<GT_Recipe> mRecipeList) {
+        Collection<GT_Recipe> newColl;
+        try {
+            newColl = (Collection<GT_Recipe>) mRecipeList.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            newColl = new HashSet<>();
+        }
 
-        return mRecipeList;
+        recipeloop: for (GT_Recipe r : mRecipeList) {
+            for (int i = 0; i < r.mInputs.length; i++)
+                if (GT_Utility.areStacksEqual(GT_Utility.getIntegratedCircuit(Short.MAX_VALUE), r.mInputs[i])) {
+                    continue recipeloop;
+                }
+            newColl.add(r);
+        }
+
+        return newColl;
     }
 
     private static Map<GT_Recipe, Pair<Integer, Integer>> getArrayListMultiMapFromRecipeList(Collection<GT_Recipe> mRecipeList) {

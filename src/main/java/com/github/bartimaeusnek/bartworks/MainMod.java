@@ -204,13 +204,13 @@ public final class MainMod {
             if (classicMode)
                 DownTierLoader.run();
 
-            StaticRecipeChangeLoaders.patchEBFMapForCircuitUnification();
+            //StaticRecipeChangeLoaders.patchEBFMapForCircuitUnification();
 
             recipesAdded = true;
         }
 
         StaticRecipeChangeLoaders.fixEnergyRequirements();
-        StaticRecipeChangeLoaders.synchroniseCircuitUseMulti();
+        //StaticRecipeChangeLoaders.synchroniseCircuitUseMulti();
 
         //Accept recipe map changes into Buffers
         GT_Recipe.GT_Recipe_Map.sMappings.forEach(GT_Recipe.GT_Recipe_Map::reInit);

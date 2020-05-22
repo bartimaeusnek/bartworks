@@ -260,7 +260,7 @@ public class GT_MetaTileEntity_BioLab extends GT_MetaTileEntity_BasicMachine {
                 break;
                 case INCUBATION_MODULE:
                 default:
-                    return super.checkRecipe(skipOC);
+                    break;
             }
         }
         return super.checkRecipe(skipOC);
