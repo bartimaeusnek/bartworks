@@ -83,14 +83,14 @@ public class GT_MetaTileEntity_RadioHatch extends GT_MetaTileEntity_Hatch {
         else if (x == 61)
             ret = 4500;
         else if (x <= 100)
-            ret = (long) MathUtils.ceil((8000D * Math.tanh(-x / 20D) + 8000D) * 1000D);
+            ret = MathUtils.ceilLong((8000D * Math.tanh(-x / 20D) + 8000D) * 1000D);
         else
-            ret = (long) MathUtils.ceil(((8000D * Math.tanh(-x / 65D) + 8000D)));
+            ret = MathUtils.ceilLong(((8000D * Math.tanh(-x / 65D) + 8000D)));
         return ret;//*20;
     }
 
     public int getSievert() {
-        return this.sievert - (int) MathUtils.ceil((float) this.sievert / 100f * (float) this.coverage);
+        return this.sievert - MathUtils.ceilInt((float) this.sievert / 100f * (float) this.coverage);
     }
 
     public short[] getColorForGUI() {

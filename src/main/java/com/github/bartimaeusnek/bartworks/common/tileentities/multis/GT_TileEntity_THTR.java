@@ -139,7 +139,19 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
         if (!(this.HeliumSupply >= GT_TileEntity_THTR.HELIUM_NEEDED && this.BISOPeletSupply + this.TRISOPeletSupply >= 100000))
             return false;
 
-        int toReduce = new XSTR().nextInt((int) MathUtils.floor(((double)this.BISOPeletSupply + (double)this.TRISOPeletSupply) / 200D));
+        reduceSupply();
+        addBurnedOutBalls();
+        this.updateSlots();
+
+        this.mOutputFluids = new FluidStack[]{FluidRegistry.getFluidStack("ic2hotcoolant",0)};
+
+        this.mEUt=0;
+        this.mMaxProgresstime=648000;
+        return true;
+    }
+
+    private void reduceSupply() {
+        int toReduce = new XSTR().nextInt(MathUtils.floorInt(((double)this.BISOPeletSupply + (double)this.TRISOPeletSupply) / 200D));
 
         this.savedBISO = BISOPeletSupply;
         this.savedTRISO = TRISOPeletSupply;
@@ -155,14 +167,22 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
             else
                 this.BISOPeletSupply -= toReduce;
         }
+    }
 
-        this.updateSlots();
+    private void addBurnedOutBalls() {
+        int burnedTRISO = this.savedTRISO - this.TRISOPeletSupply;
+        int burnedBISO = this.savedBISO - this.BISOPeletSupply;
+        int burnedTRISOBall = burnedTRISO / 64;
+        int burnedBISOBall = burnedBISO / 64;
 
-        this.mOutputFluids = new FluidStack[]{FluidRegistry.getFluidStack("ic2hotcoolant",0)};
+        burnedBISO -= (burnedBISOBall*64);
+        burnedTRISO -= (burnedTRISOBall*64);
 
-        this.mEUt=0;
-        this.mMaxProgresstime=648000;
-        return true;
+        this.addOutput(new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials, burnedTRISOBall, 6));
+        this.addOutput(new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials, burnedTRISO, 8));
+
+        this.addOutput(new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials, burnedBISOBall, 7));
+        this.addOutput(new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials, burnedBISO, 7));
     }
 
     @Override
@@ -186,7 +206,7 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
                 accessibleCoolant += fluidStack.amount;
             }
         }
-        
+
         accessibleCoolant = Math.min((long) ((0.00711111111111111111111111111111D*(double)this.savedTRISO + 0.00474074074074074074074074074074D*(double)this.savedBISO)), accessibleCoolant);
 
         for (FluidStack fluidStack : this.getStoredFluids()) {
@@ -308,6 +328,7 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, byte aSide, byte aFacing, byte aColorIndex, boolean aActive, boolean aRedstone) {
         return aSide == aFacing ? new ITexture[]{Textures.BlockIcons.CASING_BLOCKS[GT_TileEntity_THTR.BASECASINGINDEX], new GT_RenderedTexture(aActive ? Textures.BlockIcons.OVERLAY_FRONT_HEAT_EXCHANGER_ACTIVE : Textures.BlockIcons.OVERLAY_FRONT_HEAT_EXCHANGER)} : new ITexture[]{Textures.BlockIcons.CASING_BLOCKS[GT_TileEntity_THTR.BASECASINGINDEX]};
     }
@@ -319,7 +340,18 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
     }
 
     public static class THTRMaterials{
-        static final SimpleSubItemClass aTHTR_Materials = new SimpleSubItemClass("BISOPelletCompound","BISOPellet","TRISOPelletCompound","TRISOPellet","BISOPelletBall","TRISOPelletBall");
+        static final SimpleSubItemClass aTHTR_Materials = new SimpleSubItemClass(
+                "BISOPelletCompound",
+                "BISOPellet",
+                "TRISOPelletCompound",
+                "TRISOPellet",
+                "BISOPelletBall",
+                "TRISOPelletBall",
+                "BurnedOutBISOPelletBall",
+                "BurnedOutTRISOPelletBall",
+                "BurnedOutBISOPellet",
+                "BurnedOutTRISOPellet"
+        );
         public static void registeraTHR_Materials(){
             GameRegistry.registerItem(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,"bw.THTRMaterials");
         }
@@ -351,9 +383,13 @@ public class GT_TileEntity_THTR extends GT_MetaTileEntity_MultiBlockBase {
             pellets = new ItemStack[6];
             Arrays.fill(pellets,new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,64,3));
             GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes.addRecipe(false,new ItemStack[]{new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,1,5),GT_Utility.getIntegratedCircuit(17)},pellets,null,null,null,null,48000,30,0);
+            Arrays.fill(pellets,new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,64,8));
+            GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes.addRecipe(false,new ItemStack[]{new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,1,6),GT_Utility.getIntegratedCircuit(17)},pellets,null,null,null,null,48000,30,0);
+            Arrays.fill(pellets,new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,64,9));
+            GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes.addRecipe(false,new ItemStack[]{new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,1,7),GT_Utility.getIntegratedCircuit(17)},pellets,null,null,null,null,48000,30,0);
+            GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes.addRecipe(false,new ItemStack[]{new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,1,8)},new ItemStack[]{Materials.Lutetium.getDustSmall(2)},null,null,null,null,1200,30,0);
+            GT_Recipe.GT_Recipe_Map.sCentrifugeRecipes.addRecipe(false,new ItemStack[]{new ItemStack(GT_TileEntity_THTR.THTRMaterials.aTHTR_Materials,1,9)},new ItemStack[]{Materials.Lutetium.getDustSmall(4)},null,null,null,null,1200,30,0);
         }
 
     }
-
-
 }

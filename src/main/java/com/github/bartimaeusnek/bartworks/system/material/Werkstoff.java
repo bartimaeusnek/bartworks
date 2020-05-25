@@ -493,7 +493,7 @@ public class Werkstoff implements IColorModulationContainer, ISubTagContainer {
 
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.plate, 0b10000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.stick, 0b10000000);
-            Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.rod, 0b10000000);
+            Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.stickLong, 0b10000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.toolHeadHammer, 0b10000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.toolHeadWrench, 0b10000000);
             Werkstoff.GenerationFeatures.prefixLogic.put(OrePrefixes.toolHeadSaw, 0b10000000);

@@ -186,7 +186,7 @@ public class StaticRecipeChangeLoaders {
 
     @SuppressWarnings("ALL")
     private static void runMoltenUnificationEnfocement(Werkstoff werkstoff) {
-        if (werkstoff.getGenerationFeatures().enforceUnification && werkstoff.getGenerationFeatures().hasMolten()) {
+        if (werkstoff.getGenerationFeatures().enforceUnification && werkstoff.hasItemType(OrePrefixes.cellMolten)) {
             try {
                 FluidContainerRegistry.FluidContainerData data = new FluidContainerRegistry.FluidContainerData(new FluidStack(Objects.requireNonNull(molten.get(werkstoff)), 144), werkstoff.get(cellMolten), Materials.Empty.getCells(1));
                 Field f = GT_Utility.class.getDeclaredField("sFilledContainerToData");

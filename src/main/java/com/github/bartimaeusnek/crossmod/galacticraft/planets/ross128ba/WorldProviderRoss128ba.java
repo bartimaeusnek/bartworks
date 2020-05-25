@@ -44,7 +44,7 @@ public class WorldProviderRoss128ba extends AbstractWorldProviderSpace {
 
     @Override
     public long getDayLength() {
-        return (long) MathUtils.floor(24000f * 9.9f / 100f);
+        return MathUtils.floorLong(24000f * 9.9f / 100f);
     }
 
     @Override

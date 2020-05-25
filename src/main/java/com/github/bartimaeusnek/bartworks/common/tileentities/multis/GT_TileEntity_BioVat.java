@@ -85,8 +85,8 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
 
     public static int[] specialValueUnpack(int aSpecialValue) {
         int[] ret = new int[4];
-        ret[0] = aSpecialValue & 0xF; // = glas tier
-        ret[1] = aSpecialValue >>> 4 & 0b11; // = special valure
+        ret[0] = aSpecialValue & 0xF; // = glass tier
+        ret[1] = aSpecialValue >>> 4 & 0b11; // = special value
         ret[2] = aSpecialValue >>> 6 & 0b1; //boolean exact svt | 1 = true | 0 = false
         ret[3] = aSpecialValue >>> 7 & Integer.MAX_VALUE; // = sievert
         return ret;
@@ -135,9 +135,8 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
         double y = (((double) this.getOutputCapacity()) / 2D),
                z = ConfigHandler.bioVatMaxParallelBonus;
 
-        int ret = (int) MathUtils.ceil(((-1D / y * Math.pow((x - y), 2D) + y) / y * z));
-
-        return ret <= 0 ? 1 : Math.min(ret, ConfigHandler.bioVatMaxParallelBonus);
+        int ret = MathUtils.ceilInt(((-1D / y * Math.pow((x - y), 2D) + y) / y * z));
+        return MathUtils.clamp(1, ret, ConfigHandler.bioVatMaxParallelBonus);
     }
 
     private List<ItemStack> getItemInputs(){
@@ -579,6 +578,7 @@ public class GT_TileEntity_BioVat extends GT_MetaTileEntity_MultiBlockBase {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ITexture[] getTexture(IGregTechTileEntity aBaseMetaTileEntity, byte aSide, byte aFacing, byte aColorIndex, boolean aActive, boolean aRedstone) {
         return aSide == aFacing ? new ITexture[]{Textures.BlockIcons.CASING_BLOCKS[GT_TileEntity_BioVat.MCASING_INDEX], new GT_RenderedTexture(aActive ? Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER_ACTIVE : Textures.BlockIcons.OVERLAY_FRONT_DISTILLATION_TOWER)} : new ITexture[]{Textures.BlockIcons.CASING_BLOCKS[GT_TileEntity_BioVat.MCASING_INDEX]};
     }

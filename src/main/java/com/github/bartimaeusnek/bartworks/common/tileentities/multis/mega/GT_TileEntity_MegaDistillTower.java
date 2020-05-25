@@ -143,7 +143,7 @@ public class GT_TileEntity_MegaDistillTower extends GT_MetaTileEntity_Distillati
         if (super.addOutputToMachineList(aTileEntity, aBaseCasingIndex)) {
             if (aTileEntity.getMetaTileEntity() instanceof GT_MetaTileEntity_Hatch_Output) {
                 int layer = aTileEntity.getYCoord() - controllerY;
-                layer = (int) MathUtils.ceil(((double)layer) /5D)-1;
+                layer = MathUtils.ceilInt(((double)layer) /5D)-1;
                 LAYERMAP.put(layer,(GT_MetaTileEntity_Hatch_Output) aTileEntity.getMetaTileEntity());
             }
             return true;
