@@ -867,7 +867,7 @@ public class RecipeLoader {
                         OrePrefixes.cableGt04,
                         OrePrefixes.cableGt08,
                         OrePrefixes.cableGt12,
-                        OrePrefixes.cableGt16
+                        WerkstoffLoader.gtnhGT ? OrePrefixes.cableGt16 : OrePrefixes.cableGt12
                 };
 
                 GT_Values.RA.addAssemblerRecipe(
