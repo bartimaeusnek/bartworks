@@ -864,16 +864,16 @@ public class RecipeLoader {
                 };
 
                 OrePrefixes[] prefixes = {
-                        OrePrefixes.cableGt04,
-                        OrePrefixes.cableGt08,
-                        OrePrefixes.cableGt12,
-                        OrePrefixes.cableGt16
+                        WerkstoffLoader.gtnhGT ? OrePrefixes.cableGt04 : OrePrefixes.wireGt04,
+                        WerkstoffLoader.gtnhGT ? OrePrefixes.cableGt08 : OrePrefixes.wireGt08,
+                        WerkstoffLoader.gtnhGT ? OrePrefixes.cableGt12 : OrePrefixes.wireGt12,
+                        WerkstoffLoader.gtnhGT ? OrePrefixes.cableGt16 : OrePrefixes.cableGt12
                 };
 
                 GT_Values.RA.addAssemblerRecipe(
                         new ItemStack[]{
                                 ItemList.Circuit_Parts_GlassFiber.get(32),
-                                GT_OreDictUnificator.get(OrePrefixes.foil, Materials.Silver, 8),
+                                GT_OreDictUnificator.get(WerkstoffLoader.gtnhGT ? OrePrefixes.foil : OrePrefixes.plateDouble, Materials.Silver, WerkstoffLoader.gtnhGT ? 8 : 1),
                                 WerkstoffLoader.CubicZirconia.get(OrePrefixes.gemExquisite, 2)
                         },
                         Materials.Polytetrafluoroethylene.getMolten(72),
