@@ -151,6 +151,11 @@ item.BISOPelletBall.name=BISO pebble ball
 item.BISOPellet.name=BISO pebble
 item.TRISOPelletCompound.name=TRISO pebble compund
 item.BISOPelletCompound.name=BISO pebble compund
+item.BurnedOutBISOPelletBall.name=Burned Out BISO pebble ball
+item.BurnedOutBISOPellet.name=Burned Out BISO pebble
+item.BurnedOutTRISOPelletBall.name=Burned Out TRISO pebble ball
+item.BurnedOutTRISOPellet.name=Burned Out TRISO pebble
+
 itemGroup.bartworksMetaMaterials=BartWorks' Meta Materials
 
 tooltip.tile.eic.0.name=Controller Block for the Electric Implosion Compressor;Size(WxHxD): 3x9x3;Uses Electricity instead of Explosives;Controller: Layer 3, front, center;Layer 1 and Layer 9: Solid Steel Machine Casings, each: 1 Energy Hatch in the middle;Layer 2,3,7,8: Middle: Nickel-Zinc-Ferrit Blocks, Outer: Transformer-Winding Blocks;Layer 4,5,6: Neutronium Blocks;1+ Input Bus, 1+ Output Bus, 1 Maintenance Hatch at any Solid Steel Machine Casing;Do NOT Obstruct or mine the Moving parts while in Operation, will explode if you do so!
