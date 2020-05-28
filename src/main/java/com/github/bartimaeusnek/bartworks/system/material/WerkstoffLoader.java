@@ -97,7 +97,6 @@ public class WerkstoffLoader {
     public static ItemList boltMold;
     public static boolean gtnhGT = false;
 
-
     public static void setUp() {
         //GTNH detection hack
         try {
@@ -118,6 +117,7 @@ public class WerkstoffLoader {
 
         if (!gtnhGT) {
             WerkstoffLoader.HDCS.getGenerationFeatures().extraRecipes ^= 10;
+                break;
         }
 
         if (WerkstoffLoader.cellMolten == null) {
