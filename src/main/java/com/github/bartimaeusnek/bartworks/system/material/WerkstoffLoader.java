@@ -116,7 +116,7 @@ public class WerkstoffLoader {
             }
         }
 
-        if (!gtnhGT){
+        if (!gtnhGT) {
             WerkstoffLoader.HDCS.getGenerationFeatures().extraRecipes ^= 10;
         }
 
@@ -2086,7 +2086,7 @@ public class WerkstoffLoader {
             //smallGear
             if (WerkstoffLoader.smallGearShape != null)
                 GT_Values.RA.addExtruderRecipe(werkstoff.get(ingot), WerkstoffLoader.smallGearShape.get(0L), werkstoff.get(gearGtSmall), (int) werkstoff.getStats().mass, 8 * tVoltageMultiplier);
-            if (ConfigHandler.GTNH)
+            if (ConfigHandler.hardmode)
                 GT_ModHandler.addCraftingRecipe(werkstoff.get(gearGtSmall), GT_Proxy.tBits, new Object[]{" S ", "hPx", " S ", 'S', werkstoff.get(stick), 'P', werkstoff.get(plate)});
             else
                 GT_ModHandler.addCraftingRecipe(werkstoff.get(gearGtSmall), GT_Proxy.tBits, new Object[]{"P  ", " h ", 'P', werkstoff.get(plate)});
