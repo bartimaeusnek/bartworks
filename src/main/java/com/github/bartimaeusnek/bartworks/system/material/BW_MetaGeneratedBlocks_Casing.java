@@ -93,6 +93,10 @@ public class BW_MetaGeneratedBlocks_Casing extends BW_MetaGenerated_Blocks imple
     @cpw.mods.fml.common.Optional.Method(modid = "tectech")
     public void setBlock(World world, int x, int y, int z, int meta) {
         world.setBlock(x, y, z,this, meta,2);
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ignored) {
+        }
         Optional.ofNullable(world.getTileEntity(x,y,z))
                 .filter(te -> te instanceof BW_MetaGeneratedBlocks_Casing_TE)
                 .map(te -> (BW_MetaGeneratedBlocks_Casing_TE) te)
