@@ -376,7 +376,8 @@ public class AdditionalRecipes {
                         GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel, 64L),
                         GT_OreDictUnificator.get(stickLong, Materials.TungstenSteel, 64L),
                         WerkstoffLoader.Tiberium.get(dust, 64),
-                        WerkstoffLoader.Tiberium.get(dust, 64)
+                        WerkstoffLoader.Tiberium.get(dust, 64),
+                        GT_Utility.getIntegratedCircuit(8)
                 }, null, BW_NonMeta_MaterialItems.TheCoreCell.get(1L), 100, BW_Util.getMachineVoltageFromTier(6));
 
         GregTech_API.sAfterGTPostload.add(new LuVTierEnhancer());
