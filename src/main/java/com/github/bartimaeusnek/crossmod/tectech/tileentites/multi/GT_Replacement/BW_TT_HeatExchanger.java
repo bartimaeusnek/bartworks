@@ -358,7 +358,8 @@ public class BW_TT_HeatExchanger extends TT_Abstract_GT_Replacement {
             "1 - Cold Fluid Output",
             "2 - Hot Fluid Input",
             "Needs an additional Output Hatch",
-            "Needs an additional Input Hatch"
+            "Needs an additional Input Hatch",
+            "20 Casings at least!"
     };
 
     @Override

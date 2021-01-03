@@ -22,39 +22,30 @@
 
 package com.github.bartimaeusnek.crossmod.tectech.tileentites.multi.GT_Replacement;
 
-import com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference;
 import com.github.bartimaeusnek.crossmod.tectech.helper.StructureDefinitions;
-import com.github.technus.tectech.mechanics.constructable.IConstructable;
 import com.github.technus.tectech.mechanics.structure.IStructureDefinition;
 import com.github.technus.tectech.mechanics.structure.StructureDefinition;
 import com.github.technus.tectech.thing.metaTileEntity.hatch.GT_MetaTileEntity_Hatch_DynamoMulti;
 import com.github.technus.tectech.thing.metaTileEntity.hatch.GT_MetaTileEntity_Hatch_EnergyMulti;
-import com.github.technus.tectech.thing.metaTileEntity.multi.base.GT_Container_MultiMachineEM;
-import com.github.technus.tectech.thing.metaTileEntity.multi.base.GT_GUIContainer_MultiMachineEM;
-import com.github.technus.tectech.thing.metaTileEntity.multi.base.GT_MetaTileEntity_MultiblockBase_EM;
 import com.github.technus.tectech.thing.metaTileEntity.multi.base.render.TT_RenderedExtendedFacingTexture;
 import com.google.common.collect.ArrayListMultimap;
 import gregtech.api.GregTech_API;
 import gregtech.api.enums.Textures;
-import gregtech.api.gui.GT_Container_MultiMachine;
-import gregtech.api.gui.GT_GUIContainer_MultiMachine;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.interfaces.tileentity.ITurnable;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.*;
-import gregtech.api.util.GT_Multiblock_Tooltip_Builder;
 import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
-import static com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference.*;
+import static com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference.ADV_STR_CHECK;
+import static com.github.bartimaeusnek.bartworks.util.BW_Tooltip_Reference.TT_BLUEPRINT;
 import static com.github.technus.tectech.mechanics.structure.StructureUtility.*;
 
 public class TT_ImplosionCompressor extends TT_Abstract_GT_Replacement {
@@ -114,6 +105,8 @@ public class TT_ImplosionCompressor extends TT_Abstract_GT_Replacement {
                 return this.mOutputBusses.add((GT_MetaTileEntity_Hatch_OutputBus) aMetaTileEntity);
             else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Energy)
                 return this.mEnergyHatches.add((GT_MetaTileEntity_Hatch_Energy) aMetaTileEntity);
+            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Dynamo)
+                return this.mDynamoHatches.add((GT_MetaTileEntity_Hatch_Dynamo) aMetaTileEntity);
             else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Maintenance)
                 return this.mMaintenanceHatches.add((GT_MetaTileEntity_Hatch_Maintenance) aMetaTileEntity);
             else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_EnergyMulti)
@@ -203,10 +196,7 @@ public class TT_ImplosionCompressor extends TT_Abstract_GT_Replacement {
         if (tInputList.size() > 0) {
             GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sImplosionRecipes.findRecipe(getBaseMetaTileEntity(), false, 9223372036854775807L, null, tInputs);
             if ((tRecipe != null) && (tRecipe.isRecipeInputEqual(true, null, tInputs))) {
-                this.mEfficiency = (10000 - (getIdealStatus() - getRepairStatus()) * 1000);
-                this.mEfficiencyIncrease = 10000;
-                //OC THAT EXPLOSIVE SHIT!!!
-                calculateOverclockedNessMulti(tRecipe.mEUt, tRecipe.mDuration, 1, getMaxInputVoltage());
+                setEfficiencyAndOc(tRecipe);
                 //In case recipe is too OP for that machine
                 if (mMaxProgresstime == Integer.MAX_VALUE - 1 && mEUt == Integer.MAX_VALUE - 1)
                     return false;
@@ -237,7 +227,8 @@ public class TT_ImplosionCompressor extends TT_Abstract_GT_Replacement {
 
     private static final String[] sfStructureDescription = new String[] {
             "0 - Air",
-            "Required: Muffler Hatch, Output Bus, Input Bus, Energy Hatch, Maintenance Hatch"
+            "Required: Muffler Hatch, Output Bus, Input Bus, Energy Hatch, Maintenance Hatch",
+            "16 Casings at least!"
     };
 
     @Override

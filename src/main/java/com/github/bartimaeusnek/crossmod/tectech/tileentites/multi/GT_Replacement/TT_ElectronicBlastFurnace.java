@@ -23,12 +23,8 @@
 package com.github.bartimaeusnek.crossmod.tectech.tileentites.multi.GT_Replacement;
 
 import com.github.bartimaeusnek.crossmod.tectech.helper.CoilAdder;
-import com.github.bartimaeusnek.crossmod.tectech.helper.IHasCoils;
-import com.github.technus.tectech.mechanics.constructable.IConstructable;
 import com.github.technus.tectech.mechanics.structure.IStructureDefinition;
 import com.github.technus.tectech.mechanics.structure.StructureDefinition;
-import com.github.technus.tectech.thing.metaTileEntity.hatch.GT_MetaTileEntity_Hatch_DynamoMulti;
-import com.github.technus.tectech.thing.metaTileEntity.hatch.GT_MetaTileEntity_Hatch_EnergyMulti;
 import com.github.technus.tectech.thing.metaTileEntity.multi.base.GT_MetaTileEntity_MultiblockBase_EM;
 import com.github.technus.tectech.thing.metaTileEntity.multi.base.render.TT_RenderedExtendedFacingTexture;
 import com.google.common.collect.ImmutableSet;
