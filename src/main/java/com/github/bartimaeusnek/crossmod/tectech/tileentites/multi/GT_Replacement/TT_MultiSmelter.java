@@ -38,6 +38,7 @@ import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Energy;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch_Muffler;
 import gregtech.api.util.GT_ModHandler;
+import gregtech.api.util.GT_Recipe;
 import gregtech.api.util.GT_Utility;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -70,7 +71,7 @@ public class TT_MultiSmelter extends TT_Abstract_GT_Replacement_Coils {
                     transpose(new String[][]{
                             {"AAA", "AMA", "AAA"},
                             {"CCC", "C-C", "CCC"},
-                            {"B~B", "BBB", "BBB"}
+                            {"A~A", "AAA", "AAA"}
                     })
             ).addElement(
                     'C',
@@ -83,12 +84,6 @@ public class TT_MultiSmelter extends TT_Abstract_GT_Replacement_Coils {
                     )
             ).addElement(
                     'A',
-                    ofBlock(
-                            GregTech_API.sBlockCasings1, TEXTURE_INDEX,
-                            GregTech_API.sBlockCasings1, TEXTURE_INDEX
-                    )
-            ).addElement(
-                    'B',
                     ofHatchAdderOptional(
                             TT_MultiSmelter::addEBFInputsBottom, TEXTURE_INDEX,
                             GregTech_API.sBlockCasings1, TEXTURE_INDEX,
@@ -131,7 +126,13 @@ public class TT_MultiSmelter extends TT_Abstract_GT_Replacement_Coils {
 
         this.mLevel = this.getCoilHeat().getLevel();
         this.mCostDiscount = this.getCoilHeat().getCostDiscount();
+        setInputFilters();
         return ret;
+    }
+
+    @Override
+    public GT_Recipe.GT_Recipe_Map getRecipeMap() {
+        return GT_Recipe.GT_Recipe_Map.sFurnaceRecipes;
     }
 
     @Override
