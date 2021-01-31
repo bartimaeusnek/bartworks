@@ -122,7 +122,13 @@ public class TT_ElectronicBlastFurnace extends TT_Abstract_GT_Replacement_Coils 
 
         this.mHeatingCapacity = (int) this.getCoilHeat().getHeat();
         this.mHeatingCapacity += 100 * (GT_Utility.getTier(getMaxInputVoltage()) - 2);
+        setInputFilters();
         return ret;
+    }
+
+    @Override
+    public GT_Recipe.GT_Recipe_Map getRecipeMap() {
+        return GT_Recipe.GT_Recipe_Map.sBlastRecipes;
     }
 
     @Override
@@ -160,22 +166,36 @@ public class TT_ElectronicBlastFurnace extends TT_Abstract_GT_Replacement_Coils 
                     .findFirst()
                     .map(tHatch -> 100 - tHatch.calculatePollutionReduction(100))
                     .orElse(0) + 5) / 100;
-        }
-
-        for (GT_MetaTileEntity_Hatch_Output tHatch : mOutputHatches) {
-            if (
-                    (isValidMetaTileEntity(tHatch) && GT_ModHandler.isSteam(aLiquid)
-                            ? !tHatch.outputsSteam()
-                            : !tHatch.outputsLiquids())
-                            || tHatch.getBaseMetaTileEntity().getYCoord() <= this.getBaseMetaTileEntity().getYCoord())
-                continue;
-            int tAmount = tHatch.fill(tLiquid, false);
-            if (tAmount >= tLiquid.amount)
-                return tHatch.fill(tLiquid, true) >= tLiquid.amount;
-            else if (tAmount > 0)
-                tLiquid.amount = tLiquid.amount - tHatch.fill(tLiquid, true);
+            for (GT_MetaTileEntity_Hatch_Output tHatch : mOutputHatches) {
+                if ((isValidMetaTileEntity(tHatch) && GT_ModHandler.isSteam(aLiquid)
+                        ? !tHatch.outputsSteam()
+                        : !tHatch.outputsLiquids())
+                        || tHatch.getBaseMetaTileEntity().getYCoord() <= this.getBaseMetaTileEntity().getYCoord()
+                        || canNotFillOutput(tHatch, tLiquid))
+                    continue;
+                return true;
+            }
+        } else {
+            for (GT_MetaTileEntity_Hatch_Output tHatch : mOutputHatches) {
+                if ((isValidMetaTileEntity(tHatch) && GT_ModHandler.isSteam(aLiquid)
+                        ? !tHatch.outputsSteam()
+                        : !tHatch.outputsLiquids())
+                        || tHatch.getBaseMetaTileEntity().getYCoord() > this.getBaseMetaTileEntity().getYCoord()
+                        || canNotFillOutput(tHatch, tLiquid))
+                    continue;
+                return true;
+            }
         }
         return false;
+    }
+
+    private boolean canNotFillOutput(GT_MetaTileEntity_Hatch_Output tHatch, FluidStack tLiquid){
+            int tAmount = tHatch.fill(tLiquid, false);
+            if (tAmount >= tLiquid.amount)
+                return tHatch.fill(tLiquid, true) < tLiquid.amount;
+            else if (tAmount > 0)
+                tLiquid.amount = tLiquid.amount - tHatch.fill(tLiquid, true);
+            return true;
     }
 
     private static final int pollutionPerTick = 20;
