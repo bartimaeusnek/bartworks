@@ -92,30 +92,31 @@ public class TT_ImplosionCompressor extends TT_Abstract_GT_Replacement {
             ).build();
 
     public final boolean addImplosionHatches(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity != null) {
-            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-            if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch)
-                ((GT_MetaTileEntity_Hatch) aMetaTileEntity).updateTexture(aBaseCasingIndex);
-            else
-                return false;
-
-            if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_InputBus)
-                return this.mInputBusses.add((GT_MetaTileEntity_Hatch_InputBus) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_OutputBus)
-                return this.mOutputBusses.add((GT_MetaTileEntity_Hatch_OutputBus) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Energy)
-                return this.mEnergyHatches.add((GT_MetaTileEntity_Hatch_Energy) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Dynamo)
-                return this.mDynamoHatches.add((GT_MetaTileEntity_Hatch_Dynamo) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Maintenance)
-                return this.mMaintenanceHatches.add((GT_MetaTileEntity_Hatch_Maintenance) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_EnergyMulti)
-                return this.eEnergyMulti.add((GT_MetaTileEntity_Hatch_EnergyMulti) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_DynamoMulti)
-                return this.eDynamoMulti.add((GT_MetaTileEntity_Hatch_DynamoMulti) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Muffler)
-                return this.mMufflerHatches.add((GT_MetaTileEntity_Hatch_Muffler) aMetaTileEntity);
+        if (aTileEntity == null) {
+            return false;
         }
+        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+        if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch)
+            ((GT_MetaTileEntity_Hatch) aMetaTileEntity).updateTexture(aBaseCasingIndex);
+        else
+            return false;
+
+        if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_InputBus)
+            return this.mInputBusses.add((GT_MetaTileEntity_Hatch_InputBus) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_OutputBus)
+            return this.mOutputBusses.add((GT_MetaTileEntity_Hatch_OutputBus) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Energy)
+            return this.mEnergyHatches.add((GT_MetaTileEntity_Hatch_Energy) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Dynamo)
+            return this.mDynamoHatches.add((GT_MetaTileEntity_Hatch_Dynamo) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Maintenance)
+            return this.mMaintenanceHatches.add((GT_MetaTileEntity_Hatch_Maintenance) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_EnergyMulti)
+            return this.eEnergyMulti.add((GT_MetaTileEntity_Hatch_EnergyMulti) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_DynamoMulti)
+            return this.eDynamoMulti.add((GT_MetaTileEntity_Hatch_DynamoMulti) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Muffler)
+            return this.mMufflerHatches.add((GT_MetaTileEntity_Hatch_Muffler) aMetaTileEntity);
         return false;
     }
 
@@ -180,36 +181,38 @@ public class TT_ImplosionCompressor extends TT_Abstract_GT_Replacement {
         int tInputList_sS=tInputList.size();
         for (int i = 0; i < tInputList_sS - 1; i++) {
             for (int j = i + 1; j < tInputList_sS; j++) {
-                if (GT_Utility.areStacksEqual(tInputList.get(i), tInputList.get(j))) {
-                    if (tInputList.get(i).stackSize >= tInputList.get(j).stackSize) {
-                        tInputList.remove(j--);
-                        tInputList_sS=tInputList.size();
-                    } else {
-                        tInputList.remove(i--);
-                        tInputList_sS=tInputList.size();
-                        break;
-                    }
+                if (!GT_Utility.areStacksEqual(tInputList.get(i), tInputList.get(j))) {
+                    continue;
+                }
+                if (tInputList.get(i).stackSize >= tInputList.get(j).stackSize) {
+                    tInputList.remove(j--);
+                    tInputList_sS=tInputList.size();
+                } else {
+                    tInputList.remove(i--);
+                    tInputList_sS=tInputList.size();
+                    break;
                 }
             }
         }
         ItemStack[] tInputs = tInputList.toArray(new ItemStack[0]);
-        if (tInputList.size() > 0) {
-            GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sImplosionRecipes.findRecipe(getBaseMetaTileEntity(), false, 9223372036854775807L, null, tInputs);
-            if ((tRecipe != null) && (tRecipe.isRecipeInputEqual(true, null, tInputs))) {
-                setEfficiencyAndOc(tRecipe);
-                //In case recipe is too OP for that machine
-                if (mMaxProgresstime == Integer.MAX_VALUE - 1 && mEUt == Integer.MAX_VALUE - 1)
-                    return false;
-                if (this.mEUt > 0) {
-                    this.mEUt = (-this.mEUt);
-                }
-                this.mOutputItems = new ItemStack[]{tRecipe.getOutput(0), tRecipe.getOutput(1)};
-                sendLoopStart(SOUND_INDEX);
-                updateSlots();
-                return true;
-            }
+        if (tInputList.size() <= 0) {
+            return false;
         }
-        return false;
+        GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sImplosionRecipes.findRecipe(getBaseMetaTileEntity(), false, 9223372036854775807L, null, tInputs);
+        if ((tRecipe == null) || (!tRecipe.isRecipeInputEqual(true, null, tInputs))) {
+            return false;
+        }
+        setEfficiencyAndOc(tRecipe);
+        //In case recipe is too OP for that machine
+        if (mMaxProgresstime == Integer.MAX_VALUE - 1 && mEUt == Integer.MAX_VALUE - 1)
+            return false;
+        if (this.mEUt > 0) {
+            this.mEUt = (-this.mEUt);
+        }
+        this.mOutputItems = new ItemStack[]{tRecipe.getOutput(0), tRecipe.getOutput(1)};
+        sendLoopStart(SOUND_INDEX);
+        updateSlots();
+        return true;
     }
 
     @Override

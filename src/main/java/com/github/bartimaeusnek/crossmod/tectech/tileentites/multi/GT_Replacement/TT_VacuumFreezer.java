@@ -130,21 +130,23 @@ public class TT_VacuumFreezer extends TT_Abstract_GT_Replacement {
             byte tTier = (byte) Math.max(1, GT_Utility.getTier(tVoltage));
 
             GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sVacuumRecipes.findRecipe(getBaseMetaTileEntity(), false, gregtech.api.enums.GT_Values.V[tTier], null, tInput);
-            if (tRecipe != null) {
-                if (tRecipe.isRecipeInputEqual(true, null, tInput)) {
-                    setEfficiencyAndOc(tRecipe);
-                    //In case recipe is too OP for that machine
-                    if (mMaxProgresstime == Integer.MAX_VALUE - 1 && mEUt == Integer.MAX_VALUE - 1)
-                        return false;
-                    if (this.mEUt > 0) {
-                        this.mEUt = (-this.mEUt);
-                    }
-                    this.mMaxProgresstime = Math.max(1, this.mMaxProgresstime);
-                    this.mOutputItems = new ItemStack[]{tRecipe.getOutput(0)};
-                    updateSlots();
-                    return true;
-                }
+            if (tRecipe == null) {
+                continue;
             }
+            if (!tRecipe.isRecipeInputEqual(true, null, tInput)) {
+                continue;
+            }
+            setEfficiencyAndOc(tRecipe);
+            //In case recipe is too OP for that machine
+            if (mMaxProgresstime == Integer.MAX_VALUE - 1 && mEUt == Integer.MAX_VALUE - 1)
+                return false;
+            if (this.mEUt > 0) {
+                this.mEUt = (-this.mEUt);
+            }
+            this.mMaxProgresstime = Math.max(1, this.mMaxProgresstime);
+            this.mOutputItems = new ItemStack[]{tRecipe.getOutput(0)};
+            updateSlots();
+            return true;
         }
         return false;
     }
@@ -160,26 +162,27 @@ public class TT_VacuumFreezer extends TT_Abstract_GT_Replacement {
     }
 
     public final boolean addVacuumFreezerHatches(IGregTechTileEntity aTileEntity, int aBaseCasingIndex) {
-        if (aTileEntity != null) {
-            IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
-            if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch)
-                ((GT_MetaTileEntity_Hatch) aMetaTileEntity).updateTexture(aBaseCasingIndex);
-            else
-                return false;
-
-            if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_InputBus)
-                return this.mInputBusses.add((GT_MetaTileEntity_Hatch_InputBus) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_OutputBus)
-                return this.mOutputBusses.add((GT_MetaTileEntity_Hatch_OutputBus) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Energy)
-                return this.mEnergyHatches.add((GT_MetaTileEntity_Hatch_Energy) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Maintenance)
-                return this.mMaintenanceHatches.add((GT_MetaTileEntity_Hatch_Maintenance) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_EnergyMulti)
-                return this.eEnergyMulti.add((GT_MetaTileEntity_Hatch_EnergyMulti) aMetaTileEntity);
-            else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_DynamoMulti)
-                return this.eDynamoMulti.add((GT_MetaTileEntity_Hatch_DynamoMulti) aMetaTileEntity);
+        if (aTileEntity == null) {
+            return false;
         }
+        IMetaTileEntity aMetaTileEntity = aTileEntity.getMetaTileEntity();
+        if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch)
+            ((GT_MetaTileEntity_Hatch) aMetaTileEntity).updateTexture(aBaseCasingIndex);
+        else
+            return false;
+
+        if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_InputBus)
+            return this.mInputBusses.add((GT_MetaTileEntity_Hatch_InputBus) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_OutputBus)
+            return this.mOutputBusses.add((GT_MetaTileEntity_Hatch_OutputBus) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Energy)
+            return this.mEnergyHatches.add((GT_MetaTileEntity_Hatch_Energy) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_Maintenance)
+            return this.mMaintenanceHatches.add((GT_MetaTileEntity_Hatch_Maintenance) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_EnergyMulti)
+            return this.eEnergyMulti.add((GT_MetaTileEntity_Hatch_EnergyMulti) aMetaTileEntity);
+        else if (aMetaTileEntity instanceof GT_MetaTileEntity_Hatch_DynamoMulti)
+            return this.eDynamoMulti.add((GT_MetaTileEntity_Hatch_DynamoMulti) aMetaTileEntity);
         return false;
     }
 }

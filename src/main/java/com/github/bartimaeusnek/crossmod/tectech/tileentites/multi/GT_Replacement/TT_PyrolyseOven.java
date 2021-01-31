@@ -188,14 +188,15 @@ public class TT_PyrolyseOven extends TT_Abstract_GT_Replacement_Coils {
     }
 
     private GT_Recipe addRecipesDynamically(ItemStack[] tInputs, FluidStack[] tFluids, int tTier) {
-        if (tInputs.length > 1 || (tInputs[0] != null && tInputs[0].getItem() != GT_Utility.getIntegratedCircuit(0).getItem())) {
-            int oreId = OreDictionary.getOreID("logWood");
-            for (ItemStack is : tInputs) {
-                for (int id : OreDictionary.getOreIDs(is)) {
-                    if (oreId == id) {
-                        ProcessingLog.addPyrolyeOvenRecipes(is);
-                        return GT_Recipe.GT_Recipe_Map.sPyrolyseRecipes.findRecipe(getBaseMetaTileEntity(), false, gregtech.api.enums.GT_Values.V[tTier], tFluids, tInputs);
-                    }
+        if (tInputs.length <= 1 && (tInputs[0] == null || tInputs[0].getItem() == GT_Utility.getIntegratedCircuit(0).getItem())) {
+            return null;
+        }
+        int oreId = OreDictionary.getOreID("logWood");
+        for (ItemStack is : tInputs) {
+            for (int id : OreDictionary.getOreIDs(is)) {
+                if (oreId == id) {
+                    ProcessingLog.addPyrolyeOvenRecipes(is);
+                    return GT_Recipe.GT_Recipe_Map.sPyrolyseRecipes.findRecipe(getBaseMetaTileEntity(), false, gregtech.api.enums.GT_Values.V[tTier], tFluids, tInputs);
                 }
             }
         }

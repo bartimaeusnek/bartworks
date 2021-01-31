@@ -244,21 +244,21 @@ public class TT_OilCrackingUnit extends TT_Abstract_GT_Replacement_Coils {
 
         GT_Recipe tRecipe = GT_Recipe.GT_Recipe_Map.sCrakingRecipes.findRecipe(
                 getBaseMetaTileEntity(), false, gregtech.api.enums.GT_Values.V[tTier], tFluidInputs , mInventory[1]);
-        if (tRecipe != null && tRecipe.isRecipeInputEqual(true, tFluidInputs, mInventory[1])) {
-            setEfficiencyAndOc(tRecipe);
-            if (mMaxProgresstime == Integer.MAX_VALUE - 1 && mEUt == Integer.MAX_VALUE - 1)
-                return false;
-            this.mEUt *= Math.pow(0.95D, this.getCoilHeat().getTier());
-
-            if (this.mEUt > 0) {
-                this.mEUt = (-this.mEUt);
-            }
-
-            this.mMaxProgresstime = Math.max(1, this.mMaxProgresstime);
-            this.mOutputFluids = new FluidStack[]{tRecipe.getFluidOutput(0)};
-            return true;
+        if (tRecipe == null || !tRecipe.isRecipeInputEqual(true, tFluidInputs, mInventory[1])) {
+            return false;
         }
-        return false;
+        setEfficiencyAndOc(tRecipe);
+        if (mMaxProgresstime == Integer.MAX_VALUE - 1 && mEUt == Integer.MAX_VALUE - 1)
+            return false;
+        this.mEUt *= Math.pow(0.95D, this.getCoilHeat().getTier());
+
+        if (this.mEUt > 0) {
+            this.mEUt = (-this.mEUt);
+        }
+
+        this.mMaxProgresstime = Math.max(1, this.mMaxProgresstime);
+        this.mOutputFluids = new FluidStack[]{tRecipe.getFluidOutput(0)};
+        return true;
     }
 
     @Override
@@ -267,19 +267,21 @@ public class TT_OilCrackingUnit extends TT_Abstract_GT_Replacement_Coils {
 
         for (GT_MetaTileEntity_Hatch_Input tHatch : mInputHatches) {
             tHatch.mRecipeMap = getRecipeMap();
-            if (isValidMetaTileEntity(tHatch) && tHatch.getFillableStack() != null) {
-                FluidStack tStack = tHatch.getFillableStack();
-                if (!tStack.isFluidEqual(GT_ModHandler.getSteam(1000)) && !tStack.isFluidEqual(Materials.Hydrogen.getGas(1000)))
-                    rList.add(tStack);
+            if (!isValidMetaTileEntity(tHatch) || tHatch.getFillableStack() == null) {
+                continue;
             }
-        }
-
-        if (this.middleFluidHatch != null && isValidMetaTileEntity(this.middleFluidHatch) && this.middleFluidHatch.getFillableStack() != null) {
-            this.middleFluidHatch.mRecipeMap = getRecipeMap();
-            FluidStack tStack = this.middleFluidHatch.getFillableStack();
-            if (tStack.isFluidEqual(GT_ModHandler.getSteam(1000)) || tStack.isFluidEqual(Materials.Hydrogen.getGas(1000)))
+            FluidStack tStack = tHatch.getFillableStack();
+            if (!tStack.isFluidEqual(GT_ModHandler.getSteam(1000)) && !tStack.isFluidEqual(Materials.Hydrogen.getGas(1000)))
                 rList.add(tStack);
         }
+
+        if (this.middleFluidHatch == null || !isValidMetaTileEntity(this.middleFluidHatch) || this.middleFluidHatch.getFillableStack() == null) {
+            return rList;
+        }
+        this.middleFluidHatch.mRecipeMap = getRecipeMap();
+        FluidStack tStack = this.middleFluidHatch.getFillableStack();
+        if (tStack.isFluidEqual(GT_ModHandler.getSteam(1000)) || tStack.isFluidEqual(Materials.Hydrogen.getGas(1000)))
+            rList.add(tStack);
 
         return rList;
     }
