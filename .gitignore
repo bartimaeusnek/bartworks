@@ -46,3 +46,5 @@ hs_err_pid*
 SetupWorkspaces.bat
 SetupDevWorkspaces.bat
 Idea.bat
+
+.idea/*

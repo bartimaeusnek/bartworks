@@ -164,6 +164,7 @@ public class PlatinumSludgeOverHaul {
         //Os
         GT_Values.RA.addBlastRecipe(IrOsLeachResidue.get(dust, 4), GT_Utility.getIntegratedCircuit(11), Materials.HydrochloricAcid.getFluid(1000), AcidicOsmiumSolution.getFluidOrGas(2000), IrLeachResidue.get(dust, 2), null, 200, 120, 775);
         GT_Values.RA.addDistillationTowerRecipe(AcidicOsmiumSolution.getFluidOrGas(1000), new FluidStack[]{OsmiumSolution.getFluidOrGas(100), Materials.Water.getFluid(900)}, null, 150, BW_Util.getMachineVoltageFromTier(5));
+	    GT_Values.RA.addDistilleryRecipe(1, AcidicOsmiumSolution.getFluidOrGas(1000), OsmiumSolution.getFluidOrGas(100), 150, BW_Util.getMachineVoltageFromTier(5), false);
         GT_Values.RA.addChemicalRecipe(OsmiumSolution.get(cell), Materials.HydrochloricAcid.getCells(6), null, Materials.Water.getFluid(2000), Materials.Osmium.getDust(1), Materials.Chlorine.getCells(7), 300);
 
         //Ir
